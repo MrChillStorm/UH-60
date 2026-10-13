@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!-- Master warning panel. The lights follow the UH-60A's (TM 1-1520-237-10, 2.81 and table 2-3) with the
+     flight model's values: the legends of this panel stand for ENG OUT, LOW ROTOR RPM, MASTER CAUTION and the
+     state of the automatic flight control system. All need dc power (battery switch). -->
+
 <PropertyList>
 
   <path>caution.ac</path>
@@ -38,112 +42,110 @@
     </emission>
   </animation>
 
-  <!-- **********************EMERG ENGINE***************************** -->
+  <!-- EMERG ENGINE = #1 / #2 ENG OUT: gas generator speed Ng below 55 % -->
   <animation>
     <type>select</type>
     <object-name>caution1</object-name>
     <condition>
+      <property>controls/electric/battery-switch</property>
       <or>
-        <and>
-          <less-than>
-            <property>engines/engine/n2-pct</property>
-            <value>60</value>
-          </less-than>
-        </and>
-        <and>
-          <less-than>
-            <property>engines/engine/n1-pct</property>
-            <value>90</value>
-          </less-than>
-        </and>
+        <less-than>
+          <property>engines/engine[0]/n1-pct</property>
+          <value>55</value>
+        </less-than>
+        <less-than>
+          <property>engines/engine[1]/n1-pct</property>
+          <value>55</value>
+        </less-than>
       </or>
     </condition>
   </animation>
 
-  <!-- *******************EMERG ROTOR********************** -->
+  <!-- EMERG ROTOR = LOW ROTOR RPM: rotor speed below 96 %, flashing -->
   <animation>
     <type>select</type>
     <object-name>caution2</object-name>
     <condition>
-      <or>
-        <and>
-          <property>consumables/fuel/tank/empty</property>
-        </and>
-        <and>
-          <less-than>
-            <property>rotors/main/rpm</property>
-            <value>10</value>
-          </less-than>
-        </and>
-        <and>
-          <less-than>
-            <property>rotors/tail/rpm</property>
-            <value>10</value>
-          </less-than>
-        </and>
-      </or>
+      <property>controls/electric/battery-switch</property>
+      <property>sim/model/uh60/warning-flash</property>
+      <less-than>
+        <property>rotors/main/rpm-pct</property>
+        <value>96</value>
+      </less-than>
     </condition>
   </animation>
 
-  <!-- ********************MASTER CAUTION***************** -->
+  <!-- MASTER CAUTION: a caution light is on. Those this simulation has: STABILATOR (manual mode), FLT-PATH STAB
+       (FPS off), #1 / #2 FUEL LOW (about 172 lb in the tank), #1 / #2 ENGINE OIL PRESS (engine not running);
+       and, from the original panel, rotor brake on and cabin door open -->
   <animation>
     <type>select</type>
     <object-name>caution3</object-name>
     <condition>
+      <property>controls/electric/battery-switch</property>
       <or>
-        <and>
-          <less-than>
-            <property>consumables/fuel/total-fuel-lbs</property>
-            <value>50</value>
-          </less-than>
-        </and>
-        <and>
-          <less-than>
-            <property>rotors/main/rpm</property>
-            <value>342</value>
-          </less-than>
-        </and>
-        <and>
-          <greater-than>
-            <property>controls/rotor/brake</property>
-            <value>0.1</value>
-          </greater-than>
-        </and>
-        <and>
-          <less-than>
-            <property>engines/engine[0]/rpm</property>
-            <value>1500</value>
-          </less-than>
-        </and>
-        <and>
-          <greater-than>
-            <property>instrumentation/doors/crew/position-norm</property>
-            <value>0.05</value>
-          </greater-than>
-        </and>
+        <less-than>
+          <property>fdm/jsbsim/stab/auto</property>
+          <value>0.5</value>
+        </less-than>
+        <less-than>
+          <property>fdm/jsbsim/ctl/fps</property>
+          <value>0.5</value>
+        </less-than>
+        <less-than>
+          <property>consumables/fuel/tank[0]/level-lbs</property>
+          <value>172</value>
+        </less-than>
+        <less-than>
+          <property>consumables/fuel/tank[1]/level-lbs</property>
+          <value>172</value>
+        </less-than>
+        <less-than>
+          <property>engines/engine[0]/oil-pressure-psi</property>
+          <value>20</value>
+        </less-than>
+        <less-than>
+          <property>engines/engine[1]/oil-pressure-psi</property>
+          <value>20</value>
+        </less-than>
+        <greater-than>
+          <property>controls/rotor/brake</property>
+          <value>0.1</value>
+        </greater-than>
+        <greater-than>
+          <property>instrumentation/doors/crew/position-norm</property>
+          <value>0.05</value>
+        </greater-than>
       </or>
     </condition>
   </animation>
 
-  <!-- *******************AFCS READY********************** -->
+  <!-- AFCS READY: both SAS channels, the FPS, the pitch bias actuator and the stabilator's automatic mode on -->
   <animation>
     <type>select</type>
     <object-name>caution4</object-name>
     <condition>
-      <and>
-        <greater-than>
-          <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
-          <value>70</value>
-        </greater-than>
-        <greater-than>
-          <property>position/gear-agl-ft</property>
-          <value>300</value>
-        </greater-than>
-        <greater-than>
-          <property>rotors/gear/total-torque</property>
-          <value>500000</value>
-        </greater-than>
-      </and>
+      <property>controls/electric/battery-switch</property>
+      <greater-than>
+        <property>fdm/jsbsim/ctl/sas1</property>
+        <value>0.5</value>
+      </greater-than>
+      <greater-than>
+        <property>fdm/jsbsim/ctl/sas2</property>
+        <value>0.5</value>
+      </greater-than>
+      <greater-than>
+        <property>fdm/jsbsim/ctl/fps</property>
+        <value>0.5</value>
+      </greater-than>
+      <greater-than>
+        <property>fdm/jsbsim/ctl/pba</property>
+        <value>0.5</value>
+      </greater-than>
+      <greater-than>
+        <property>fdm/jsbsim/stab/auto</property>
+        <value>0.5</value>
+      </greater-than>
     </condition>
   </animation>
 

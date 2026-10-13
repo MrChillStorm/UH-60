@@ -905,6 +905,9 @@ class Model:
         fade = MAX(v(0), MIN(v(1), Q(D(p('simulation/sim-time-sec'), v(1.0)), v(3.0))))
         o.fn('vib/level-g', M(fade, D(v(1), p('ctl/init')), SQ(S(SQR(p('vib/rotor-g')), SQR(p('vib/bvi-g'))))),
              out='/sim/model/uh60/vibration-g')
+        # master warning panel: the LOW ROTOR RPM light flashes 3-5 times a second [TM 2.81]
+        o.channel('warning lights')
+        o.fn('out/warning-flash', GT(SIN(M(v(2 * math.pi * 4), p('simulation/sim-time-sec'))), v(0)), out='/sim/model/uh60/warning-flash')
         return o
 
     # ------------------------------------------------------------ fuselage [GH 5.2]

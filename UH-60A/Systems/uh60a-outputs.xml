@@ -60,4 +60,7 @@
 <fcs_function name="vib/bvi-g"><function><product><value>0.05</value><property>rotor/turb/etl</property><max><value>0</value><min><value>1.5</value><quotient><property>aero/rotor/thrust-lbs</property><value>16000</value></quotient></min></max><gt><property>rotor/omega-rad_sec</property><value>13.5</value></gt></product></function></fcs_function>
 <fcs_function name="vib/level-g"><function><product><max><value>0</value><min><value>1</value><quotient><difference><property>simulation/sim-time-sec</property><value>1</value></difference><value>3</value></quotient></min></max><difference><value>1</value><property>ctl/init</property></difference><sqrt><sum><product><property>vib/rotor-g</property><property>vib/rotor-g</property></product><product><property>vib/bvi-g</property><property>vib/bvi-g</property></product></sum></sqrt></product></function><output>/sim/model/uh60/vibration-g</output></fcs_function>
 </channel>
+<channel name="warning lights">
+<fcs_function name="out/warning-flash"><function><gt><sin><product><value>25.132741</value><property>simulation/sim-time-sec</property></product></sin><value>0</value></gt></function><output>/sim/model/uh60/warning-flash</output></fcs_function>
+</channel>
 </system>

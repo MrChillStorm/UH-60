@@ -5,15 +5,13 @@
   <sim>
 
     <description>Sikorsky UH-60A Black Hawk</description>
+    <long-description>The US Army's twin-turbine utility helicopter. The JSBSim flight model simulates the four main rotor blades individually, with flapping, lead-lag and a dynamic wake, after Sikorsky's GenHel engineering simulation (NASA CR-166309), and is checked against US Army flight tests: trim, hover and cruise power, ground effect and control responses. It includes the T700 engines and their fuel controls, the rotor speed, the stabilator, SAS, pitch bias actuator and flight path stabilization (aircraft menu: Flight controls). The aircraft starts cold and dark; the aircraft menu has an autostart.</long-description>
     <authors>
       <author   n="0">
-        <name>BARANGER Emmanuel (3D/FDM)</name>
+        <name>BARANGER Emmanuel (3D model and cockpit)</name>
       </author>
       <author   n="1">
-        <name>BARANGER Emmanuel/Zel (YASim FDM, retired)</name>
-      </author>
-      <author   n="2">
-        <name>JSBSim FDM generated from NASA CR-166309 (Sikorsky GenHel) and validated against NASA TM-88360 flight test</name>
+        <name>JSBSim flight model from Sikorsky GenHel data (NASA CR-166309)</name>
       </author>
     </authors>
 
