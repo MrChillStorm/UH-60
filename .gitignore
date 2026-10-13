@@ -6,3 +6,5 @@ __pycache__/
 # packaging and OS clutter
 UH-60A.zip
 .DS_Store
+fdm/report/uh60a_report.pdf
+fdm/report/**/*.log
