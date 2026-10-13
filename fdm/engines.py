@@ -24,6 +24,7 @@ GEAR_TR = 124.62 / 27.0
 J_BLADE = 1512.6 + 2 * 1.25 * 86.7 + 256.9 / G0 * 1.25 ** 2   # one blade about the shaft, slug ft^2
 J_ROTOR = 943.9 + 4 * J_BLADE        # [GH] JREST (hub, shafts, gearbox downstream of the clutches) + blades
 J_ENG = 690.6 / 2                    # [GH] JTOTE, per engine, referred to the rotor
+ACCESSORY_FTLB = 65.8 * 550 / OMEGA0  # accessory drive torque at 100 % rpm: 65.8 hp [Sikorsky, in Yeo JAHS 2004]
 Q100 = 1414.0 * 550 / OMEGA0         # 100 % TRQ: 1414 shp per engine at 100 % rpm (2828 shp transmission)
 
 # torque at the rotor per engine, ft lb, at 100 % Np, sea level standard, against corrected Ng % [GH 6.5.1];
@@ -103,7 +104,7 @@ def build(fcs_name='UH-60A drive'):
     Qmr = p('aero/rotor/torque-ftlb')
     Qtr = M(v(GEAR_TR), p('aero/rotor/tr/torque-ftlb'))
     Wn = Q(W, v(OMEGA0))
-    f.fn('drive/loss-ftlb', S(M(v(600), SQR(Wn)), M(v(0.03), ABS(Qmr))), desc='accessories and gearbox losses')
+    f.fn('drive/loss-ftlb', S(M(v(ACCESSORY_FTLB), SQR(Wn)), M(v(0.03), ABS(Qmr))), desc='accessories and gearbox losses')
     f.fn('drive/brake-ftlb', M(p('/controls/rotor/brake'), v(25000), Q(W, S(ABS(W), v(0.3)))), desc='rotor brake, smooth at standstill')
     Qload = f.fn('drive/load-ftlb', S(Qmr, Qtr, p('drive/loss-ftlb'), p('drive/brake-ftlb')))
 

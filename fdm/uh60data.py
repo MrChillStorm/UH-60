@@ -21,7 +21,15 @@ W_BLADE = 256.9         # lb, blade weight
 S_B = 86.7              # slug ft, first mass moment about the flap hinge
 I_B = 1512.6            # slug ft^2, flap inertia about the hinge
 TIP_LOSS = 0.97         # B, lift beyond B*R ignored
-DCD = 0.002             # section drag increment (roughness, cuff, tabs)
+# tip loss in the momentum balance too: the wake carries the loading through the effective disc B^2 A, so the
+# induced velocity is 1/B times the full-disc value in the hover and 1/B^2 edgewise (induced power factor 1/B in the hover)
+# [Johnson, Rotorcraft Aeromechanics 3.6]. GenHel applies B to the blade lift only, which leaves the induced power
+# ideal. Main rotor (wake forcing) and tail rotor (Bailey momentum).
+TIP_LOSS_INFLOW = True
+# section drag increment over the smooth wind-tunnel tables: a production blade's boundary layer is turbulent from
+# near the leading edge. Tripping added about half of McCroskey's NACA 0012 increment to the SC1095 [Bousman
+# NASA TP-2003-212265, experiment 3], 0.0012 at full-scale Reynolds number (6 million)
+DCD = 0.0012
 SHAFT_TILT = 3.0 * DEG  # forward
 SWASH_PHASE = -9.7      # deg, swashplate phase angle
 TIP_SWEEP_R = 299.0 / 322.0   # swept tip outboard of this (20 deg) [BO table 3]

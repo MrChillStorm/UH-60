@@ -44,7 +44,7 @@
 <fcs_function name="eng/coll-pct"><function><product><value>10</value><property>ctl/coll-in</property></product></function></fcs_function>
 </channel>
 <channel name="rotor load">
-<fcs_function name="drive/loss-ftlb"><description>accessories and gearbox losses</description><function><sum><product><value>600</value><product><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></product></product><product><value>0.03</value><abs><property>aero/rotor/torque-ftlb</property></abs></product></sum></function></fcs_function>
+<fcs_function name="drive/loss-ftlb"><description>accessories and gearbox losses</description><function><sum><product><value>1340.3704</value><product><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></product></product><product><value>0.03</value><abs><property>aero/rotor/torque-ftlb</property></abs></product></sum></function></fcs_function>
 <fcs_function name="drive/brake-ftlb"><description>rotor brake, smooth at standstill</description><function><product><property>/controls/rotor/brake</property><value>25000</value><quotient><property>rotor/omega-rad_sec</property><sum><abs><property>rotor/omega-rad_sec</property></abs><value>0.3</value></sum></quotient></product></function></fcs_function>
 <fcs_function name="drive/load-ftlb"><function><sum><property>aero/rotor/torque-ftlb</property><product><value>4.6155556</value><property>aero/rotor/tr/torque-ftlb</property></product><property>drive/loss-ftlb</property><property>drive/brake-ftlb</property></sum></function></fcs_function>
 </channel>

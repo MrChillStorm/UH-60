@@ -133,7 +133,7 @@ def hover_trim(f, pba, alt=5250.0, dT=0.0):
     then hands off, and the SAS off at the start of the record (1-2.5 s before the input)"""
     import genap
     f['atmosphere/delta-T'] = dT
-    f['ic/terrain-elevation-ft'] = 0.0; f['ic/h-sl-ft'] = alt; f['ic/vt-kts'] = 0.0; f['ic/psi-true-deg'] = 0.0
+    f['ic/terrain-elevation-ft'] = min(0.0, alt - 1000.0); f['ic/h-sl-ft'] = alt; f['ic/vt-kts'] = 0.0; f['ic/psi-true-deg'] = 0.0
     f['ic/theta-deg'] = 4.5; f['ic/phi-deg'] = -2.5
     f['ic/p-rad_sec'] = 0; f['ic/q-rad_sec'] = 0; f['ic/r-rad_sec'] = 0
     f['eng/init-running'] = 1

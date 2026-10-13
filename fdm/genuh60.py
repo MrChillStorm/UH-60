@@ -443,7 +443,8 @@ class Model:
         # in the FCS so that it uses the previous frame's blade loads (an aerodynamic function may not depend on itself)
         vkt = Q(p('velocities/vt-fps'), v(1.68781))
         kfp = MAX(v(-0.00052), MIN(v(-0.0003), D(v(-0.0003), M(v(0.0000044), D(vkt, v(100))))))
-        r.fn('rotor/theta-dy-tip-deg', M(kfp, v(getattr(U, 'WINDUP', 1.0)), p('aero/rotor/blade-load-lbs')), desc='GenHel torsional wind-up at the tip, deg')
+        kw = getattr(U, 'WINDUP', 1.0)       # experiments: scale the wind-up
+        r.fn('rotor/theta-dy-tip-deg', M(kfp, *([v(kw)] if kw != 1.0 else []), p('aero/rotor/blade-load-lbs')), desc='GenHel torsional wind-up at the tip, deg')
         r.channel('inflow')
         if U.INFLOW_MODEL == 'peters-he':
             # Peters-He finite-state wake [peters_he.py]: M a' + L^-1 V a = tau / 2 per state set (time Omega t), in the
@@ -491,7 +492,7 @@ class Model:
             # Pitt-Peters uniform inflow out of ground effect: (8/3pi) R dv/dt + 2 V' v = T / (rho A)
             A = math.pi * U.R ** 2
             r.fn('rotor/v0-next', MAX(v(0), S(p('rotor/v0-fps'), M(p('simulation/dt'), Q(D(
-                Q(p('aero/rotor/thrust-lbs'), M(p('atmosphere/rho-slugs_ft3'), v(A))),
+                Q(p('aero/rotor/thrust-lbs'), M(p('atmosphere/rho-slugs_ft3'), v(A * (U.TIP_LOSS ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0)))),
                 M(v(2), p('aero/rotor/Vprime-fps'), p('rotor/v0-fps'))), v(8 / (3 * math.pi) * U.R))))), out='rotor/v0-fps')
         # tail rotor: GenHel's closed-form Bailey solution [GH 5.4-7]. The inflow equation is solved by fixed-point
         # iteration, one (relaxed) step per frame, from the previous frame's thrust and advance ratios.
@@ -504,7 +505,8 @@ class Model:
         mu2 = SQR(mu)
         t31 = S(v(B ** 2 / 2), M(v(0.25), mu2)); t32 = S(v(B ** 3 / 3), M(v(B / 2), mu2)); t33 = S(v(B ** 4 / 4), M(v(B ** 2 / 4), mu2))
         dw = p('rotor/tr/dw')
-        dwn = Q(M(v(G), S(M(muz, t31), M(th, t32), M(v(U.TWIST_TR), t33))), S(M(v(2), SQ(S(mu2, SQR(D(muz, dw)), v(1e-6)))), M(v(G), t31)))
+        B2 = B ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0     # momentum over the effective disc B^2 A
+        dwn = Q(M(v(G), S(M(muz, t31), M(th, t32), M(v(U.TWIST_TR), t33))), S(M(v(2 * B2), SQ(S(mu2, SQR(D(muz, dw)), v(1e-6)))), M(v(G), t31)))
         r.fn('rotor/tr/dw-next', S(dw, M(v(0.5), D(dwn, dw))), out='rotor/tr/dw')
 
     # ------------------------------------------------------------ unsteady wake (FCS)
@@ -756,7 +758,9 @@ class Model:
             qn = MAX(M(rho, SQR(MAX(W, v(5))), v(U.R ** 4)), v(1e-6))
             for (tg, i), terms in ph_tau.items():
                 rh = (U.PH_COS if tg == 'c' else U.PH_SIN)[i][1]
-                g.fn('aero/rotor/ph/tau-%s%d' % (tg, i), Q(M(v(1 / (2 * math.pi) if rh == 0 else 1 / math.pi), S(*terms)), qn))
+                # tip loss: the wake takes the loading over the effective disc B^2 A
+                kb = 1 / U.TIP_LOSS ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0
+                g.fn('aero/rotor/ph/tau-%s%d' % (tg, i), Q(M(v(kb / (2 * math.pi) if rh == 0 else kb / math.pi), S(*terms)), qn))
         # GenHel's empirical torsional wind-up [GH 5.1-24, 5.1-49]: the tip twists nose down in proportion to the
         # mean blade aerodynamic load, more at high speed; the mode shape is 0.28 + 0.72 sin(90 deg r/R)
         Fb = g.fn('aero/rotor/blade-load-lbs', Q(S(*[SQ(S(SQR(p('aero/rotor/b%d/Fn' % k)), SQR(p('aero/rotor/b%d/Ft' % k)))) for k in range(U.NB)]), v(U.NB)))
@@ -806,7 +810,7 @@ class Model:
                   'fin blockage [GH 5.4-8]')
         A = math.pi * U.R_TR ** 2
         rho = p('atmosphere/rho-slugs_ft3')
-        ct = g.fn('aero/rotor/tr/ct', M(v(2), dw, SQ(S(SQR(mu), SQR(lam)))))
+        ct = g.fn('aero/rotor/tr/ct', M(v(2 * (U.TIP_LOSS_TR ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0)), dw, SQ(S(SQR(mu), SQR(lam)))))
         T = g.fn('aero/rotor/tr/thrust-lbs', M(v(A), rho, SQR(ORv), ct, kb))
         cq = S(NEG(M(lam, ct)), M(v(U.SIGMA_TR * U.CD0_TR / 8), S(v(1), M(v(4.65), SQR(mu)))))
         Qtr = g.fn('aero/rotor/tr/torque-ftlb', M(v(A * U.R_TR), rho, SQR(ORv), cq))
