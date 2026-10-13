@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList   include="Systems/uh60-base.xml">
+
+  <sim>
+
+    <description>Sikorsky UH-60A Black Hawk</description>
+    <authors>
+      <author   n="0">
+        <name>BARANGER Emmanuel (3D/FDM)</name>
+      </author>
+      <author   n="1">
+        <name>BARANGER Emmanuel/Zel (YASim FDM, retired)</name>
+      </author>
+      <author   n="2">
+        <name>JSBSim FDM generated from NASA CR-166309 (Sikorsky GenHel) and validated against NASA TM-88360 flight test</name>
+      </author>
+    </authors>
+
+    <aircraft-version>1.1</aircraft-version>
+    <status>alpha</status>
+    <minimum-fg-version>2018.2.0</minimum-fg-version>
+
+    <flight-model>jsb</flight-model>
+    <aero>uh60a</aero>
+
+    <!-- test autopilot (fdm/genap.py): hover and cruise holds, set through /autopilot/uh60 -->
+    <systems>
+      <autopilot n="10">
+        <name>UH-60A test autopilot</name>
+        <path>Aircraft/UH-60A/Systems/uh60a-autopilot.xml</path>
+      </autopilot>
+    </systems>
+
+    <rating>
+      <FDM      type="int"> 3 </FDM>
+      <systems  type="int"> 2 </systems>
+      <cockpit  type="int"> 2 </cockpit>
+      <model    type="int"> 4 </model>
+    </rating>
+
+    <previews>
+      <preview>
+        <type>cockpit</type>
+        <path>Previews/uh60-0.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+      <preview>
+        <type>exterior</type>
+        <path>Previews/uh60-1.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+      <preview>
+        <type>exterior</type>
+        <path>Previews/uh60-2.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+      <preview>
+        <type>cockpit</type>
+        <path>Previews/uh60-3.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+      <preview>
+        <type>exterior</type>
+        <path>Previews/uh60-4.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+      <preview>
+        <type>exterior</type>
+        <path>Previews/uh60-5.png</path>
+        <splash type="bool">true</splash>
+      </preview>
+    </previews>
+
+    <tags>
+      <tag>Sikorsky</tag>
+      <tag>helicopter</tag>
+      <tag>2-engine</tag>
+      <tag>1980s</tag>
+      <tag>1990s</tag>
+      <tag>2000s</tag>
+      <tag>compositor</tag>
+      <tag>HDR</tag>
+    </tags>
+
+  </sim>
+
+  <autopilot>
+    <uh60 include="Systems/uh60a-autopilot-props.xml"/>
+  </autopilot>
+
+</PropertyList>

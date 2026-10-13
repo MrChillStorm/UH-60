@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <keyboard>
+
+    <key n="100">
+      <name>d</name>
+      <desc>Crew door</desc>
+      <binding>
+        <condition>
+          <and>
+            <property>gear/gear[0]/wow</property>
+            <property>gear/gear[1]/wow</property>
+            <property>gear/gear[2]/wow</property>
+            <less-than>
+              <property>gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.crew.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="68">
+      <name>D</name>
+      <desc>Passenger door</desc>
+      <binding>
+        <condition>
+          <and>
+            <property>gear/gear[0]/wow</property>
+            <property>gear/gear[1]/wow</property>
+            <property>gear/gear[2]/wow</property>
+            <less-than>
+              <property>gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.passenger.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="101">
+      <name>e</name>
+      <desc>Left Windows</desc>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsL.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="69">
+      <name>E</name>
+      <desc>Right Windows</desc>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsR.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="102">
+      <name>f</name>
+      <desc>Left bay</desc>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayL.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="70">
+      <name>F</name>
+      <desc>Right bay</desc>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayR.toggle();</script>
+      </binding>
+    </key>
+
+    <key n="82">
+      <name>R</name>
+      <desc>Toggle rotor brake</desc>
+      <binding>
+        <command>nasal</command>
+        <script>
+          var p = "controls/rotor/brake";
+          setprop(p, !getprop(p));
+        </script>
+      </binding>
+    </key>
+
+    <key n="114">
+      <name>r</name>
+      <desc>Apply rotor brake</desc>
+      <binding>
+        <command>nasal</command>
+        <script>interpolate("controls/rotor/brake", 1.0, 2)</script>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>interpolate("controls/rotor/brake", 0.0, 2)</script>
+        </binding>
+      </mod-up>
+    </key>
+
+    <key n="108">
+      <name>l</name>
+      <desc>PA On/Off</desc>
+      <binding>
+        <command>nasal</command>
+        <script>PA.PAToggle();</script>
+      </binding>
+    </key>
+
+    <key n="81">
+      <name>Q</name>
+      <desc>Reset view</desc>
+      <binding>
+        <command>nasal</command>
+        <script>
+          setprop("sim/current-view/field-of-view",      getprop("sim/current-view/config/default-field-of-view-deg"));
+          setprop("sim/current-view/heading-offset-deg", getprop("sim/current-view/config/heading-offset-deg"));
+          setprop("sim/current-view/pitch-offset-deg",   getprop("sim/current-view/config/pitch-offset-deg"));
+          setprop("sim/current-view/roll-offset-deg",    getprop("sim/current-view/config/roll-offset-deg"));
+        </script>
+      </binding>
+    </key>
+
+    <key n="125">
+      <name>}</name>
+      <desc>AutoStart/AutoStop</desc>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/electric/battery-switch</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/electric/engine/generator</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/lighting/instrument-lights</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/lighting/nav-lights</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/lighting/beacon</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/lighting/strobe</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/switches/starterkey-insert</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/engines/engine[0]/fuel-pump</property>
+      </binding>
+      <binding>
+        <command>property-toggle</command>
+        <property>controls/engines/engine[1]/fuel-pump</property>
+      </binding>
+      <binding>
+        <condition>
+          <property>controls/electric/battery-switch</property>
+        </condition>
+        <command>property-assign</command>
+        <property>instrumentation/zkv1000/pfd/status</property>
+        <value>1</value>
+      </binding>
+      <binding>
+        <condition>
+          <not><property>controls/electric/battery-switch</property></not>
+        </condition>
+        <command>property-assign</command>
+        <property>instrumentation/zkv1000/pfd/status</property>
+        <value>0</value>
+      </binding>
+      <binding>
+        <condition>
+          <property>controls/electric/battery-switch</property>
+        </condition>
+        <command>property-assign</command>
+        <property>instrumentation/zkv1000/mfd/status</property>
+        <value>2</value>
+      </binding>
+      <binding>
+        <condition>
+          <not><property>controls/electric/battery-switch</property></not>
+        </condition>
+        <command>property-assign</command>
+        <property>instrumentation/zkv1000/mfd/status</property>
+        <value>0</value>
+      </binding>
+      <!-- ********************************************* -->
+      <binding>
+        <condition>
+          <property>controls/electric/battery-switch</property>
+        </condition>
+        <command>nasal</command>
+        <script>uh60.engines(1)</script>
+      </binding>
+      <binding>
+        <condition>
+          <not><property>controls/electric/battery-switch</property></not>
+        </condition>
+        <command>nasal</command>
+        <script>uh60.engines(0)</script>
+      </binding>
+    </key>
+
+  </keyboard>
+
+</PropertyList>

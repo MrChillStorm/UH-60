@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- thanks to the SAR simulation (GPL) for the helicopter sounds,
+     and the Urban game (LGPL) for the weapon sounds
+
+     +x = aft
+     +y = left
+     +z = up
+-->
+<PropertyList>
+
+  <fx>
+
+    <!-- Starting Engines -->
+    <starter>
+      <name>starter0_start</name>
+      <path>uh60_full_startup_sequence.wav</path>
+      <mode>once</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <!-- <property>sim/model/uh60/state</property> -->
+            <property>sim/multiplay/generic/int[6]</property>
+            <value>0</value>
+          </greater-than>
+          <not><property>sim/current-view/internal</property></not>
+        </and>
+      </condition>
+      <volume>
+        <factor>1</factor>
+      </volume>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </starter>
+
+    <starter-inside>
+      <name>starter0_start_inside</name>
+      <path>uh60_full_startup_sequence_inside.wav</path>
+      <mode>once</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </starter-inside>
+
+    <engine>
+      <name>turbine1-loop</name>
+      <path>uh60_turbine_loop.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <!-- <property>sim/model/uh60/state</property> -->
+            <property>sim/multiplay/generic/int[6]</property>
+            <value>1</value>
+          </greater-than>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <not><property>sim/current-view/internal</property></not>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+        <factor>0.3</factor>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.003125</factor>
+        <offset>-0.0</offset>
+        <max>1.03</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </engine>
+
+    <engine-inside>
+      <name>turbine1-loop-inside</name>
+      <path>uh60_turbine_loop_inside.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </engine-inside>
+
+    <rotor>
+      <name>rotor-outside</name>
+      <path>uh60_idle_outside_loop.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/tail/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <not><property>sim/current-view/internal</property></not>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+        <factor>0.75</factor>
+      </volume>
+      <pitch>
+        <property>rotors/tail/rpm</property>
+        <factor>0.0006</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </rotor>
+
+    <rotor>
+      <name>rotor-inside-LEFT</name>
+      <path>uh60_inside_loop_L.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <position>
+        <x>  0 </x>
+        <y>  0 </y>
+        <z> -1 </z>
+      </position>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </rotor>
+
+    <rotor>
+      <name>rotor-inside-RIGHT</name>
+      <path>uh60_inside_loop_R.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <position>
+        <x> 0 </x>
+        <y> 0 </y>
+        <z> 1 </z>
+      </position>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </rotor>
+
+    <engine-inside>
+      <name>engine-inside</name>
+      <path>inflight_inside.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </engine-inside>
+
+    <rotor>
+      <name>blade-vortex-interaction</name>
+      <path>blade_vortex.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/tail/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <not><property>sim/current-view/internal</property></not>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+        <factor>0.75</factor>
+      </volume>
+      <pitch>
+        <property>rotors/tail/rpm</property>
+        <factor>0.0006</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </rotor>
+
+    <shockfront>
+      <name>shockfront</name>
+      <path>uh60_idle_outside_vortexinteraction_loop.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <not><property>sim/current-view/internal</property></not>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+        <factor>0.75</factor>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.0006</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <position>
+        <x> 0 </x>
+        <y> 0 </y>
+        <z> 0 </z>
+      </position>
+      <orientation>
+        <x> -1 </x>
+        <y>  0 </y>
+        <z>  0 </z>
+        <inner-angle>30.0</inner-angle>
+        <outer-angle>90.0</outer-angle>
+        <outer-gain>0.1</outer-gain>
+      </orientation>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </shockfront>
+
+    <vibration>
+      <name>vibration</name>
+      <path>rattling_inside.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <!-- <not><property>sim/crashed</property></not> -->
+          <not><property>sim/multiplay/generic/bool[6]</property></not>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <!-- <property>rotors/gear/torque-sound-filtered</property> -->
+        <property>sim/multiplay/generic/float[19]</property>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <offset>-0.0</offset>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </vibration>
+
+    <!-- the FDM's cockpit vibration level (4 per rev, stall buffet, transition): a light buzz in fast cruise,
+         heavy in blade stall -->
+    <vibration>
+      <name>rotor-vibration</name>
+      <path>rattling_inside.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <and>
+          <greater-than>
+            <property>rotors/main/rpm</property>
+            <value>50</value>
+          </greater-than>
+          <property>sim/current-view/internal</property>
+        </and>
+      </condition>
+      <volume>
+        <property>sim/model/uh60/vibration-g</property>
+        <factor>3.0</factor>
+        <max>1.5</max>
+      </volume>
+      <pitch>
+        <property>rotors/main/rpm</property>
+        <factor>0.00325</factor>
+        <max>2.5</max>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </vibration>
+
+    <!-- **************************************************** -->
+    <!-- Doors sounds -->
+    <door>
+      <name>open and close crew door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/crew/position-norm</property> -->
+          <property>sim/multiplay/generic/float[9]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>open and close crew door end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/crew/position-norm</property> -->
+          <property>sim/multiplay/generic/float[9]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>open and close passenger door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/passenger/position-norm</property> -->
+          <property>sim/multiplay/generic/float[10]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>open and close passenger door end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/passenger/position-norm</property> -->
+          <property>sim/multiplay/generic/float[10]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>left open and close windows door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+          <property>sim/multiplay/generic/float[11]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>left open and close windows door end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+          <property>sim/multiplay/generic/float[11]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>right open and close windows door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+          <property>sim/multiplay/generic/float[12]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>right open and close windows door end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+          <property>sim/multiplay/generic/float[12]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>left open and close bay door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/bayL/position-norm</property> -->
+          <property>sim/multiplay/generic/float[13]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>left open and close windows bay end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/bayL/position-norm</property> -->
+          <property>sim/multiplay/generic/float[13]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>right open and close bay door start inside</name>
+      <path>door_slide_close_end.wav</path>
+      <mode>once</mode>
+      <condition>
+        <less-than>
+          <!-- <property>sim/model/door-positions/bayR/position-norm</property> -->
+          <property>sim/multiplay/generic/float[14]</property>
+          <value>0.02</value>
+        </less-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <door>
+      <name>right open and close windows bay end inside</name>
+      <path>door_slide_open_start.wav</path>
+      <mode>once</mode>
+      <condition>
+        <greater-than>
+          <!-- <property>sim/model/door-positions/bayR/position-norm</property> -->
+          <property>sim/multiplay/generic/float[14]</property>
+          <value>0.99</value>
+        </greater-than>
+      </condition>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </door>
+
+    <rain>
+      <name>rain</name>
+      <path>rain.wav</path>
+      <mode>looped</mode>
+      <condition>
+        <greater-than>
+          <property>environment/metar/rain-norm</property>
+          <value> 0.2 </value>
+        </greater-than>
+      </condition>
+      <volume>
+        <property>environment/metar/rain-norm</property>
+        <factor> 1 </factor>
+        <offset> 0 </offset>
+        <min> 0.4 </min>
+        <max> 0.9 </max>
+      </volume>
+      <pitch>
+        <property>velocities/airspeed-kt</property>
+        <factor> 0.001 </factor>
+        <offset> 1 </offset>
+      </pitch>
+      <reference-dist>100</reference-dist>
+      <max-dist>1000</max-dist>
+    </rain>
+
+  </fx>
+
+</PropertyList>

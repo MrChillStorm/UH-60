@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>pedals.ac</path>
+
+  <animation>
+    <object-name>base</object-name>
+    <object-name>pedalL</object-name>
+    <object-name>pedalR</object-name>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>pedalL</object-name>
+    <property>controls/flight/rudder</property>
+    <factor> 15 </factor>
+    <center>
+      <x-m> 0.00000 </x-m>
+      <y-m> 0.00000 </y-m>
+      <z-m> 0.11083 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>pedalR</object-name>
+    <property>controls/flight/rudder</property>
+    <factor> -15 </factor>
+    <center>
+      <x-m> 0.00000 </x-m>
+      <y-m> 0.00000 </y-m>
+      <z-m> 0.11083 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

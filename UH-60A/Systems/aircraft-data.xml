@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <!-- <path>/sim/model/show-noze</path> -->
+  <path>sim/multiplay/generic/bool[0]</path>
+  <!-- <path>/sim/model/show-grue</path> -->
+  <path>sim/multiplay/generic/bool[1]</path>
+  <!-- <path>/sim/model/show-probe</path> -->
+  <path>sim/multiplay/generic/bool[7]</path>
+  <!-- <path>/sim/model/show-wings</path> -->
+  <path>sim/multiplay/generic/bool[8]</path>
+  <!-- <path>/sim/model/show-copilot</path> -->
+  <path>sim/multiplay/generic/bool[9]</path>
+
+</PropertyList>

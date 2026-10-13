@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- UH-60A AFCS panel: the stability systems of the JSBSim flight model (fdm/genuh60.py) -->
+<PropertyList>
+
+  <name>afcs</name>
+  <modal>false</modal>
+  <layout>vbox</layout>
+
+  <group>
+    <layout>hbox</layout>
+    <empty><stretch>1</stretch></empty>
+    <text>
+      <label>Flight controls (AFCS)</label>
+    </text>
+    <empty><stretch>1</stretch></empty>
+    <button>
+      <pref-width>16</pref-width>
+      <pref-height>16</pref-height>
+      <legend></legend>
+      <keynum>27</keynum>
+      <border>2</border>
+      <binding>
+        <command>dialog-close</command>
+      </binding>
+    </button>
+  </group>
+
+  <hrule/>
+
+  <group>
+    <layout>vbox</layout>
+    <halign>left</halign>
+
+    <checkbox>
+      <name>sas1</name>
+      <halign>left</halign>
+      <label>SAS 1 (analog)</label>
+      <property>/fdm/jsbsim/ctl/sas1</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>sas1</object-name></binding>
+    </checkbox>
+
+    <checkbox>
+      <name>sas2</name>
+      <halign>left</halign>
+      <label>SAS 2 (digital)</label>
+      <property>/fdm/jsbsim/ctl/sas2</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>sas2</object-name></binding>
+    </checkbox>
+
+    <checkbox>
+      <name>fps</name>
+      <halign>left</halign>
+      <label>FPS: attitude, heading and airspeed hold, turn coordination</label>
+      <property>/fdm/jsbsim/ctl/fps</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>fps</object-name></binding>
+    </checkbox>
+
+    <checkbox>
+      <name>pba</name>
+      <halign>left</halign>
+      <label>Pitch bias actuator</label>
+      <property>/fdm/jsbsim/ctl/pba</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>pba</object-name></binding>
+    </checkbox>
+
+    <checkbox>
+      <name>stab-auto</name>
+      <halign>left</halign>
+      <label>Stabilator AUTO</label>
+      <property>/fdm/jsbsim/stab/auto</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>stab-auto</object-name></binding>
+    </checkbox>
+
+    <group>
+      <layout>hbox</layout>
+      <halign>left</halign>
+      <text>
+        <label>Stabilator (slew in manual)</label>
+      </text>
+      <slider>
+      <name>stab-manual</name>
+        <pref-width>160</pref-width>
+        <min>-8</min>
+        <max>39</max>
+        <property>/fdm/jsbsim/stab/manual-deg</property>
+        <live>true</live>
+        <enable>
+          <not><property>/fdm/jsbsim/stab/auto</property></not>
+        </enable>
+        <binding><command>dialog-apply</command><object-name>stab-manual</object-name></binding>
+      </slider>
+      <text>
+        <label>-88.8 deg</label>
+        <format>%.1f deg</format>
+        <property>/fdm/jsbsim/stab/pos-deg</property>
+        <live>true</live>
+      </text>
+    </group>
+  </group>
+
+
+  <button>
+    <legend>All AFCS on</legend>
+    <halign>left</halign>
+    <binding><command>property-assign</command><property>/fdm/jsbsim/ctl/sas1</property><value>1</value></binding>
+    <binding><command>property-assign</command><property>/fdm/jsbsim/ctl/sas2</property><value>1</value></binding>
+    <binding><command>property-assign</command><property>/fdm/jsbsim/ctl/fps</property><value>1</value></binding>
+    <binding><command>property-assign</command><property>/fdm/jsbsim/ctl/pba</property><value>1</value></binding>
+    <binding><command>property-assign</command><property>/fdm/jsbsim/stab/auto</property><value>1</value></binding>
+    <binding><command>dialog-update</command></binding>
+  </button>
+
+  <hrule/>
+
+  <group>
+    <layout>vbox</layout>
+    <halign>left</halign>
+
+    <checkbox>
+      <name>turb</name>
+      <halign>left</halign>
+      <label>Rotor wake turbulence</label>
+      <property>/fdm/jsbsim/rotor/turb/enable</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>turb</object-name></binding>
+    </checkbox>
+
+    <checkbox>
+      <name>vibration</name>
+      <halign>left</halign>
+      <label>Cockpit vibration shake</label>
+      <property>/sim/model/uh60/vibration-view-scale</property>
+      <live>true</live>
+      <binding><command>dialog-apply</command><object-name>vibration</object-name></binding>
+    </checkbox>
+  </group>
+
+  <hrule/>
+
+  <button>
+    <legend>Close</legend>
+    <default>true</default>
+    <key>Esc</key>
+    <binding>
+      <command>dialog-close</command>
+    </binding>
+  </button>
+
+</PropertyList>

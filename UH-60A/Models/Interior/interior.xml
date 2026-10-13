@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>interior.ac</path>
+
+  <animation>
+    <!-- Objets opaques -->
+    <object-name>interieur</object-name>
+    <object-name>inttour</object-name>
+    <object-name>zonejaune</object-name>
+    <object-name>intporteL</object-name>
+    <object-name>intporteR</object-name>
+    <object-name>intwindowL1</object-name>
+    <object-name>intwindowL2</object-name>
+    <object-name>intwindowR1</object-name>
+    <object-name>intwindowR2</object-name>
+    <object-name>intdoorL</object-name>
+    <object-name>intdoorR</object-name>
+    <object-name>planchet</object-name>
+
+    <!-- Objets transparents -->
+    <object-name>intvitres</object-name>
+    <object-name>intvitreG</object-name>
+    <object-name>intvitreD</object-name>
+    <object-name>intglaceL</object-name>
+    <object-name>intglaceR</object-name>
+    <object-name>intglaceL1</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>intglaceR1</object-name>
+    <object-name>intglaceR2</object-name>
+    <!-- HDR mode -->
+    <object-name>HDRintvitres</object-name>
+    <object-name>HDRintvitreG</object-name>
+    <object-name>HDRintvitreD</object-name>
+    <object-name>HDRintglaceL</object-name>
+    <object-name>HDRintglaceR</object-name>
+    <object-name>HDRintglaceL1</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <object-name>HDRintglaceR1</object-name>
+    <object-name>HDRintglaceR2</object-name>
+  </animation>
+
+  <!-- working for Compositor -->
+  <effect>
+    <inherits-from>../Effects/Glass/glassrain</inherits-from>
+    <object-name>intvitres</object-name>
+    <object-name>intvitreG</object-name>
+    <object-name>intvitreD</object-name>
+    <object-name>intglaceL</object-name>
+    <object-name>intglaceR</object-name>
+    <object-name>intglaceL1</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>intglaceR1</object-name>
+    <object-name>intglaceR2</object-name>
+  </effect>
+
+  <effect>
+    <inherits-from>../Effects/Glass/glass</inherits-from>
+    <object-name>HDRintvitres</object-name>
+    <object-name>HDRintvitreG</object-name>
+    <object-name>HDRintvitreD</object-name>
+    <object-name>HDRintglaceL</object-name>
+    <object-name>HDRintglaceR</object-name>
+    <object-name>HDRintglaceL1</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <object-name>HDRintglaceR1</object-name>
+    <object-name>HDRintglaceR2</object-name>
+  </effect>
+
+  <!-- Sélection des vitres en fonction de HDR ou pas -->
+  <animation>
+    <type>select</type>
+    <condition>
+      <!-- <property>sim/rendering/hdr/hdr-enabled</property> -->
+      <property>sim/multiplay/generic/bool[2]</property>
+    </condition>
+    <object-name>HDRintvitres</object-name>
+    <object-name>HDRintvitreG</object-name>
+    <object-name>HDRintvitreD</object-name>
+    <object-name>HDRintglaceL</object-name>
+    <object-name>HDRintglaceR</object-name>
+    <object-name>HDRintglaceL1</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <object-name>HDRintglaceR1</object-name>
+    <object-name>HDRintglaceR2</object-name>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <condition>
+      <!-- <not><property>sim/rendering/hdr/hdr-enabled</property></not> -->
+      <not><property>sim/multiplay/generic/bool[2]</property></not>
+    </condition>
+    <object-name>intvitres</object-name>
+    <object-name>intvitreG</object-name>
+    <object-name>intvitreD</object-name>
+    <object-name>intglaceL</object-name>
+    <object-name>intglaceR</object-name>
+    <object-name>intglaceL1</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>intglaceR1</object-name>
+    <object-name>intglaceR2</object-name>
+  </animation>
+
+  <model>
+    <path>Seats/all-seats.xml</path>
+  </model>
+
+  <model>
+    <path>Panels/all-panels.xml</path>
+  </model>
+
+  <model>
+    <path>../Pilot/all-pilots.xml</path>
+  </model>
+
+  <model>
+    <path>Panels/Instruments/sticks/all-sticks.xml</path>
+  </model>
+
+  <model>
+    <path>Panels/Instruments/Pedals/all-pedals.xml</path>
+  </model>
+
+  <!-- Doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>intporteR</object-name>
+    <object-name>intvitreD</object-name>
+    <object-name>HDRintvitreD</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <condition>
+          <and>
+            <property>/gear/gear[0]/wow</property>
+            <property>/gear/gear[1]/wow</property>
+            <property>/gear/gear[2]/wow</property>
+            <less-than>
+              <property>/gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.crew.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>intporteR</object-name>
+    <object-name>intvitreD</object-name>
+    <object-name>HDRintvitreD</object-name>
+    <!-- <property>sim/model/door-positions/crew/position-norm</property> -->
+    <property>sim/multiplay/generic/float[9]</property>
+    <factor> 70 </factor>
+    <center>
+      <x-m> -6.43255 </x-m>
+      <y-m>  1.12963 </y-m>
+      <z-m> -1.13138 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>intporteL</object-name>
+    <object-name>intvitreG</object-name>
+    <object-name>HDRintvitreG</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <condition>
+          <and>
+            <property>/gear/gear[0]/wow</property>
+            <property>/gear/gear[1]/wow</property>
+            <property>/gear/gear[2]/wow</property>
+            <less-than>
+              <property>/gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.passenger.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>intporteL</object-name>
+    <object-name>intvitreG</object-name>
+    <object-name>HDRintvitreG</object-name>
+    <!-- <property>sim/model/door-positions/passenger/position-norm</property> -->
+    <property>sim/multiplay/generic/float[10]</property>
+    <factor> -70 </factor>
+    <center>
+      <x-m> -6.43255 </x-m>
+      <y-m> -1.12963 </y-m>
+      <z-m> -1.13138 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <!-- Left Windows -->
+  <animation>
+    <type>pick</type>
+    <object-name>intwindowL2</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intwindowL2</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[11]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>intwindowL1</object-name>
+    <object-name>intwindowL2</object-name>
+    <object-name>intglaceL1</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>HDRintglaceL1</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intwindowL1</object-name>
+    <object-name>intwindowL2</object-name>
+    <object-name>intglaceL1</object-name>
+    <object-name>intglaceL2</object-name>
+    <object-name>HDRintglaceL1</object-name>
+    <object-name>HDRintglaceL2</object-name>
+    <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[11]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Right Windows -->
+  <animation>
+    <type>pick</type>
+    <object-name>intwindowR2</object-name>
+    <object-name>intglaceR2</object-name>
+    <object-name>HDRintglaceR2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intwindowR2</object-name>
+    <object-name>intglaceR2</object-name>
+    <object-name>HDRintglaceR2</object-name>
+    <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[12]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>intwindowR1</object-name>
+    <object-name>intwindowR2</object-name>
+    <object-name>intglaceR1</object-name>
+    <object-name>intglaceR2</object-name>
+    <object-name>HDRintglaceR1</object-name>
+    <object-name>HDRintglaceR2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intwindowR1</object-name>
+    <object-name>intwindowR2</object-name>
+    <object-name>intglaceR1</object-name>
+    <object-name>intglaceR2</object-name>
+    <object-name>HDRintglaceR1</object-name>
+    <object-name>HDRintglaceR2</object-name>
+    <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[12]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Left Cargo doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>intdoorL</object-name>
+    <object-name>intglaceL</object-name>
+    <object-name>HDRintglaceL</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intdoorL</object-name>
+    <object-name>intglaceL</object-name>
+    <object-name>HDRintglaceL</object-name>
+    <!-- <property>sim/model/door-positions/bayL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[13]</property>
+    <factor> 1.70 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Right Cargo doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>intdoorR</object-name>
+    <object-name>intglaceR</object-name>
+    <object-name>HDRintglaceR</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>intdoorR</object-name>
+    <object-name>intglaceR</object-name>
+    <object-name>HDRintglaceR</object-name>
+    <!-- <property>sim/model/door-positions/bayR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[14]</property>
+    <factor> 1.70 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

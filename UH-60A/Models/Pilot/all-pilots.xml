@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <model>
+    <name>ThePilot</name>
+    <path>pilot.xml</path>
+    <offsets>
+      <x-m> -6.199 </x-m>
+      <y-m>  0.670 </y-m>
+      <z-m> -0.972 </z-m>
+    </offsets>
+  </model>
+
+  <animation>
+    <type>select</type>
+    <object-name>ThePilot</object-name>
+    <!-- hidden from his own seat: the Cockpit View, or an FGCamera cockpit camera (FGCamera1) in the right seat -->
+    <condition>
+      <not>
+        <or>
+          <equals>
+            <property>sim/current-view/name</property>
+            <value>Cockpit View</value>
+          </equals>
+          <and>
+            <equals>
+              <property>sim/current-view/name</property>
+              <value>FGCamera1</value>
+            </equals>
+            <greater-than>
+              <property>sim/current-view/x-offset-m</property>
+              <value>0.3</value>
+            </greater-than>
+            <less-than>
+              <property>sim/current-view/z-offset-m</property>
+              <value>-5.0</value>
+            </less-than>
+          </and>
+        </or>
+      </not>
+    </condition>
+  </animation>
+
+  <model>
+    <name>TheCoPilot</name>
+    <path>pilot.xml</path>
+    <offsets>
+      <x-m> -6.199 </x-m>
+      <y-m> -0.670 </y-m>
+      <z-m> -0.972 </z-m>
+    </offsets>
+  </model>
+
+  <animation>
+    <type>select</type>
+    <object-name>TheCoPilot</object-name>
+    <condition>
+      <and>
+        <!-- <property>sim/model/show-copilot</property> -->
+        <property>sim/multiplay/generic/bool[9]</property>
+        <!-- hidden from his own seat: the Copilote view, or an FGCamera cockpit camera in the left seat -->
+        <not>
+          <or>
+            <equals>
+              <property>sim/current-view/name</property>
+              <value>Copilote</value>
+            </equals>
+            <and>
+              <equals>
+                <property>sim/current-view/name</property>
+                <value>FGCamera1</value>
+              </equals>
+              <less-than>
+                <property>sim/current-view/x-offset-m</property>
+                <value>-0.3</value>
+              </less-than>
+              <less-than>
+                <property>sim/current-view/z-offset-m</property>
+                <value>-5.0</value>
+              </less-than>
+            </and>
+          </or>
+        </not>
+      </and>
+    </condition>
+  </animation>
+
+</PropertyList>

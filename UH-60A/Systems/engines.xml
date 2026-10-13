@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <engine                    n="0">
+    <engine-num              type="int">0</engine-num>
+    <on                      type="bool">false</on>
+    <rpm                     type="float">0</rpm>
+    <running                 type="bool">false</running>
+    <itt-pourcent            type="double">0</itt-pourcent>
+    <itt-norm                type="double">0</itt-norm>
+    <egt-degC                type="float">0</egt-degC>
+    <oil-temperature-degC    type="float">0</oil-temperature-degC>
+  </engine>
+
+  <engine                    n="1">
+    <engine-num              type="int">1</engine-num>
+    <on                      type="bool">false</on>
+    <rpm                     type="float">0</rpm>
+    <running                 type="bool">false</running>
+    <itt-pourcent            type="double">0</itt-pourcent>
+    <itt-norm                type="double">0</itt-norm>
+    <egt-degC                type="float">0</egt-degC>
+    <oil-temperature-degC    type="float">0</oil-temperature-degC>
+  </engine>
+
+</PropertyList>

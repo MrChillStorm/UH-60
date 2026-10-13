@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <scenario>
+
+    <name>Bombable: Four UH 60 near you</name>
+
+    <description>
+      This scenario puts Four UH 60 in the skies near
+      your position.
+
+      Install this scenario in the FlightGear/data/AI directory.
+
+      BARANGER Emmanuel 06/2025
+    </description>
+
+    <nasal>
+      <load>
+        <![CDATA[
+          var position  = geo.aircraft_position();
+          var elevation = geo.elevation( position.lat(), position.lon() );
+          position.set_alt( elevation != nil ? elevation : 0.0 );
+
+          foreach( var tanker; props.globals.getNode("/ai/models",1).getChildren("tanker") ) {
+            var callsign = tanker.getNode("callsign").getValue();
+            if ( callsign == nil ) {
+              continue;
+            }
+            if ( string.match(callsign,"UH60*") ) {
+              tanker.getNode("position/latitude-deg",1).setDoubleValue( position.lat() - (0.002 * rand()) );
+              tanker.getNode("position/longitude-deg",1).setDoubleValue( position.lon() - (0.002 * rand()) );
+              tanker.getNode("position/altitude-ft", 1).setDoubleValue( position.alt() + 5000 );
+            }
+          }
+          debug.dump('UH 60 scenario load script complete');
+        ]]>
+      </load>
+    </nasal>
+
+    <entry>
+      <callsign type="string">UH60Baron</callsign>
+      <type>tanker</type>
+      <class>tanker</class>
+      <name     type="string">UH60_1</name>
+      <model    type="string">Aircraft/UH-60A/Models/uh60.xml</model>
+      <speed    type="double">100.0</speed>
+    </entry>
+
+    <entry>
+      <callsign type="string">UH60Storm</callsign>
+      <type>tanker</type>
+      <class>tanker</class>
+      <name     type="string">UH60_2</name>
+      <model    type="string">Aircraft/UH-60A/Models/uh60.xml</model>
+      <speed    type="double">100.0</speed>
+    </entry>
+
+    <entry>
+      <callsign type="string">UH60Winger</callsign>
+      <search-order>PREFER_AI</search-order>
+      <type>tanker</type>
+      <class>tanker</class>
+      <name     type="string">UH60_3</name>
+      <model    type="string">Aircraft/UH-60A/Models/uh60.xml</model>
+      <speed    type="double">100.0</speed>
+    </entry>
+
+    <entry>
+      <callsign type="string">UH60Support</callsign>
+      <search-order>PREFER_AI</search-order>
+      <type>tanker</type>
+      <class>tanker</class>
+      <name     type="string">UH60_4</name>
+      <model    type="string">Aircraft/UH-60A/Models/uh60.xml</model>
+      <speed    type="double">100.0</speed>
+    </entry>
+
+  </scenario>
+
+</PropertyList>

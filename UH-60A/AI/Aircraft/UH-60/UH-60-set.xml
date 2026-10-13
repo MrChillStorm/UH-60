@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList include="Models/uh60.xml">
+
+  <model>
+    <path>AI/Aircraft/UH-60/Models/uh60.xml</path>
+  </model>
+
+</PropertyList>

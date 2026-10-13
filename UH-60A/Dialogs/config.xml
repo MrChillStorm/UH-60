@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- ************************************************************************
+     UH 60 Blackwak option
+
+     December 2022 by Helijah : http://helijah.free.fr / http://embaranger.free.fr
+************************************************************************ -->
+<PropertyList>
+
+  <name>config</name>
+  <modal>false</modal>
+  <layout>vbox</layout>
+  <padding>80</padding>
+
+  <group>
+    <layout>hbox</layout>
+    <empty>
+      <stretch>1</stretch>
+    </empty>
+    <text>
+      <label>Configuration</label>
+    </text>
+    <empty>
+      <stretch>1</stretch>
+    </empty>
+    <button>
+      <pref-width>16</pref-width>
+      <pref-height>16</pref-height>
+      <legend></legend>
+      <keynum>27</keynum>
+      <border>2</border>
+      <binding>
+        <command>nasal</command>
+        <script>uh60.config_dlg.open()</script>
+      </binding>
+      <binding>
+        <command>dialog-apply</command>
+      </binding>
+      <binding>
+        <command>dialog-update</command>
+      </binding>
+      <binding>
+        <command>dialog-close</command>
+      </binding>
+    </button>
+  </group>
+
+  <hrule/>
+
+  <group>
+    <halign>center</halign>
+    <layout>hbox</layout>
+
+    <group>
+      <layout>vbox</layout>
+
+      <group>
+        <layout>hbox</layout>
+        <text>
+          <label>Display</label>
+          <halign>left</halign>
+        </text>
+        <hrule>
+          <stretch>true</stretch>
+        </hrule>
+      </group>
+
+      <checkbox>
+        <halign>left</halign>
+        <label>Hide/Show Copilot</label>
+        <!-- <property>sim/model/show-copilot</property> -->
+        <property>sim/multiplay/generic/bool[9]</property>
+        <binding>
+          <command>property-toggle</command>
+          <!-- <property>sim/model/show-copilot</property> -->
+          <property>sim/multiplay/generic/bool[9]</property>
+        </binding>
+      </checkbox>
+
+      <checkbox>
+        <halign>left</halign>
+        <label>Hide/Show Crane</label>
+        <!-- <property>sim/model/show-grue</property> -->
+        <property>sim/multiplay/generic/bool[1]</property>
+        <binding>
+          <command>property-toggle</command>
+          <!-- <property>sim/model/show-grue</property> -->
+          <property>sim/multiplay/generic/bool[1]</property>
+        </binding>
+      </checkbox>
+
+      <checkbox>
+        <halign>left</halign>
+        <label>Hide/Show Radar noze</label>
+        <!-- <property>sim/model/show-noze</property> -->
+        <property>sim/multiplay/generic/bool[0]</property>
+        <binding>
+          <command>property-toggle</command>
+          <!-- <property>sim/model/show-noze</property> -->
+          <property>sim/multiplay/generic/bool[0]</property>
+        </binding>
+      </checkbox>
+
+      <checkbox>
+        <halign>left</halign>
+        <label>Hide/Show Probe</label>
+        <!-- <property>sim/model/show-probe</property> -->
+        <property>sim/multiplay/generic/bool[7]</property>
+        <binding>
+          <command>property-toggle</command>
+          <!-- <property>sim/model/show-probe</property> -->
+          <property>sim/multiplay/generic/bool[7]</property>
+        </binding>
+      </checkbox>
+
+      <checkbox>
+        <halign>left</halign>
+        <label>Hide/Show Wings</label>
+        <!-- <property>sim/model/show-wings</property> -->
+        <property>sim/multiplay/generic/bool[8]</property>
+        <binding>
+          <command>property-toggle</command>
+          <!-- <property>sim/model/show-wings</property> -->
+          <property>sim/multiplay/generic/bool[8]</property>
+        </binding>
+      </checkbox>
+
+    </group>
+
+    <vrule/>
+
+  </group>
+
+  <hrule/>
+
+  <button>
+    <legend>Close</legend>
+    <default>true</default>
+    <key>Esc</key>
+    <binding>
+      <command>nasal</command>
+      <script>uh60.config_dlg.open()</script>
+    </binding>
+    <binding>
+      <command>dialog-apply</command>
+    </binding>
+    <binding>
+      <command>dialog-update</command>
+    </binding>
+    <binding>
+      <command>dialog-close</command>
+    </binding>
+  </button>
+
+  <nasal>
+    <open></open>
+  </nasal>
+
+</PropertyList>

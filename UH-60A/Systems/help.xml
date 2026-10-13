@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <title>UH 60 BlackHawk</title>
+  <line>______________________________________________</line>
+  <key>
+    <name>}</name>
+    <desc>AutoStart/AutoStop</desc>
+  </key>
+  <key>
+    <name>d</name>
+    <desc>Right door</desc>
+  </key>
+  <key>
+    <name>shift+d (D)</name>
+    <desc>Left door</desc>
+  </key>
+  <key>
+    <name>e</name>
+    <desc>Left windows</desc>
+  </key>
+  <key>
+    <name>shift+e (E)</name>
+    <desc>Right windows</desc>
+  </key>
+  <key>
+    <name>f</name>
+    <desc>Left Bay doors</desc>
+  </key>
+  <key>
+    <name>shift+f (F)</name>
+    <desc>Right Bay doors</desc>
+  </key>
+  <key>
+    <name>shift+r (R)</name>
+    <desc>Toggle rotor brake</desc>
+  </key>
+  <key>
+    <name>r</name>
+    <desc>Apply rotor brake</desc>
+  </key>
+  <key>
+    <name>l</name>
+    <desc>PA On / Off</desc>
+  </key>
+  <key>
+    <name>shift+q (Q)</name>
+    <desc>Reset view</desc>
+  </key>
+
+</PropertyList>

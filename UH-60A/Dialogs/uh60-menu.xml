@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <default>
+    <menu n="10">
+      <label>UH 60 BlackHawk</label>
+      <enabled type="bool">true</enabled>
+      <item>
+        <label>AutoStart/AutoStop</label>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/electric/battery-switch</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/electric/engine/generator</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/lighting/instrument-lights</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/lighting/nav-lights</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/lighting/beacon</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/lighting/strobe</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/switches/starterkey-insert</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/engines/engine[0]/fuel-pump</property>
+        </binding>
+        <binding>
+          <command>property-toggle</command>
+          <property>controls/engines/engine[1]/fuel-pump</property>
+        </binding>
+        <binding>
+          <condition>
+            <property>controls/electric/battery-switch</property>
+          </condition>
+          <command>property-assign</command>
+          <property>instrumentation/zkv1000/pfd/status</property>
+          <value>1</value>
+        </binding>
+        <binding>
+          <condition>
+            <not><property>controls/electric/battery-switch</property></not>
+          </condition>
+          <command>property-assign</command>
+          <property>instrumentation/zkv1000/pfd/status</property>
+          <value>0</value>
+        </binding>
+        <binding>
+          <condition>
+            <property>controls/electric/battery-switch</property>
+          </condition>
+          <command>property-assign</command>
+          <property>instrumentation/zkv1000/mfd/status</property>
+          <value>2</value>
+        </binding>
+        <binding>
+          <condition>
+            <not><property>controls/electric/battery-switch</property></not>
+          </condition>
+          <command>property-assign</command>
+          <property>instrumentation/zkv1000/mfd/status</property>
+          <value>0</value>
+        </binding>
+        <!-- ******************************************** -->
+        <binding>
+          <condition>
+            <property>controls/electric/battery-switch</property>
+          </condition>
+          <command>nasal</command>
+          <script>uh60.engines(1)</script>
+        </binding>
+        <binding>
+          <condition>
+            <not><property>controls/electric/battery-switch</property></not>
+          </condition>
+          <command>nasal</command>
+          <script>uh60.engines(0)</script>
+        </binding>
+      </item>
+      <item>
+        <label>Flight controls (SAS, FPS)</label>
+        <binding>
+          <command>nasal</command>
+          <script>uh60.afcs_dlg.open()</script>
+        </binding>
+      </item>
+      <item>
+        <label>Options</label>
+        <binding>
+          <command>nasal</command>
+          <script>uh60.config_dlg.open()</script>
+        </binding>
+      </item>
+      <item>
+        <label>Select Livery</label>
+        <binding>
+          <command>nasal</command>
+          <script>aircraft.livery.dialog.toggle()</script>
+        </binding>
+      </item>
+    </menu>
+  </default>
+
+</PropertyList>

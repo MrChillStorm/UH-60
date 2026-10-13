@@ -1,0 +1,102 @@
+English/Français
+
+[English]
+----------
+
+A little history
+================
+
+Sikorsky UH-60 BlackHawk
+========================
+
+Manufacturer                  : Sikorsky
+Type                          :
+Year                          :
+Powerplant                    :
+Wingspan                      :
+Length                        :
+Height                        :
+Loaded weight                 :
+Cruise speed                  :
+Range                         :
+Crew                          :
+Charge                        :
+
+
+Some useful keys:
+=================
+
+Shift+d : Bays
+      d : Windows
+
+Thanks
+======
+
+===============
+BARANGER Emmanuel
+May,      20, 2007
+July,     16, 2016
+November, 27, 2019
+June,     15, 2022
+June,     06, 2024
+November, 15, 2024
+February, 03, 2025
+June,     13, 2025
+November, 10, 2025
+March,    08, 2026
+March,    21, 2026
+March,    28, 2026
+April,    15, 2026
+
+http://helijah.free.fr/flightgear/hangar.htm
+embaranger@gmail.com
+
+[Français]
+----------
+Un peu d'histoire
+=================
+
+Suikorsky UH 60 BlackHawk
+=========================
+
+Constructeur                  : Sikorsky
+Type                          :
+Annèe                         :
+Moteur                        :
+Envergure                     :
+Longueur                      :
+Hauteur                       :
+Poids au dècollage            :
+Vitesse de croisière          :
+Autonomie estimèe             :
+Equipage                      :
+Charge utile                  :
+
+
+Quelques touches utiles :
+=========================
+
+Shift+d : Baie
+      d : Fenetre
+
+Remerciements
+=============
+
+===============
+BARANGER Emmanuel
+20 Mai      2007
+16 Juillet  2016
+27 Novembre 2019
+15 Juin     2022
+06 Juin     2024
+15 Novembre 2024
+03 Février  2025
+13 Juin     2025
+10 Novembre 2025
+08 Mars     2026
+21 Mars     2026
+28 Mars     2026
+15 Avril    2026
+
+http://helijah.free.fr/flightgear/hangar.htm
+embaranger@gmail.com

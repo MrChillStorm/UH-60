@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>uh60.ac</path>
+
+  <animation>
+    <!-- Objets opaques -->
+    <object-name>uh60</object-name>
+    <object-name>noze</object-name>
+    <object-name>probe</object-name>
+    <object-name>grue</object-name>
+    <object-name>wings</object-name>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>uh60</object-name>
+    <object-name>noze</object-name>
+    <object-name>probe</object-name>
+    <object-name>grue</object-name>
+    <object-name>wings</object-name>
+    <property-base>/ai/models/multiplayer/sim/multiplay/generic</property-base>
+    <texture-prop>string[1]</texture-prop>
+    <texture>/ai/models/multiplayer/sim/multiplay/generic/string[1]</texture>
+  </animation>
+
+    <!-- Crane -->
+  <animation>
+    <type>select</type>
+    <object-name>grue</object-name>
+    <condition>
+      <!-- <property>sim/model/show-grue</property> -->
+      <property>/ai/models/multiplayer/sim/multiplay/generic/bool[1]</property>
+    </condition>
+  </animation>
+
+  <!-- Noze -->
+  <animation>
+    <type>select</type>
+    <object-name>noze</object-name>
+    <condition>
+      <!-- <property>sim/model/show-noze</property> -->
+      <property>/ai/models/multiplayer/sim/multiplay/generic/bool[0]</property>
+    </condition>
+  </animation>
+
+  <!-- Probe -->
+  <animation>
+    <type>select</type>
+    <object-name>probe</object-name>
+    <condition>
+      <!-- <property>sim/model/show-probe</property> -->
+      <property>/ai/models/multiplayer/sim/multiplay/generic/bool[7]</property>
+    </condition>
+  </animation>
+
+  <!-- Wings -->
+  <animation>
+    <type>select</type>
+    <object-name>wings</object-name>
+    <condition>
+      <!-- <property>sim/model/show-wings</property> -->
+      <property>/ai/models/multiplayer/sim/multiplay/generic/bool[8]</property>
+    </condition>
+  </animation>
+
+  <model>
+    <path>Externals/MainRotor/all-mainrotor.xml</path>
+  </model>
+
+  <model>
+    <path>Externals/TailRotor/all-tailrotor.xml</path>
+  </model>
+
+  <model>
+    <path>Effects/light/all-lights.xml</path>
+  </model>
+
+</PropertyList>

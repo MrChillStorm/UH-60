@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <main>
+    <rpm             type="double"> 0 </rpm>
+    <rpm_pourcent    type="double"> 0 </rpm_pourcent>
+    <cone-deg        type="double"> 0 </cone-deg>
+    <cone1-deg       type="double"> 0 </cone1-deg>
+    <cone2-deg       type="double"> 0 </cone2-deg>
+    <cone3-deg       type="double"> 0 </cone3-deg>
+    <cone4-deg       type="double"> 0 </cone4-deg>
+    <blade           n="0">
+      <incidence-deg type="double">0</incidence-deg>
+    </blade>
+    <blade           n="1">
+      <incidence-deg type="double">0</incidence-deg>
+    </blade>
+    <blade           n="2">
+      <incidence-deg type="double">0</incidence-deg>
+    </blade>
+    <blade           n="3">
+      <incidence-deg type="double">0</incidence-deg>
+    </blade>
+  </main>
+
+  <tail>
+    <rpm             type="double">0</rpm>
+    <blade           n="0">
+      <position-deg  type="double">0</position-deg>
+      <incidence-deg type="double">0</incidence-deg>
+    </blade>
+  </tail>
+
+</PropertyList>

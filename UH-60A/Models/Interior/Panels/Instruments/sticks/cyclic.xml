@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>cyclic.ac</path>
+
+  <animation>
+    <object-name>yoke</object-name>
+    <object-name>hat</object-name>
+    <object-name>button1</object-name>
+    <object-name>button2</object-name>
+    <object-name>button3</object-name>
+    <object-name>button4</object-name>
+    <object-name>trigger2</object-name>
+  </animation>
+
+  <animation>
+    <name>CyclicComplet</name>
+    <object-name>yoke</object-name>
+    <object-name>hat</object-name>
+    <object-name>button1</object-name>
+    <object-name>button2</object-name>
+    <object-name>button3</object-name>
+    <object-name>button4</object-name>
+    <object-name>trigger2</object-name>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>CyclicComplet</object-name>
+    <property>controls/flight/elevator</property>
+    <factor> -10 </factor>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>CyclicComplet</object-name>
+    <property>controls/flight/aileron</property>
+    <factor> -10 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

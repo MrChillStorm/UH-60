@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>panel.ac</path>
+
+  <animation>
+    <object-name>panel1</object-name>
+    <object-name>panel2</object-name>
+  </animation>
+
+  <!-- PEDESTAL -->
+  <model>
+    <path>Pedestal/pedestal.xml</path>
+    <offsets>
+      <x-m>  0.29576 </x-m>
+      <y-m>  0.00000 </y-m>
+      <z-m> -0.56926 </z-m>
+      <pitch-deg> 30.540 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- OVERHEAD -->
+  <model>
+    <path>Overhead/overhead.xml</path>
+    <offsets>
+      <x-m> 0.93298 </x-m>
+      <y-m> 0.00000 </y-m>
+      <z-m> 0.16245 </z-m>
+      <pitch-deg> 30.540 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- AI -->
+  <model>
+    <path>Instruments/ai/ai.xml</path>
+    <offsets>
+      <x-m>  0.039 </x-m>
+      <y-m>  0.652 </y-m>
+      <z-m> -0.019 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/ai/ai.xml</path>
+    <offsets>
+      <x-m>  0.039 </x-m>
+      <y-m> -0.652 </y-m>
+      <z-m> -0.019 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- ALT -->
+  <model>
+    <path>Instruments/alt/alt.xml</path>
+    <offsets>
+      <x-m>  0.044 </x-m>
+      <y-m>  0.776 </y-m>
+      <z-m> -0.101 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/alt/alt.xml</path>
+    <offsets>
+      <x-m>  0.044 </x-m>
+      <y-m> -0.518 </y-m>
+      <z-m> -0.101 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- ASI -->
+  <model>
+    <path>Instruments/asi/asi.xml</path>
+    <offsets>
+      <x-m>  0.043 </x-m>
+      <y-m>  0.776 </y-m>
+      <z-m> -0.197 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/asi/asi.xml</path>
+    <offsets>
+      <x-m>  0.043 </x-m>
+      <y-m> -0.518 </y-m>
+      <z-m> -0.197 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- CAUTION -->
+  <model>
+    <path>Instruments/caution/caution.xml</path>
+    <offsets>
+      <x-m> 0.048 </x-m>
+      <y-m> 0.510 </y-m>
+      <z-m> 0.062 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/caution/caution.xml</path>
+    <offsets>
+      <x-m>  0.048 </x-m>
+      <y-m> -0.510 </y-m>
+      <z-m>  0.062 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- COMBIMETER -->
+  <model>
+    <path>Instruments/combimeter/combimeter.xml</path>
+    <offsets>
+      <x-m> 0.040 </x-m>
+      <y-m> 0.000 </y-m>
+      <z-m> 0.005 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- HSI -->
+  <model>
+    <path>Instruments/hsi/hsi.xml</path>
+    <offsets>
+      <x-m>  0.040 </x-m>
+      <y-m>  0.652 </y-m>
+      <z-m> -0.160 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+    <overlay>
+      <animation n="100">
+        <type>scale</type>
+        <property>constants/zero</property>
+        <x-offset> 1.2 </x-offset>
+        <y-offset> 1.2 </y-offset>
+        <z-offset> 1.2 </z-offset>
+      </animation>
+    </overlay>
+  </model>
+
+  <model>
+    <path>Instruments/hsi/hsi-copilot.xml</path>
+    <offsets>
+      <x-m>  0.040 </x-m>
+      <y-m> -0.652 </y-m>
+      <z-m> -0.160 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+    <overlay>
+      <animation n="100">
+        <type>scale</type>
+        <property>constants/zero</property>
+        <x-offset> 1.2 </x-offset>
+        <y-offset> 1.2 </y-offset>
+        <z-offset> 1.2 </z-offset>
+      </animation>
+    </overlay>
+  </model>
+
+  <!-- PROPELLER RPM -->
+  <model>
+    <path>Instruments/prop-rpm/prop-rpm.xml</path>
+    <offsets>
+      <x-m>  0.041 </x-m>
+      <y-m> -0.771 </y-m>
+      <z-m> -0.148 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/prop-rpm/prop-rpm.xml</path>
+    <offsets>
+      <x-m>  0.041 </x-m>
+      <y-m>  0.519 </y-m>
+      <z-m> -0.148 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- RADAR ALTIMETER -->
+  <model>
+    <path>Instruments/RadarAlt/RadarAlt.xml</path>
+    <offsets>
+      <x-m>  0.044 </x-m>
+      <y-m>  0.517 </y-m>
+      <z-m> -0.008 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/RadarAlt/RadarAlt.xml</path>
+    <offsets>
+      <x-m>  0.044 </x-m>
+      <y-m> -0.769 </y-m>
+      <z-m> -0.008 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- TORQUE -->
+  <model>
+    <path>Instruments/torque/torque.xml</path>
+    <offsets>
+      <x-m>  0.045 </x-m>
+      <y-m>  0.776 </y-m>
+      <z-m> -0.005 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/torque/torque.xml</path>
+    <offsets>
+      <x-m>  0.045 </x-m>
+      <y-m> -0.518 </y-m>
+      <z-m> -0.005 </z-m>
+      <pitch-deg> -1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/zkv1000/pfd.xml</path>
+    <offsets>
+      <x-m>  0.037 </x-m>
+      <y-m>  0.300 </y-m>
+      <z-m> -0.123 </z-m>
+      <pitch-deg> 1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/zkv1000/mfd.xml</path>
+    <offsets>
+      <x-m>  0.037 </x-m>
+      <y-m> -0.300 </y-m>
+      <z-m> -0.123 </z-m>
+      <pitch-deg> 1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/map/map.xml</path>
+    <offsets>
+      <x-m> 0.046 </x-m>
+      <y-m> 0.198 </y-m>
+      <z-m> 0.032 </z-m>
+      <pitch-deg> 1 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/map/map.xml</path>
+    <offsets>
+      <x-m>  0.046 </x-m>
+      <y-m> -0.401 </y-m>
+      <z-m>  0.032 </z-m>
+      <pitch-deg> 1 </pitch-deg>
+    </offsets>
+  </model>
+
+</PropertyList>

@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>uh60.ac</path>
+
+  <!-- MP sound call -->
+  <sound>
+    <path>Aircraft/UH-60A/Sounds/mp-sound.xml</path>
+  </sound>
+
+  <nasal>
+    <load>
+      var livery_update = aircraft.livery_update.new("Aircraft/UH-60A/Models/Liveries", 10);
+    </load>
+    <unload>
+      livery_update.stop();
+    </unload>
+  </nasal>
+
+  <animation>
+    <object-name>fuselage</object-name>
+    <object-name>fuselage2</object-name>
+    <object-name>fuselage3</object-name>
+    <object-name>fuselage4</object-name>
+    <object-name>elevator</object-name>
+    <object-name>caches</object-name>
+    <object-name>doorL</object-name>
+    <object-name>doorR</object-name>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>cachetail</object-name>
+    <object-name>porteL</object-name>
+    <object-name>porteR</object-name>
+    <object-name>supportlampes</object-name>
+    <object-name>antennes</object-name>
+    <object-name>poignees</object-name>
+    <object-name>barriere</object-name>
+    <object-name>noze</object-name>
+    <object-name>grue</object-name>
+    <object-name>probe</object-name>
+    <object-name>wings</object-name>
+
+    <object-name>intermoteurs</object-name>
+    <object-name>axeL1</object-name>
+    <object-name>axeL2</object-name>
+    <object-name>axeL3</object-name>
+    <object-name>roueG</object-name>
+    <object-name>axeR1</object-name>
+    <object-name>axeR2</object-name>
+    <object-name>axeR3</object-name>
+    <object-name>roueD</object-name>
+    <object-name>axeT1</object-name>
+    <object-name>axeT2</object-name>
+    <object-name>axeT3</object-name>
+    <object-name>axeT4</object-name>
+    <object-name>roueA</object-name>
+    <object-name>trougrue</object-name>
+    <object-name>crochet</object-name>
+
+    <!-- Transparence -->
+    <object-name>vitres</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>lampes</object-name>
+    <object-name>lampeverte</object-name>
+    <!-- HDR mode -->
+    <object-name>HDRvitres</object-name>
+    <object-name>HDRvitreG</object-name>
+    <object-name>HDRvitreD</object-name>
+    <object-name>HDRglaceL</object-name>
+    <object-name>HDRglaceR</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>fuselage</object-name>
+    <object-name>fuselage2</object-name>
+    <object-name>fuselage3</object-name>
+    <object-name>fuselage4</object-name>
+    <object-name>elevator</object-name>
+    <object-name>caches</object-name>
+    <object-name>doorL</object-name>
+    <object-name>doorR</object-name>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>cachetail</object-name>
+    <object-name>porteL</object-name>
+    <object-name>porteR</object-name>
+    <object-name>supportlampes</object-name>
+    <object-name>antennes</object-name>
+    <object-name>poignees</object-name>
+    <object-name>barriere</object-name>
+    <object-name>noze</object-name>
+    <object-name>grue</object-name>
+    <object-name>probe</object-name>
+    <object-name>wings</object-name>
+    <object-name>intermoteurs</object-name>
+    <object-name>axeL1</object-name>
+    <object-name>axeL2</object-name>
+    <object-name>axeL3</object-name>
+    <object-name>roueG</object-name>
+    <object-name>axeR1</object-name>
+    <object-name>axeR2</object-name>
+    <object-name>axeR3</object-name>
+    <object-name>roueD</object-name>
+    <object-name>axeT1</object-name>
+    <object-name>axeT2</object-name>
+    <object-name>axeT3</object-name>
+    <object-name>axeT4</object-name>
+    <object-name>roueA</object-name>
+    <object-name>trougrue</object-name>
+    <object-name>crochet</object-name>
+    <object-name>vitres</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>lampes</object-name>
+    <object-name>lampeverte</object-name>
+    <object-name>HDRvitres</object-name>
+    <object-name>HDRvitreG</object-name>
+    <object-name>HDRvitreD</object-name>
+    <object-name>HDRglaceL</object-name>
+    <object-name>HDRglaceR</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+
+    <property-base>sim/model/livery</property-base>
+    <texture-prop>texture</texture-prop>
+    <texture>texture.png</texture>
+    <specular>
+      <red-prop>specular/red</red-prop>
+      <green-prop>specular/green</green-prop>
+      <blue-prop>specular/blue</blue-prop>
+    </specular>
+  </animation>
+
+  <effect>
+    <inherits-from>Aircraft/UH-60A/Models/Effects/Bump/bumpspec</inherits-from>
+    <object-name>fuselage</object-name>
+    <object-name>fuselage2</object-name>
+    <object-name>fuselage3</object-name>
+    <object-name>fuselage4</object-name>
+    <object-name>elevator</object-name>
+    <object-name>caches</object-name>
+    <object-name>doorL</object-name>
+    <object-name>doorR</object-name>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>cachetail</object-name>
+    <object-name>porteL</object-name>
+    <object-name>porteR</object-name>
+    <object-name>supportlampes</object-name>
+    <object-name>antennes</object-name>
+    <object-name>poignees</object-name>
+    <object-name>barriere</object-name>
+    <object-name>noze</object-name>
+    <object-name>grue</object-name>
+    <object-name>probe</object-name>
+    <object-name>wings</object-name>
+  </effect>
+
+  <!-- working for Compositor -->
+  <effect>
+    <inherits-from>Effects/Glass/glassrain</inherits-from>
+    <object-name>vitres</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+  </effect>
+
+  <effect>
+    <inherits-from>Effects/Glass/glass</inherits-from>
+    <object-name>HDRvitres</object-name>
+    <object-name>HDRvitreG</object-name>
+    <object-name>HDRvitreD</object-name>
+    <object-name>HDRglaceL</object-name>
+    <object-name>HDRglaceR</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+  </effect>
+
+  <!-- Sélection des vitres en fonction de HDR ou pas -->
+  <animation>
+    <type>select</type>
+    <condition>
+      <!-- <property>sim/rendering/hdr/hdr-enabled</property> -->
+      <property>sim/multiplay/generic/bool[2]</property>
+    </condition>
+    <object-name>HDRvitres</object-name>
+    <object-name>HDRvitreG</object-name>
+    <object-name>HDRvitreD</object-name>
+    <object-name>HDRglaceL</object-name>
+    <object-name>HDRglaceR</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <condition>
+      <!-- <not><property>sim/rendering/hdr/hdr-enabled</property></not> -->
+      <not><property>sim/multiplay/generic/bool[2]</property></not>
+    </condition>
+    <object-name>vitres</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>Effects/model-transparent</inherits-from>
+    <object-name>lampes</object-name>
+    <object-name>lampeverte</object-name>
+  </effect>
+
+  <model>
+    <path>Interior/interior.xml</path>
+  </model>
+
+  <model>
+    <path>Effects/cranking/all-crankings.xml</path>
+  </model>
+
+  <model>
+    <path>Effects/ground/all-ground.xml</path>
+  </model>
+
+  <model>
+    <path>Effects/particles/all-particles.xml</path>
+  </model>
+
+  <model>
+    <path>lights/all-lights.xml</path>
+  </model>
+
+  <model>
+    <path>Externals/MainRotor/all-mainrotor.xml</path>
+  </model>
+
+  <model>
+    <path>Externals/TailRotor/all-tailrotor.xml</path>
+  </model>
+
+  <!-- Crane -->
+  <animation>
+    <type>select</type>
+    <object-name>grue</object-name>
+    <object-name>trougrue</object-name>
+    <object-name>crochet</object-name>
+    <condition>
+      <!-- <property>sim/model/show-grue</property> -->
+      <property>sim/multiplay/generic/bool[1]</property>
+    </condition>
+  </animation>
+
+  <!-- Noze -->
+  <animation>
+    <type>select</type>
+    <object-name>noze</object-name>
+    <condition>
+      <!-- <property>sim/model/show-noze</property> -->
+      <property>sim/multiplay/generic/bool[0]</property>
+    </condition>
+  </animation>
+
+  <!-- Probe -->
+  <animation>
+    <type>select</type>
+    <object-name>probe</object-name>
+    <condition>
+      <!-- <property>sim/model/show-probe</property> -->
+      <property>sim/multiplay/generic/bool[7]</property>
+    </condition>
+  </animation>
+
+  <!-- Wings -->
+  <animation>
+    <type>select</type>
+    <object-name>wings</object-name>
+    <condition>
+      <!-- <property>sim/model/show-wings</property> -->
+      <property>sim/multiplay/generic/bool[8]</property>
+    </condition>
+  </animation>
+
+  <!-- Gouverne de profondeur -->
+  <animation>
+    <type>rotate</type>
+    <object-name>elevator</object-name>
+    <property>surface-positions/elevator-pos-norm</property>
+    <interpolation>
+      <entry><ind> -0.04 </ind><dep> -9.66 </dep></entry>
+      <entry><ind>  0.04 </ind><dep> 45.88 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m>  5.929 </x-m>
+      <y-m>  0.000 </y-m>
+      <z-m> -0.625 </z-m>
+    </center>
+    <axis>
+      <x>  0 </x>
+      <y>  1 </y>
+      <z>  0 </z>
+    </axis>
+  </animation>
+
+  <!-- Compression -->
+  <animation>
+    <name>TrainGauche</name>
+    <object-name>roueG</object-name>
+    <object-name>axeL1</object-name>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>TrainGauche</object-name>
+    <!-- <property>gear/gear[0]/compression-norm</property> -->
+    <property>sim/multiplay/generic/float[27]</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> 0.0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 0.3 </dep></entry>
+    </interpolation>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>axeL2</object-name>
+    <!-- <property>gear/gear[0]/compression-norm</property> -->
+    <property>sim/multiplay/generic/float[27]</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep>  0 </dep></entry>
+      <entry><ind> 1 </ind><dep> -5 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> -5.083 </x-m>
+      <y-m> -0.178 </y-m>
+      <z-m>  0.023 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <name>TrainDroit</name>
+    <object-name>roueD</object-name>
+    <object-name>axeR1</object-name>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>TrainDroit</object-name>
+    <!-- <property>gear/gear[1]/compression-norm</property> -->
+    <property>sim/multiplay/generic/float[28]</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> 0.0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 0.3 </dep></entry>
+    </interpolation>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>axeR2</object-name>
+    <!-- <property>gear/gear[1]/compression-norm</property> -->
+    <property>sim/multiplay/generic/float[28]</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep>  0 </dep></entry>
+      <entry><ind> 1 </ind><dep> -5 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> -5.083 </x-m>
+      <y-m>  0.178 </y-m>
+      <z-m>  0.023 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Rotation de la roulette de queue en fonction de la gouverne de direction -->
+  <animation>
+    <name>TrainArriere</name>
+    <object-name>roueA</object-name>
+    <object-name>axeT3</object-name>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>TrainArriere</object-name>
+    <!-- <property>gear/gear[2]/caster-angle-deg</property> -->
+    <property>sim/multiplay/generic/float[26]</property>
+    <factor> 0.4 </factor>
+    <center>
+       <x-m>  4.358 </x-m>
+       <y-m>  0.000 </y-m>
+       <z-m> -1.747 </z-m>
+     </center>
+     <axis>
+       <x>  0 </x>
+       <y>  0 </y>
+       <z>  1 </z>
+     </axis>
+  </animation>
+
+  <!-- Rotation des roues lors du roulage -->
+  <animation>
+    <type>spin</type>
+    <object-name>roueG</object-name>
+    <!-- <property>gear/gear[0]/rollspeed-ms</property> -->
+    <property>sim/multiplay/generic/float[16]</property>
+    <factor> -30 </factor>
+    <center>
+      <x-m> -4.136 </x-m>
+      <y-m> -1.344 </y-m>
+      <z-m> -1.995 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>spin</type>
+    <object-name>roueD</object-name>
+    <!-- <property>gear/gear[1]/rollspeed-ms</property> -->
+    <property>sim/multiplay/generic/float[17]</property>
+    <factor> -30 </factor>
+    <center>
+      <x-m> -4.136 </x-m>
+      <y-m>  1.344 </y-m>
+      <z-m> -1.995 </z-m>
+    </center>
+    <axis>
+      <x>  0 </x>
+      <y> -1 </y>
+      <z>  0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>spin</type>
+    <object-name>roueA</object-name>
+    <!-- <property>gear/gear[2]/rollspeed-ms</property> -->
+    <property>sim/multiplay/generic/float[18]</property>
+    <factor> -30 </factor>
+    <center>
+      <x-m>  4.665 </x-m>
+      <y-m>  0.000 </y-m>
+      <z-m> -1.989 </z-m>
+    </center>
+    <axis>
+      <x>  0 </x>
+      <y>  1 </y>
+      <z>  0 </z>
+    </axis>
+  </animation>
+
+  <!-- Doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>porteR</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>HDRvitreD</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <condition>
+          <and>
+            <property>gear/gear[0]/wow</property>
+            <property>gear/gear[1]/wow</property>
+            <property>gear/gear[2]/wow</property>
+            <less-than>
+              <property>gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.crew.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>porteR</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>HDRvitreD</object-name>
+    <!-- <property>sim/model/door-positions/crew/position-norm</property> -->
+    <property>sim/multiplay/generic/float[9]</property>
+    <factor> 70 </factor>
+    <center>
+      <x-m> -6.43255 </x-m>
+      <y-m>  1.12963 </y-m>
+      <z-m> -1.13138 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>porteL</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>HDRvitreG</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <condition>
+          <and>
+            <property>gear/gear[0]/wow</property>
+            <property>gear/gear[1]/wow</property>
+            <property>gear/gear[2]/wow</property>
+            <less-than>
+              <property>gear/gear[0]/rollspeed-ms</property>
+              <value>10</value>
+            </less-than>
+          </and>
+        </condition>
+        <command>nasal</command>
+        <script>doors.passenger.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>porteL</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>HDRvitreG</object-name>
+    <!-- <property>sim/model/door-positions/passenger/position-norm</property> -->
+    <property>sim/multiplay/generic/float[10]</property>
+    <factor> -70 </factor>
+    <center>
+      <x-m> -6.43255 </x-m>
+      <y-m> -1.12963 </y-m>
+      <z-m> -1.13138 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <!-- Left Windows -->
+  <animation>
+    <type>pick</type>
+    <object-name>windowL2</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>windowL2</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[11]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <!-- <property>sim/model/door-positions/windowsL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[11]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Right Windows -->
+  <animation>
+    <type>pick</type>
+    <object-name>windowR2</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>HDRglaceR2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>windowR2</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>HDRglaceR2</object-name>
+    <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[12]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.windowsR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+    <!-- <property>sim/model/door-positions/windowsR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[12]</property>
+    <factor> -0.3 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Left Cargo doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>doorL</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>HDRglaceL</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayL.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>doorL</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>HDRglaceL</object-name>
+    <!-- <property>sim/model/door-positions/bayL/position-norm</property> -->
+    <property>sim/multiplay/generic/float[13]</property>
+    <factor> 1.70 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- Right Cargo doors -->
+  <animation>
+    <type>pick</type>
+    <object-name>doorR</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>HDRglaceR</object-name>
+    <visible>true</visible>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>doors.bayR.toggle();</script>
+      </binding>
+    </action>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>doorR</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>HDRglaceR</object-name>
+    <!-- <property>sim/model/door-positions/bayR/position-norm</property> -->
+    <property>sim/multiplay/generic/float[14]</property>
+    <factor> 1.70 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

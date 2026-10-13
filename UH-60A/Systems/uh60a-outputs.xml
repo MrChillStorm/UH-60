@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<system name="UH-60A outputs">
+
+<channel name="rotor">
+<fcs_function name="out/rotor-rpm"><function><product><value>9.5492966</value><property>rotor/omega-rad_sec</property></product></function><output>/rotors/main/rpm</output></fcs_function>
+<fcs_function name="out/rotor-rpm-pct"><function><product><value>3.7037037</value><property>rotor/omega-rad_sec</property></product></function><output>/rotors/main/rpm-pct</output><output>/rotors/main/rpm_pourcent</output></fcs_function>
+<fcs_function name="out/tail-rpm"><function><product><value>44.075309</value><property>rotor/omega-rad_sec</property></product></function><output>/rotors/tail/rpm</output></fcs_function>
+<fcs_function name="out/cone-deg"><function><product><value>14.323945</value><sum><property>rotor/b0/beta-rad</property><property>rotor/b1/beta-rad</property><property>rotor/b2/beta-rad</property><property>rotor/b3/beta-rad</property></sum></product></function><output>/rotors/main/cone-deg</output></fcs_function>
+<fcs_function name="out/cone1"><function><product><value>-1</value><property>out/cone-deg</property></product></function><output>/rotors/main/cone1-deg</output></fcs_function>
+<fcs_function name="out/cone2"><function><product><value>0.6</value><difference><value>1</value><product><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min></product></difference></product></function><output>/rotors/main/cone2-deg</output></fcs_function>
+<fcs_function name="out/cone3"><function><product><value>0.8</value><difference><value>1</value><product><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min></product></difference></product></function><output>/rotors/main/cone3-deg</output></fcs_function>
+<fcs_function name="out/cone4"><function><product><value>1</value><difference><value>1</value><product><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min><min><value>1</value><quotient><property>rotor/omega-rad_sec</property><value>27</value></quotient></min></product></difference></product></function><output>/rotors/main/cone4-deg</output></fcs_function>
+<lag_filter name="out/tpp-lat"><input>aero/rotor/b1-deg</input><c1>6.6666667</c1></lag_filter>
+<lag_filter name="out/tpp-lon"><input>aero/rotor/a1-deg</input><c1>6.6666667</c1></lag_filter>
+<fcs_function name="out/roll-deg"><function><property>out/tpp-lat</property></function><output>/rotors/main/roll-deg</output></fcs_function>
+<fcs_function name="out/yaw-deg"><function><product><value>-1</value><property>out/tpp-lon</property></product></function><output>/rotors/main/yaw-deg</output></fcs_function>
+<fcs_function name="out/mr-incidence"><function><difference><property>ctl/theta0-deg</property><value>7.5</value></difference></function><output>/rotors/main/blade[0]/incidence-deg</output></fcs_function>
+<fcs_function name="out/tr-incidence"><function><difference><property>ctl/thetaTR-deg</property><value>10</value></difference></function><output>/rotors/tail/blade[0]/incidence-deg</output><output>/rotors/tail/blade/incidence-deg</output></fcs_function>
+<fcs_function name="out/total-torque"><function><property>aero/rotor/torque-ftlb</property></function><output>/rotors/gear/total-torque</output></fcs_function>
+<fcs_function name="out/torque-sound"><function><product><sum><value>0.75</value><product><value>0.25</value><min><value>1</value><max><value>0</value><quotient><property>aero/rotor/torque-ftlb</property><value>40000</value></quotient></max></min></product></sum><min><value>1</value><max><value>0</value><difference><product><value>0.02</value><property>out/rotor-rpm</property></product><value>1</value></difference></max></min></product></function><output>/rotors/gear[0]/torque-sound-filtered</output></fcs_function>
+</channel>
+<channel name="engines">
+<fcs_function name="out/eng[0]/n1"><function><property>eng[0]/ng-pct</property></function><output>/engines/engine[0]/n1-pct</output></fcs_function>
+<fcs_function name="out/eng[0]/n2"><function><property>eng[0]/np-pct</property></function><output>/engines/engine[0]/n2-pct</output></fcs_function>
+<fcs_function name="out/eng[0]/tgt"><function><property>eng[0]/tgt-degc</property></function><output>/engines/engine[0]/tot-degc</output><output>/engines/engine[0]/egt-degC</output></fcs_function>
+<fcs_function name="out/eng[0]/itt"><function><quotient><property>eng[0]/tgt-degc</property><value>950</value></quotient></function><output>/engines/engine[0]/itt-norm</output></fcs_function>
+<fcs_function name="out/eng[0]/rpm"><function><product><value>447</value><property>eng[0]/ng-pct</property></product></function><output>/engines/engine[0]/rpm</output></fcs_function>
+<fcs_function name="out/eng[0]/ff"><function><quotient><property>eng[0]/fuel-flow-pph</property><value>6.7</value></quotient></function><output>/engines/engine[0]/fuel-flow-gph</output></fcs_function>
+<fcs_function name="out/eng[0]/ffp"><function><property>eng[0]/fuel-flow-pph</property></function><output>/engines/engine[0]/fuel-flow-pph</output></fcs_function>
+<fcs_function name="out/eng[0]/trq"><function><property>eng[0]/torque-pct</property></function><output>/engines/engine[0]/torque-pct</output></fcs_function>
+<fcs_function name="out/eng[0]/run"><function><property>eng[0]/lit</property></function><output>/engines/engine[0]/running</output><output>/engines/engine[0]/on</output></fcs_function>
+<fcs_function name="out/eng[0]/oilp"><function><product><value>0.62</value><property>eng[0]/ng-pct</property></product></function><output>/engines/engine[0]/oil-pressure-psi</output></fcs_function>
+<fcs_function name="out/eng[0]/oilt-ss"><function><sum><product><difference><property>atmosphere/T-R</property><value>491.67</value></difference><value>0.55555556</value></product><product><value>0.9</value><property>eng[0]/ng-pct</property></product></sum></function></fcs_function>
+<lag_filter name="out/eng[0]/oilt"><input>out/eng[0]/oilt-ss</input><c1>0.0083333333</c1><output>/engines/engine[0]/oil-temperature-degc</output></lag_filter>
+<fcs_function name="out/eng[1]/n1"><function><property>eng[1]/ng-pct</property></function><output>/engines/engine[1]/n1-pct</output></fcs_function>
+<fcs_function name="out/eng[1]/n2"><function><property>eng[1]/np-pct</property></function><output>/engines/engine[1]/n2-pct</output></fcs_function>
+<fcs_function name="out/eng[1]/tgt"><function><property>eng[1]/tgt-degc</property></function><output>/engines/engine[1]/tot-degc</output><output>/engines/engine[1]/egt-degC</output></fcs_function>
+<fcs_function name="out/eng[1]/itt"><function><quotient><property>eng[1]/tgt-degc</property><value>950</value></quotient></function><output>/engines/engine[1]/itt-norm</output></fcs_function>
+<fcs_function name="out/eng[1]/rpm"><function><product><value>447</value><property>eng[1]/ng-pct</property></product></function><output>/engines/engine[1]/rpm</output></fcs_function>
+<fcs_function name="out/eng[1]/ff"><function><quotient><property>eng[1]/fuel-flow-pph</property><value>6.7</value></quotient></function><output>/engines/engine[1]/fuel-flow-gph</output></fcs_function>
+<fcs_function name="out/eng[1]/ffp"><function><property>eng[1]/fuel-flow-pph</property></function><output>/engines/engine[1]/fuel-flow-pph</output></fcs_function>
+<fcs_function name="out/eng[1]/trq"><function><property>eng[1]/torque-pct</property></function><output>/engines/engine[1]/torque-pct</output></fcs_function>
+<fcs_function name="out/eng[1]/run"><function><property>eng[1]/lit</property></function><output>/engines/engine[1]/running</output><output>/engines/engine[1]/on</output></fcs_function>
+<fcs_function name="out/eng[1]/oilp"><function><product><value>0.62</value><property>eng[1]/ng-pct</property></product></function><output>/engines/engine[1]/oil-pressure-psi</output></fcs_function>
+<fcs_function name="out/eng[1]/oilt-ss"><function><sum><product><difference><property>atmosphere/T-R</property><value>491.67</value></difference><value>0.55555556</value></product><product><value>0.9</value><property>eng[1]/ng-pct</property></product></sum></function></fcs_function>
+<lag_filter name="out/eng[1]/oilt"><input>out/eng[1]/oilt-ss</input><c1>0.0083333333</c1><output>/engines/engine[1]/oil-temperature-degc</output></lag_filter>
+<fcs_function name="out/torque-pct"><function><product><value>0.5</value><sum><property>eng[0]/torque-pct</property><property>eng[1]/torque-pct</property></sum></product></function><output>/sim/model/uh60/torque-pct</output></fcs_function>
+<fcs_function name="out/state"><function><ifthen><lt><max><property>eng[0]/ng-pct</property><property>eng[1]/ng-pct</property></max><value>3</value></lt><value>0</value><ifthen><product><max><property>eng[0]/lit</property><property>eng[1]/lit</property></max><gt><max><property>eng[0]/ng-pct</property><property>eng[1]/ng-pct</property></max><value>60</value></gt></product><value>5</value><value>1</value></ifthen></ifthen></function><output>/sim/model/uh60/state</output></fcs_function>
+</channel>
+<channel name="vibration">
+<washout_filter name="vib/x-hp1"><input>accelerations/a-pilot-x-ft_sec2</input><c1>37.699112</c1></washout_filter>
+<washout_filter name="vib/x-hp"><input>vib/x-hp1</input><c1>37.699112</c1></washout_filter>
+<washout_filter name="vib/y-hp1"><input>accelerations/a-pilot-y-ft_sec2</input><c1>37.699112</c1></washout_filter>
+<washout_filter name="vib/y-hp"><input>vib/y-hp1</input><c1>37.699112</c1></washout_filter>
+<washout_filter name="vib/z-hp1"><input>accelerations/a-pilot-z-ft_sec2</input><c1>37.699112</c1></washout_filter>
+<washout_filter name="vib/z-hp"><input>vib/z-hp1</input><c1>37.699112</c1></washout_filter>
+<fcs_function name="vib/ms"><function><sum><product><property>vib/x-hp</property><property>vib/x-hp</property></product><product><property>vib/y-hp</property><property>vib/y-hp</property></product><product><property>vib/z-hp</property><property>vib/z-hp</property></product></sum></function></fcs_function>
+<lag_filter name="vib/ms-avg"><input>vib/ms</input><c1>4</c1></lag_filter>
+<fcs_function name="vib/rotor-g"><function><quotient><sqrt><max><value>0</value><property>vib/ms-avg</property></max></sqrt><value>32.174</value></quotient></function></fcs_function>
+<fcs_function name="vib/bvi-g"><function><product><value>0.05</value><property>rotor/turb/etl</property><max><value>0</value><min><value>1.5</value><quotient><property>aero/rotor/thrust-lbs</property><value>16000</value></quotient></min></max><gt><property>rotor/omega-rad_sec</property><value>13.5</value></gt></product></function></fcs_function>
+<fcs_function name="vib/level-g"><function><product><max><value>0</value><min><value>1</value><quotient><difference><property>simulation/sim-time-sec</property><value>1</value></difference><value>3</value></quotient></min></max><difference><value>1</value><property>ctl/init</property></difference><sqrt><sum><product><property>vib/rotor-g</property><property>vib/rotor-g</property></product><product><property>vib/bvi-g</property><property>vib/bvi-g</property></product></sum></sqrt></product></function><output>/sim/model/uh60/vibration-g</output></fcs_function>
+</channel>
+</system>

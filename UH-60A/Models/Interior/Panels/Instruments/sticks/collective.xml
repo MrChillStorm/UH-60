@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<PropertyList>
+
+  <path>collective.ac</path>
+
+  <animation>
+    <object-name>base</object-name>
+    <object-name>collective</object-name>
+    <object-name>hat</object-name>
+    <object-name>button1</object-name>
+    <object-name>toggle1</object-name>
+    <object-name>toggle2</object-name>
+    <object-name>toggle3</object-name>
+    <object-name>switch1</object-name>
+  </animation>
+
+  <animation>
+    <name>CollectiveComplet</name>
+    <object-name>collective</object-name>
+    <object-name>hat</object-name>
+    <object-name>button1</object-name>
+    <object-name>toggle1</object-name>
+    <object-name>toggle2</object-name>
+    <object-name>toggle3</object-name>
+    <object-name>switch1</object-name>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>CollectiveComplet</object-name>
+    <!-- <property>controls/engines/engine[0]/throttle</property> -->
+    <property>sim/multiplay/generic/float[10]</property>
+    <factor> -20 </factor>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

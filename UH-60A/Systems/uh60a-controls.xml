@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<system name="UH-60A controls">
+<property value="1">/controls/engines/engine[0]/throttle</property>
+<property value="0">fps/pitch-pct</property>
+<property value="0">fps/roll-pct</property>
+<property value="0">fps/yaw-pct</property>
+<property value="1">/controls/gear/tailwheel-lock</property>
+<property value="0">ctl/init</property>
+<property value="1">stab/auto</property>
+<property value="0">stab/manual-deg</property>
+<property value="1">ctl/sas1</property>
+<property value="1">ctl/sas2</property>
+<property value="1">ctl/pba</property>
+<property value="1">ctl/fps</property>
+<property value="0.03">fps/detent</property>
+<property value="0.04">fps/detent-ped</property>
+<property value="0.1">fps/rate-thr</property>
+<property value="4">fps/accept-s</property>
+<property value="0.5">fps/holdoff-s</property>
+<property value="0">fps/cyc-hold</property>
+<property value="0">fps/ped-hold</property>
+<property value="0">fps/air-s</property>
+<property value="0">fps/turn</property>
+<property value="0">fps/theta-ref</property>
+<property value="0">fps/vx-ref</property>
+<property value="0">fps/phi-ref</property>
+<property value="0">fps/psi-ref</property>
+<property value="0">fps/coll-ref</property>
+<property value="0">fps/pitch-int</property>
+<property value="0">fps/roll-int</property>
+<property value="0">fps/yaw-int</property>
+<property value="0">fps/lon-rest</property>
+<property value="0">fps/lat-rest</property>
+<property value="0">fps/ped-rest</property>
+<property value="0">fps/cyc-still-s</property>
+<property value="0">fps/ped-still-s</property>
+<channel name="pilot">
+<fcs_function name="ctl/coll-in"><description>collective lever, inches up from the bottom (throttle axis: 1 = down)</description><function><product><difference><value>1</value><property>/controls/engines/engine[0]/throttle</property></difference><value>10</value></product></function><clipto><min>0</min><max>10</max></clipto></fcs_function>
+<fcs_function name="ctl/lon-norm"><function><sum><property>fcs/elevator-cmd-norm</property><property>fcs/pitch-trim-cmd-norm</property></sum></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>
+<fcs_function name="ctl/lat-norm"><function><sum><property>fcs/aileron-cmd-norm</property><property>fcs/roll-trim-cmd-norm</property></sum></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>
+<fcs_function name="ctl/ped-norm"><function><product><value>-1</value><sum><property>fcs/rudder-cmd-norm</property><property>fcs/yaw-trim-cmd-norm</property></sum></product></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>
+<fcs_function name="ctl/lon-fwd-in"><description>cyclic, inches forward of centre</description><function><sum><product><value>-0.1</value><property>fps/pitch-pct</property></product><product><property>ctl/lon-norm</property><difference><value>5</value><product><product><value>-0.1</value><property>fps/pitch-pct</property></product><ifthen><lt><property>ctl/lon-norm</property><value>0</value></lt><value>-1</value><value>1</value></ifthen></product></difference></product></sum></function><clipto><min>-5</min><max>5</max></clipto></fcs_function>
+<fcs_function name="ctl/lat-in"><description>cyclic, inches right of centre</description><function><sum><product><value>0.1</value><property>fps/roll-pct</property></product><product><property>ctl/lat-norm</property><difference><value>5</value><product><product><value>0.1</value><property>fps/roll-pct</property></product><ifthen><lt><property>ctl/lat-norm</property><value>0</value></lt><value>-1</value><value>1</value></ifthen></product></difference></product></sum></function><clipto><min>-5</min><max>5</max></clipto></fcs_function>
+<fcs_function name="ctl/ped-in"><description>pedals, inches right</description><function><sum><product><value>0.0538</value><property>fps/yaw-pct</property></product><product><property>ctl/ped-norm</property><difference><value>2.69</value><product><product><value>0.0538</value><property>fps/yaw-pct</property></product><ifthen><lt><property>ctl/ped-norm</property><value>0</value></lt><value>-1</value><value>1</value></ifthen></product></difference></product></sum></function><clipto><min>-2.69</min><max>2.69</max></clipto></fcs_function>
+</channel>
+<channel name="tail wheel">
+<fcs_function name="ctl/tailwheel-castered"><function><ifthen><gt><property>/controls/gear/tailwheel-lock</property><value>0.5</value></gt><value>0</value><value>1</value></ifthen></function><output>gear/unit[2]/castered</output></fcs_function>
+<fcs_function name="ctl/tailwheel-steer"><function><value>0</value></function><output>fcs/steer-pos-deg[2]</output></fcs_function>
+<fcs_function name="ctl/wheels-active"><function><ifthen><gt><product><cos><property>attitude/phi-rad</property></cos><cos><property>attitude/theta-rad</property></cos></product><value>0.5</value></gt><value>1</value><value>0</value></ifthen></function><output>gear/gear-pos-norm</output></fcs_function>
+</channel>
+<channel name="sensors">
+<fcs_function name="ctl/init-fast"><function><ifthen><lt><property>simulation/sim-time-sec</property><value>1</value></lt><value>1</value><min><value>1</value><max><value>0</value><property>ctl/init</property></max></min></ifthen></function></fcs_function>
+<fcs_function name="sens/p-raw"><function><product><value>57.29578</value><property>velocities/p-rad_sec</property></product></function></fcs_function>
+<second_order_filter name="sens/p-dps"><input>sens/p-raw</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.00014</c4><c5>0.016</c5><c6>1</c6></second_order_filter>
+<fcs_function name="sens/q-raw"><function><product><value>57.29578</value><property>velocities/q-rad_sec</property></product></function></fcs_function>
+<second_order_filter name="sens/q-dps"><input>sens/q-raw</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.00014</c4><c5>0.016</c5><c6>1</c6></second_order_filter>
+<fcs_function name="sens/r-raw"><function><product><value>57.29578</value><property>velocities/r-rad_sec</property></product></function></fcs_function>
+<second_order_filter name="sens/r-dps"><input>sens/r-raw</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.00014</c4><c5>0.016</c5><c6>1</c6></second_order_filter>
+<fcs_function name="sens/ay-raw"><description>lateral specific force, ft/s2</description><function><product><value>32.174</value><property>accelerations/Ny</property></product></function></fcs_function>
+<second_order_filter name="sens/ay-fps2"><input>sens/ay-raw</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0254</c4><c5>0.233</c5><c6>1</c6></second_order_filter>
+<fcs_function name="sens/vx-kt-raw"><description>indicated (equivalent) airspeed along the body axis, kt</description><function><product><value>0.59248375</value><property>velocities/u-aero-fps</property><sqrt><quotient><property>atmosphere/rho-slugs_ft3</property><value>0.0023769</value></quotient></sqrt></product></function></fcs_function>
+<lag_filter name="sens/vx-kt"><input>sens/vx-kt-raw</input><c1>2.5125628</c1></lag_filter>
+<fcs_function name="sens/coll-pct"><function><product><value>10</value><property>ctl/coll-in</property></product></function></fcs_function>
+</channel>
+<channel name="stabilator">
+<fcs_function name="stab/cmd-deg"><description>scheduled on airspeed and collective, pitch rate and lateral acceleration feedback; TED +</description><function><sum><value>42</value><product><value>0.16</value><property>sens/q-dps</property></product><product><property>sens/ay-fps2</property><value>-0.0433</value><max><value>0</value><min><value>30</value><difference><property>sens/vx-kt</property><value>30</value></difference></min></max></product><product><value>-0.1119</value><max><value>0</value><min><value>67</value><difference><property>sens/vx-kt</property><value>80</value></difference></min></max></product><product><max><value>0</value><min><value>50</value><difference><property>sens/vx-kt</property><value>30</value></difference></min></max><product><value>-1</value><sum><value>0.67</value><product><value>0.003286</value><max><value>0</value><min><value>50</value><difference><value>50</value><property>sens/coll-pct</property></difference></min></max></product><product><value>0.003286</value><max><value>0</value><min><value>20</value><difference><value>70</value><property>sens/coll-pct</property></difference></min></max></product></sum></product></product></sum></function></fcs_function>
+<fcs_function name="stab/manual-deg-next"><function><ifthen><gt><property>stab/auto</property><value>0.5</value></gt><property>stab/pos-deg</property><property>stab/manual-deg</property></ifthen></function><output>stab/manual-deg</output></fcs_function>
+<fcs_function name="stab/sel-deg"><function><ifthen><gt><property>stab/auto</property><value>0.5</value></gt><property>stab/cmd-deg</property><property>stab/manual-deg</property></ifthen></function></fcs_function>
+<second_order_filter name="stab/servo"><input>stab/sel-deg</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0254</c4><c5>0.223</c5><c6>1</c6></second_order_filter>
+<fcs_function name="stab/rate-dps"><function><ifthen><property>ctl/init-fast</property><value>1000</value><value>7</value></ifthen></function></fcs_function>
+<actuator name="stab/pos-deg"><input>stab/servo</input><rate_limit>stab/rate-dps</rate_limit><clipto><min>-8</min><max>39</max></clipto></actuator>
+</channel>
+<channel name="SAS">
+<fcs_function name="sas/gain-d"><function><product><property>ctl/sas2</property><difference><value>2</value><property>ctl/sas1</property></difference></product></function></fcs_function>
+<fcs_function name="sas/gain-a"><function><product><property>ctl/sas1</property><difference><value>2</value><property>ctl/sas2</property></difference></product></function></fcs_function>
+<fcs_function name="sas/hispeed"><function><ifthen><gt><property>sens/vx-kt</property><value>60</value></gt><value>1</value><value>0</value></ifthen></function></fcs_function>
+<actuator name="sas/hispeed-fade"><input>sas/hispeed</input><rate_limit>0.5</rate_limit><clipto><min>0</min><max>1</max></clipto></actuator>
+<lag_filter name="sas/q1"><input>sens/q-dps</input><c1>38.461538</c1></lag_filter>
+<fcs_function name="sas/pd-in"><function><product><value>-0.5125</value><property>sas/q1</property></product></function></fcs_function>
+<lag_filter name="sas/pd-a"><input>sas/pd-in</input><c1>43.478261</c1></lag_filter>
+<fcs_function name="sas/pd-in2"><function><product><value>-0.541</value><property>sas/q1</property></product></function></fcs_function>
+<lag_filter name="sas/pd-b"><input>sas/pd-in2</input><c1>0.5</c1></lag_filter>
+<fcs_function name="sas/pd-sum"><function><sum><property>sas/pd-a</property><property>sas/pd-b</property></sum></function></fcs_function>
+<washout_filter name="sas/pd-w"><input>sas/pd-sum</input><c1>0.14285714</c1></washout_filter>
+<lag_filter name="sas/q4"><input>sens/q-dps</input><c1>45.454545</c1></lag_filter>
+<washout_filter name="sas/q4w"><input>sas/q4</input><c1>0.14285714</c1></washout_filter>
+<fcs_function name="sas/pa-in"><function><product><value>-1.105629</value><property>sas/q4w</property></product></function></fcs_function>
+<lag_filter name="sas/pa-a"><input>sas/pa-in</input><c1>41.666667</c1></lag_filter>
+<fcs_function name="sas/pa-in2"><function><product><value>-1.0793895</value><property>sas/q4w</property></product></function></fcs_function>
+<lag_filter name="sas/pa-b"><input>sas/pa-in2</input><c1>0.50175615</c1></lag_filter>
+<fcs_function name="sas/pitch-pct"><function><sum><max><value>-5</value><min><value>5</value><product><property>sas/gain-d</property><property>sas/pd-w</property></product></min></max><max><value>-5.5</value><min><value>5.5</value><product><property>sas/gain-a</property><value>0.5</value><sum><property>sas/pa-a</property><property>sas/pa-b</property></sum></product></min></max></sum></function></fcs_function>
+<lag_filter name="sas/p1"><input>sens/p-dps</input><c1>38.461538</c1></lag_filter>
+<fcs_function name="sas/rd-in"><function><product><value>-0.1035</value><property>sas/p1</property></product></function></fcs_function>
+<lag_filter name="sas/rd-b"><input>sas/rd-in</input><c1>0.98039216</c1></lag_filter>
+<fcs_function name="sas/ra-in"><function><product><value>-0.0985061</value><property>sens/p-dps</property></product></function></fcs_function>
+<lag_filter name="sas/ra-b"><input>sas/ra-in</input><c1>1.0040161</c1></lag_filter>
+<fcs_function name="sas/roll-pct"><function><sum><max><value>-5</value><min><value>5</value><product><property>sas/gain-d</property><sum><product><value>-0.2085</value><property>sas/p1</property></product><property>sas/rd-b</property><product><value>-0.139</value><max><value>-7</value><min><value>7</value><property>attitude/phi-deg</property></min></max></product></sum></product></min></max><max><value>-5.5</value><min><value>5.5</value><product><property>sas/gain-a</property><sum><product><value>-0.2021294</value><property>sens/p-dps</property></product><property>sas/ra-b</property><product><value>-0.150126</value><property>attitude/phi-deg</property></product></sum></product></min></max></sum></function></fcs_function>
+<lag_filter name="sas/r1"><input>sens/r-dps</input><c1>38.461538</c1></lag_filter>
+<fcs_function name="sas/yd-in"><function><product><value>-0.557</value><property>sas/r1</property></product></function></fcs_function>
+<lag_filter name="sas/yd-a"><input>sas/yd-in</input><c1>21.276596</c1></lag_filter>
+<fcs_function name="sas/yd-in2"><function><product><value>-0.901</value><property>sas/r1</property><difference><value>1</value><property>sas/hispeed-fade</property></difference></product></function></fcs_function>
+<lag_filter name="sas/yd-b"><input>sas/yd-in2</input><c1>1</c1></lag_filter>
+<fcs_function name="sas/yd-sum"><function><sum><property>sas/yd-a</property><property>sas/yd-b</property></sum></function></fcs_function>
+<washout_filter name="sas/yd-w"><input>sas/yd-sum</input><c1>0.5</c1></washout_filter>
+<fcs_function name="sas/yd-ay"><function><product><value>-1.1</value><property>sens/ay-fps2</property></product></function></fcs_function>
+<lag_filter name="sas/yd-c"><input>sas/yd-ay</input><c1>1</c1></lag_filter>
+<lag_filter name="sas/r4"><input>sens/r-dps</input><c1>37.037037</c1></lag_filter>
+<washout_filter name="sas/r4w"><input>sas/r4</input><c1>0.5</c1></washout_filter>
+<fcs_function name="sas/ya-in"><function><product><value>-1.2204</value><property>sas/r4w</property></product></function></fcs_function>
+<lag_filter name="sas/ya-a"><input>sas/ya-in</input><c1>21.276596</c1></lag_filter>
+<fcs_function name="sas/ya-in2"><function><product><value>-28.11</value><sum><product><value>0.072</value><property>sas/r4w</property><difference><value>1</value><property>sas/hispeed-fade</property></difference></product><product><value>0.0876</value><property>sens/ay-fps2</property><property>sas/hispeed-fade</property></product></sum></product></function></fcs_function>
+<lag_filter name="sas/ya-b"><input>sas/ya-in2</input><c1>0.9569378</c1></lag_filter>
+<fcs_function name="sas/yaw-pct"><function><sum><max><value>-5</value><min><value>5</value><product><property>sas/gain-d</property><sum><property>sas/yd-w</property><product><property>sas/hispeed-fade</property><sum><product><value>0.1378</value><property>sas/p1</property></product><property>sas/yd-c</property></sum></product></sum></product></min></max><max><value>-5.5</value><min><value>5.5</value><product><property>sas/gain-a</property><sum><product><value>0.5</value><sum><property>sas/ya-a</property><property>sas/ya-b</property></sum></product><product><property>sas/hispeed-fade</property><value>0.059830302</value><property>sens/p-dps</property></product></sum></product></min></max></sum></function></fcs_function>
+</channel>
+<channel name="pitch bias actuator">
+<fcs_function name="pba/cmd-pct"><description>pitch attitude, pitch rate and airspeed; actuator 15 % authority, 3 %/s; off: it centres</description><function><product><property>ctl/pba</property><sum><product><value>-0.375</value><max><value>-20</value><min><value>20</value><property>attitude/theta-deg</property></min></max></product><product><value>-0.13125</value><max><value>-34.5</value><min><value>34.5</value><property>sas/q1</property></min></max></product><product><value>0.0525</value><max><value>0</value><min><value>100</value><difference><property>sens/vx-kt</property><value>80</value></difference></min></max></product><value>-4.9</value></sum></product></function></fcs_function>
+<fcs_function name="pba/rate-pct_s"><function><ifthen><property>ctl/init-fast</property><value>1000</value><value>3</value></ifthen></function></fcs_function>
+<actuator name="pba/pct"><input>pba/cmd-pct</input><lag>10</lag><rate_limit>pba/rate-pct_s</rate_limit><clipto><min>-15</min><max>15</max></clipto></actuator>
+</channel>
+<channel name="FPS pilot">
+<washout_filter name="fps/lon-move"><input>ctl/lon-norm</input><c1>6.6666667</c1></washout_filter>
+<washout_filter name="fps/lat-move"><input>ctl/lat-norm</input><c1>6.6666667</c1></washout_filter>
+<washout_filter name="fps/ped-move"><input>ctl/ped-norm</input><c1>6.6666667</c1></washout_filter>
+<fcs_function name="fps/cyc-still-next"><function><ifthen><max><gt><abs><property>fps/lon-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt><gt><abs><property>fps/lat-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt></max><value>0</value><min><value>100</value><sum><property>fps/cyc-still-s</property><property>simulation/dt</property></sum></min></ifthen></function><output>fps/cyc-still-s</output></fcs_function>
+<fcs_function name="fps/lon-rest-next"><function><ifthen><max><difference><value>1</value><gt><abs><difference><property>ctl/lon-norm</property><property>fps/lon-rest</property></difference></abs><property>fps/detent</property></gt></difference><gt><property>fps/cyc-still-s</property><property>fps/accept-s</property></gt></max><property>ctl/lon-norm</property><property>fps/lon-rest</property></ifthen></function><output>fps/lon-rest</output></fcs_function>
+<fcs_function name="fps/lat-rest-next"><function><ifthen><max><difference><value>1</value><gt><abs><difference><property>ctl/lat-norm</property><property>fps/lat-rest</property></difference></abs><property>fps/detent</property></gt></difference><gt><property>fps/cyc-still-s</property><property>fps/accept-s</property></gt></max><property>ctl/lat-norm</property><property>fps/lat-rest</property></ifthen></function><output>fps/lat-rest</output></fcs_function>
+<fcs_function name="fps/cyc-pilot"><function><max><max><gt><abs><property>fps/lon-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt><gt><abs><property>fps/lat-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt></max><max><gt><abs><difference><property>ctl/lon-norm</property><property>fps/lon-rest</property></difference></abs><property>fps/detent</property></gt><gt><abs><difference><property>ctl/lat-norm</property><property>fps/lat-rest</property></difference></abs><property>fps/detent</property></gt></max></max></function></fcs_function>
+<fcs_function name="fps/ped-still-next"><function><ifthen><gt><abs><property>fps/ped-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt><value>0</value><min><value>100</value><sum><property>fps/ped-still-s</property><property>simulation/dt</property></sum></min></ifthen></function><output>fps/ped-still-s</output></fcs_function>
+<fcs_function name="fps/ped-rest-next"><function><ifthen><max><difference><value>1</value><gt><abs><difference><property>ctl/ped-norm</property><property>fps/ped-rest</property></difference></abs><property>fps/detent-ped</property></gt></difference><gt><property>fps/ped-still-s</property><property>fps/accept-s</property></gt></max><property>ctl/ped-norm</property><property>fps/ped-rest</property></ifthen></function><output>fps/ped-rest</output></fcs_function>
+<fcs_function name="fps/ped-pilot"><function><max><gt><abs><property>fps/ped-move</property></abs><product><value>0.15</value><property>fps/rate-thr</property></product></gt><gt><abs><difference><property>ctl/ped-norm</property><property>fps/ped-rest</property></difference></abs><property>fps/detent-ped</property></gt></max></function></fcs_function>
+<fcs_function name="fps/cyc-hold-next"><function><max><property>fps/cyc-pilot</property><difference><property>fps/cyc-hold</property><quotient><property>simulation/dt</property><property>fps/holdoff-s</property></quotient></difference></max></function><output>fps/cyc-hold</output></fcs_function>
+<fcs_function name="fps/ped-hold-next"><function><max><property>fps/ped-pilot</property><difference><property>fps/ped-hold</property><quotient><property>simulation/dt</property><property>fps/holdoff-s</property></quotient></difference></max></function><output>fps/ped-hold</output></fcs_function>
+<fcs_function name="fps/air-s-next"><function><ifthen><gt><max><property>gear/unit[0]/WOW</property><property>gear/unit[1]/WOW</property><property>gear/unit[2]/WOW</property></max><value>0.5</value></gt><value>0</value><min><value>10</value><sum><property>fps/air-s</property><property>simulation/dt</property></sum></min></ifthen></function><output>fps/air-s</output></fcs_function>
+<fcs_function name="fps/run"><function><product><property>ctl/fps</property><difference><value>1</value><product><gt><max><property>gear/unit[0]/WOW</property><property>gear/unit[1]/WOW</property><property>gear/unit[2]/WOW</property></max><value>0.5</value></gt><lt><property>sens/coll-pct</property><value>25</value></lt></product></difference></product></function></fcs_function>
+<fcs_function name="fps/on"><description>holding</description><function><product><property>fps/run</property><gt><property>fps/air-s</property><value>1</value></gt><difference><value>1</value><property>ctl/init-fast</property></difference></product></function></fcs_function>
+<fcs_function name="fps/sync-cyc"><function><max><difference><value>1</value><property>fps/on</property></difference><gt><property>fps/cyc-hold</property><value>0</value></gt></max></function></fcs_function>
+<fcs_function name="fps/turn-new"><function><ifthen><gt><property>fps/turn</property><value>0.5</value></gt><product><property>fps/on</property><gt><property>sens/vx-kt</property><value>55</value></gt><difference><value>1</value><gt><property>fps/ped-hold</property><value>0</value></gt></difference><difference><value>1</value><product><gt><property>fps/cyc-hold</property><value>0</value></gt><lt><abs><property>attitude/phi-deg</property></abs><value>4</value></lt></product></difference></product><product><property>fps/on</property><gt><property>sens/vx-kt</property><value>60</value></gt><gt><property>fps/cyc-hold</property><value>0</value></gt><gt><abs><property>attitude/phi-deg</property></abs><value>5</value></gt><difference><value>1</value><gt><property>fps/ped-hold</property><value>0</value></gt></difference></product></ifthen></function></fcs_function>
+<fcs_function name="fps/turn-chg"><function><abs><difference><property>fps/turn-new</property><property>fps/turn</property></difference></abs></function></fcs_function>
+<fcs_function name="fps/turn-next"><description>turn coordination (above 60 kt, banked)</description><function><property>fps/turn-new</property></function><output>fps/turn</output></fcs_function>
+<fcs_function name="fps/sync-yaw"><function><max><difference><value>1</value><property>fps/on</property></difference><gt><property>fps/ped-hold</property><value>0</value></gt><property>fps/turn-chg</property></max></function></fcs_function>
+</channel>
+<channel name="FPS pitch">
+<fcs_function name="fps/theta-ref-next"><function><ifthen><property>fps/sync-cyc</property><property>attitude/theta-deg</property><property>fps/theta-ref</property></ifthen></function><output>fps/theta-ref</output></fcs_function>
+<fcs_function name="fps/vx-ref-next"><function><ifthen><max><property>fps/sync-cyc</property><lt><property>sens/vx-kt</property><value>30</value></lt></max><property>sens/vx-kt</property><property>fps/vx-ref</property></ifthen></function><output>fps/vx-ref</output></fcs_function>
+<fcs_function name="fps/pitch-p"><function><sum><product><value>-0.336</value><property>sas/q1</property></product><product><value>-1.42</value><difference><property>attitude/theta-deg</property><property>fps/theta-ref</property></difference></product><max><value>-1.6</value><min><value>1.6</value><product><value>0.22</value><difference><property>sens/vx-kt</property><property>fps/vx-ref</property></difference></product></min></max></sum></function></fcs_function>
+<fcs_function name="fps/pitch-int-next"><function><ifthen><property>fps/sync-cyc</property><difference><property>fps/pitch-pct</property><property>fps/pitch-p</property></difference><max><value>-60</value><min><value>60</value><sum><property>fps/pitch-int</property><product><property>simulation/dt</property><product><value>0.0188</value><difference><property>sens/vx-kt</property><property>fps/vx-ref</property></difference></product></product></sum></min></max></ifthen></function><output>fps/pitch-int</output></fcs_function>
+<fcs_function name="fps/pitch-u"><function><product><property>fps/run</property><sum><property>fps/pitch-int</property><property>fps/pitch-p</property></sum></product></function><clipto><min>-50</min><max>50</max></clipto></fcs_function>
+<actuator name="fps/pitch-act"><input>fps/pitch-u</input><lag>24.1</lag><rate_limit>10</rate_limit><clipto><min>-50</min><max>50</max></clipto><output>fps/pitch-pct</output></actuator>
+</channel>
+<channel name="FPS roll">
+<fcs_function name="fps/phi-ref-next"><function><ifthen><property>fps/sync-cyc</property><property>attitude/phi-deg</property><property>fps/phi-ref</property></ifthen></function><output>fps/phi-ref</output></fcs_function>
+<fcs_function name="fps/roll-p"><function><sum><product><value>-0.189</value><property>sas/p1</property></product><product><value>-0.75</value><max><value>-7.9</value><min><value>7.9</value><difference><property>attitude/phi-deg</property><property>fps/phi-ref</property></difference></min></max></product><product><value>-0.375</value><difference><difference><property>attitude/phi-deg</property><property>fps/phi-ref</property></difference><max><value>-7.9</value><min><value>7.9</value><difference><property>attitude/phi-deg</property><property>fps/phi-ref</property></difference></min></max></difference></product></sum></function></fcs_function>
+<fcs_function name="fps/roll-int-next"><function><ifthen><property>fps/sync-cyc</property><difference><property>fps/roll-pct</property><property>fps/roll-p</property></difference><max><value>-60</value><min><value>60</value><sum><property>fps/roll-int</property><product><property>simulation/dt</property><product><value>-0.0868</value><difference><property>attitude/phi-deg</property><property>fps/phi-ref</property></difference><difference><value>1</value><property>fps/turn</property></difference></product></product></sum></min></max></ifthen></function><output>fps/roll-int</output></fcs_function>
+<fcs_function name="fps/roll-u"><function><product><property>fps/run</property><sum><property>fps/roll-int</property><property>fps/roll-p</property></sum></product></function><clipto><min>-50</min><max>50</max></clipto></fcs_function>
+<actuator name="fps/roll-act"><input>fps/roll-u</input><lag>24.1</lag><rate_limit>10</rate_limit><clipto><min>-50</min><max>50</max></clipto><output>fps/roll-pct</output></actuator>
+</channel>
+<channel name="FPS yaw">
+<fcs_function name="fps/psi-ref-next"><function><ifthen><max><property>fps/sync-yaw</property><property>fps/turn</property></max><property>attitude/psi-deg</property><property>fps/psi-ref</property></ifthen></function><output>fps/psi-ref</output></fcs_function>
+<fcs_function name="fps/coll-ref-next"><function><ifthen><property>fps/sync-yaw</property><property>sens/coll-pct</property><property>fps/coll-ref</property></ifthen></function><output>fps/coll-ref</output></fcs_function>
+<fcs_function name="fps/dpsi"><function><difference><mod><sum><difference><property>attitude/psi-deg</property><property>fps/psi-ref</property></difference><value>540</value></sum><value>360</value></mod><value>180</value></difference></function></fcs_function>
+<lag_filter name="fps/ay-lag"><input>sens/ay-fps2</input><c1>1</c1></lag_filter>
+<actuator name="fps/vx-rl"><input>sens/vx-kt</input><rate_limit>10</rate_limit></actuator>
+<fcs_function name="fps/yaw-p"><function><sum><product><difference><value>1</value><property>fps/turn</property></difference><value>-2.2</value><property>fps/dpsi</property></product><product><property>fps/turn</property><sum><product><value>0.11</value><property>sas/p1</property></product><product><value>-2.38</value><property>fps/ay-lag</property></product></sum></product><product><value>-0.625</value><difference><property>sens/coll-pct</property><property>fps/coll-ref</property></difference><max><value>0</value><min><value>1</value><quotient><difference><value>100</value><property>fps/vx-rl</property></difference><value>60</value></quotient></min></max></product></sum></function></fcs_function>
+<fcs_function name="fps/yaw-int-next"><function><ifthen><property>fps/sync-yaw</property><difference><property>fps/yaw-pct</property><property>fps/yaw-p</property></difference><max><value>-60</value><min><value>60</value><sum><property>fps/yaw-int</property><product><property>simulation/dt</property><sum><product><difference><value>1</value><property>fps/turn</property></difference><value>-0.348</value><difference><property>fps/dpsi</property><max><value>-1</value><min><value>1</value><property>fps/dpsi</property></min></max></difference></product><product><property>fps/turn</property><value>-0.656</value><property>fps/ay-lag</property></product></sum></product></sum></min></max></ifthen></function><output>fps/yaw-int</output></fcs_function>
+<fcs_function name="fps/yaw-u"><function><product><property>fps/run</property><sum><property>fps/yaw-int</property><property>fps/yaw-p</property></sum></product></function><clipto><min>-50</min><max>50</max></clipto></fcs_function>
+<actuator name="fps/yaw-act"><input>fps/yaw-u</input><lag>24.1</lag><rate_limit>10</rate_limit><clipto><min>-50</min><max>50</max></clipto><output>fps/yaw-pct</output></actuator>
+</channel>
+<channel name="mixer">
+<fcs_function name="ctl/lon-total-in"><description>+ = forward</description><function><difference><property>ctl/lon-fwd-in</property><product><value>0.1</value><sum><property>sas/pitch-pct</property><property>pba/pct</property></sum></product></difference></function></fcs_function>
+<fcs_function name="ctl/lat-total-in"><function><sum><property>ctl/lat-in</property><product><value>0.1</value><property>sas/roll-pct</property></product></sum></function></fcs_function>
+<fcs_function name="ctl/ped-total-in"><function><sum><property>ctl/ped-in</property><product><value>0.0538</value><property>sas/yaw-pct</property></product></sum></function></fcs_function>
+<fcs_function name="ctl/B1s-cmd-deg"><description>longitudinal cyclic at the head, + = forward (disc tilts forward)</description><function><sum><product><value>2.88</value><sum><property>ctl/lon-total-in</property><product><value>0.164</value><property>ctl/coll-in</property></product><product><value>0.5746</value><property>ctl/ped-total-in</property></product></sum></product><value>-0.6</value></sum></function><clipto><min>-12.5</min><max>16.3</max></clipto></fcs_function>
+<fcs_function name="ctl/A1s-cmd-deg"><description>lateral cyclic at the head, + = right</description><function><product><value>1.6</value><sum><property>ctl/lat-total-in</property><product><value>-0.16</value><property>ctl/coll-in</property></product></sum></product></function><clipto><min>-8</min><max>8</max></clipto></fcs_function>
+<fcs_function name="ctl/theta0-cmd-deg"><description>main rotor blade pitch at the cuff (twist zero), deg</description><function><sum><value>9.9</value><product><value>1.6</value><property>ctl/coll-in</property></product></sum></function></fcs_function>
+<fcs_function name="ctl/thetaTR-cmd-deg"><description>tail rotor blade pitch at the cuff, deg</description><function><sum><value>15</value><product><value>-5.539</value><sum><property>ctl/ped-total-in</property><value>0.5</value><product><value>-0.2889</value><difference><property>ctl/coll-in</property><value>5</value></difference></product></sum></product></sum></function><clipto><min>4.5</min><max>36.5</max></clipto></fcs_function>
+</channel>
+<channel name="primary servos">
+<second_order_filter name="ctl/B1s-deg"><input>ctl/B1s-cmd-deg</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0002081</c4><c5>0.02</c5><c6>1</c6></second_order_filter>
+<second_order_filter name="ctl/A1s-deg"><input>ctl/A1s-cmd-deg</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0002081</c4><c5>0.02</c5><c6>1</c6></second_order_filter>
+<second_order_filter name="ctl/theta0-deg"><input>ctl/theta0-cmd-deg</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0002081</c4><c5>0.02</c5><c6>1</c6></second_order_filter>
+<second_order_filter name="ctl/thetaTR-deg"><input>ctl/thetaTR-cmd-deg</input><c1>0</c1><c2>0</c2><c3>1</c3><c4>0.0002081</c4><c5>0.02</c5><c6>1</c6></second_order_filter>
+</channel>
+</system>
