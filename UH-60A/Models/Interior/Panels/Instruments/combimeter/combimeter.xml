@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <!-- central display unit: fuel per tank, transmission oil, engine oil, TGT and Ng per engine, digital Ng, TGT
-     and total fuel; the tapes are calibrated to the printed scale marks -->
+     and total fuel; the tapes are calibrated to the printed scale marks
+     (texture rows of the marks, and the tapes' texture coordinates in combimeter.ac) -->
 <PropertyList>
 
   <path>combimeter.ac</path>
@@ -118,15 +119,14 @@
     <object-name>FUEL1</object-name>
     <property>consumables/fuel/tank/level-lbs</property>
     <interpolation>
-      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  300 </ind><dep> 0.060 </dep></entry>
-      <entry><ind>  600 </ind><dep> 0.110 </dep></entry>
-      <entry><ind>  900 </ind><dep> 0.170 </dep></entry>
-      <entry><ind> 1200 </ind><dep> 0.235 </dep></entry>
-      <entry><ind> 1500 </ind><dep> 0.300 </dep></entry>
-      <entry><ind> 1800 </ind><dep> 0.370 </dep></entry>
-      <entry><ind> 2100 </ind><dep> 0.433 </dep></entry>
-      <entry><ind> 2300 </ind><dep> 0.470 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>   300 </ind><dep> 0.0612 </dep></entry>
+      <entry><ind>   600 </ind><dep> 0.1160 </dep></entry>
+      <entry><ind>   900 </ind><dep> 0.1771 </dep></entry>
+      <entry><ind>  1200 </ind><dep> 0.2445 </dep></entry>
+      <entry><ind>  1500 </ind><dep> 0.3099 </dep></entry>
+      <entry><ind>  1800 </ind><dep> 0.3857 </dep></entry>
+      <entry><ind>  2100 </ind><dep> 0.4511 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -140,15 +140,14 @@
     <object-name>FUEL2</object-name>
     <property>consumables/fuel/tank[1]/level-lbs</property>
     <interpolation>
-      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  300 </ind><dep> 0.060 </dep></entry>
-      <entry><ind>  600 </ind><dep> 0.110 </dep></entry>
-      <entry><ind>  900 </ind><dep> 0.170 </dep></entry>
-      <entry><ind> 1200 </ind><dep> 0.235 </dep></entry>
-      <entry><ind> 1500 </ind><dep> 0.300 </dep></entry>
-      <entry><ind> 1800 </ind><dep> 0.370 </dep></entry>
-      <entry><ind> 2100 </ind><dep> 0.433 </dep></entry>
-      <entry><ind> 2300 </ind><dep> 0.470 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>   300 </ind><dep> 0.0612 </dep></entry>
+      <entry><ind>   600 </ind><dep> 0.1160 </dep></entry>
+      <entry><ind>   900 </ind><dep> 0.1771 </dep></entry>
+      <entry><ind>  1200 </ind><dep> 0.2445 </dep></entry>
+      <entry><ind>  1500 </ind><dep> 0.3099 </dep></entry>
+      <entry><ind>  1800 </ind><dep> 0.3857 </dep></entry>
+      <entry><ind>  2100 </ind><dep> 0.4511 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -163,14 +162,14 @@
     <object-name>XTEMP</object-name>
     <property>sim/model/uh60/xmsn-oil-temp-degc</property>
     <interpolation>
-      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
-      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
-      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
-      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
-      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
-      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
-      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
+      <entry><ind>   -60 </ind><dep> 0.0003 </dep></entry>
+      <entry><ind>   -40 </ind><dep> 0.0275 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0970 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1771 </dep></entry>
+      <entry><ind>    80 </ind><dep> 0.2698 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.3562 </dep></entry>
+      <entry><ind>   120 </ind><dep> 0.4258 </dep></entry>
+      <entry><ind>   140 </ind><dep> 0.4922 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -185,14 +184,14 @@
     <object-name>XPSI</object-name>
     <property>sim/model/uh60/xmsn-oil-press-psi</property>
     <interpolation>
-      <entry><ind>    0 </ind><dep> 0.005 </dep></entry>
-      <entry><ind>   30 </ind><dep> 0.071 </dep></entry>
-      <entry><ind>   40 </ind><dep> 0.129 </dep></entry>
-      <entry><ind>   50 </ind><dep> 0.191 </dep></entry>
-      <entry><ind>   60 </ind><dep> 0.254 </dep></entry>
-      <entry><ind>   70 </ind><dep> 0.316 </dep></entry>
-      <entry><ind>  110 </ind><dep> 0.421 </dep></entry>
-      <entry><ind>  150 </ind><dep> 0.474 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0106 </dep></entry>
+      <entry><ind>    30 </ind><dep> 0.0717 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1350 </dep></entry>
+      <entry><ind>    50 </ind><dep> 0.1982 </dep></entry>
+      <entry><ind>    60 </ind><dep> 0.2635 </dep></entry>
+      <entry><ind>    70 </ind><dep> 0.3246 </dep></entry>
+      <entry><ind>   110 </ind><dep> 0.4363 </dep></entry>
+      <entry><ind>   150 </ind><dep> 0.4806 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -207,14 +206,14 @@
     <object-name>TEMP1</object-name>
     <property>engines/engine[0]/oil-temperature-degc</property>
     <interpolation>
-      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
-      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
-      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
-      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
-      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
-      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
-      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
+      <entry><ind>   -60 </ind><dep> 0.0003 </dep></entry>
+      <entry><ind>   -40 </ind><dep> 0.0275 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0970 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1771 </dep></entry>
+      <entry><ind>    80 </ind><dep> 0.2698 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.3562 </dep></entry>
+      <entry><ind>   120 </ind><dep> 0.4258 </dep></entry>
+      <entry><ind>   140 </ind><dep> 0.4922 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -228,14 +227,14 @@
     <object-name>TEMP2</object-name>
     <property>engines/engine[1]/oil-temperature-degc</property>
     <interpolation>
-      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
-      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
-      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
-      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
-      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
-      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
-      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
+      <entry><ind>   -60 </ind><dep> 0.0003 </dep></entry>
+      <entry><ind>   -40 </ind><dep> 0.0275 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0970 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1771 </dep></entry>
+      <entry><ind>    80 </ind><dep> 0.2698 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.3562 </dep></entry>
+      <entry><ind>   120 </ind><dep> 0.4258 </dep></entry>
+      <entry><ind>   140 </ind><dep> 0.4922 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -250,15 +249,15 @@
     <object-name>PSI1</object-name>
     <property>engines/engine[0]/oil-pressure-psi</property>
     <interpolation>
-      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>   10 </ind><dep> 0.006 </dep></entry>
-      <entry><ind>   30 </ind><dep> 0.084 </dep></entry>
-      <entry><ind>   50 </ind><dep> 0.174 </dep></entry>
-      <entry><ind>   70 </ind><dep> 0.250 </dep></entry>
-      <entry><ind>   90 </ind><dep> 0.316 </dep></entry>
-      <entry><ind>  100 </ind><dep> 0.352 </dep></entry>
-      <entry><ind>  120 </ind><dep> 0.394 </dep></entry>
-      <entry><ind>  170 </ind><dep> 0.461 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0003 </dep></entry>
+      <entry><ind>    10 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>    30 </ind><dep> 0.0907 </dep></entry>
+      <entry><ind>    50 </ind><dep> 0.1813 </dep></entry>
+      <entry><ind>    70 </ind><dep> 0.2593 </dep></entry>
+      <entry><ind>    90 </ind><dep> 0.3267 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.3605 </dep></entry>
+      <entry><ind>   120 </ind><dep> 0.4068 </dep></entry>
+      <entry><ind>   170 </ind><dep> 0.4785 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -273,15 +272,15 @@
     <object-name>PSI2</object-name>
     <property>engines/engine[1]/oil-pressure-psi</property>
     <interpolation>
-      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>   10 </ind><dep> 0.006 </dep></entry>
-      <entry><ind>   30 </ind><dep> 0.084 </dep></entry>
-      <entry><ind>   50 </ind><dep> 0.174 </dep></entry>
-      <entry><ind>   70 </ind><dep> 0.250 </dep></entry>
-      <entry><ind>   90 </ind><dep> 0.316 </dep></entry>
-      <entry><ind>  100 </ind><dep> 0.352 </dep></entry>
-      <entry><ind>  120 </ind><dep> 0.394 </dep></entry>
-      <entry><ind>  170 </ind><dep> 0.461 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0003 </dep></entry>
+      <entry><ind>    10 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>    30 </ind><dep> 0.0907 </dep></entry>
+      <entry><ind>    50 </ind><dep> 0.1813 </dep></entry>
+      <entry><ind>    70 </ind><dep> 0.2593 </dep></entry>
+      <entry><ind>    90 </ind><dep> 0.3267 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.3605 </dep></entry>
+      <entry><ind>   120 </ind><dep> 0.4068 </dep></entry>
+      <entry><ind>   170 </ind><dep> 0.4785 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -296,14 +295,14 @@
     <object-name>TGT1</object-name>
     <property>engines/engine[0]/tot-degc</property>
     <interpolation>
-      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind> 200 </ind><dep> 0.083 </dep></entry>
-      <entry><ind> 400 </ind><dep> 0.166 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.224 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.283 </dep></entry>
-      <entry><ind> 700 </ind><dep> 0.340 </dep></entry>
-      <entry><ind> 800 </ind><dep> 0.395 </dep></entry>
-      <entry><ind> 900 </ind><dep> 0.450 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>   200 </ind><dep> 0.0833 </dep></entry>
+      <entry><ind>   400 </ind><dep> 0.1676 </dep></entry>
+      <entry><ind>   500 </ind><dep> 0.2309 </dep></entry>
+      <entry><ind>   600 </ind><dep> 0.2920 </dep></entry>
+      <entry><ind>   700 </ind><dep> 0.3510 </dep></entry>
+      <entry><ind>   800 </ind><dep> 0.4100 </dep></entry>
+      <entry><ind>   900 </ind><dep> 0.4711 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -317,14 +316,14 @@
     <object-name>TGT2</object-name>
     <property>engines/engine[1]/tot-degc</property>
     <interpolation>
-      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind> 200 </ind><dep> 0.083 </dep></entry>
-      <entry><ind> 400 </ind><dep> 0.166 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.224 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.283 </dep></entry>
-      <entry><ind> 700 </ind><dep> 0.340 </dep></entry>
-      <entry><ind> 800 </ind><dep> 0.395 </dep></entry>
-      <entry><ind> 900 </ind><dep> 0.450 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0085 </dep></entry>
+      <entry><ind>   200 </ind><dep> 0.0833 </dep></entry>
+      <entry><ind>   400 </ind><dep> 0.1676 </dep></entry>
+      <entry><ind>   500 </ind><dep> 0.2309 </dep></entry>
+      <entry><ind>   600 </ind><dep> 0.2920 </dep></entry>
+      <entry><ind>   700 </ind><dep> 0.3510 </dep></entry>
+      <entry><ind>   800 </ind><dep> 0.4100 </dep></entry>
+      <entry><ind>   900 </ind><dep> 0.4711 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -339,13 +338,13 @@
     <object-name>NG1</object-name>
     <property>engines/engine[0]/n1-pct</property>
     <interpolation>
-      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  40 </ind><dep> 0.100 </dep></entry>
-      <entry><ind>  70 </ind><dep> 0.190 </dep></entry>
-      <entry><ind>  80 </ind><dep> 0.260 </dep></entry>
-      <entry><ind>  90 </ind><dep> 0.335 </dep></entry>
-      <entry><ind> 100 </ind><dep> 0.400 </dep></entry>
-      <entry><ind> 110 </ind><dep> 0.470 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0075 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1034 </dep></entry>
+      <entry><ind>    70 </ind><dep> 0.1940 </dep></entry>
+      <entry><ind>    80 </ind><dep> 0.2709 </dep></entry>
+      <entry><ind>    90 </ind><dep> 0.3499 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.4205 </dep></entry>
+      <entry><ind>   110 </ind><dep> 0.4943 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -359,13 +358,13 @@
     <object-name>NG2</object-name>
     <property>engines/engine[1]/n1-pct</property>
     <interpolation>
-      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  40 </ind><dep> 0.100 </dep></entry>
-      <entry><ind>  70 </ind><dep> 0.190 </dep></entry>
-      <entry><ind>  80 </ind><dep> 0.260 </dep></entry>
-      <entry><ind>  90 </ind><dep> 0.335 </dep></entry>
-      <entry><ind> 100 </ind><dep> 0.400 </dep></entry>
-      <entry><ind> 110 </ind><dep> 0.470 </dep></entry>
+      <entry><ind>     0 </ind><dep> 0.0075 </dep></entry>
+      <entry><ind>    40 </ind><dep> 0.1034 </dep></entry>
+      <entry><ind>    70 </ind><dep> 0.1940 </dep></entry>
+      <entry><ind>    80 </ind><dep> 0.2709 </dep></entry>
+      <entry><ind>    90 </ind><dep> 0.3499 </dep></entry>
+      <entry><ind>   100 </ind><dep> 0.4205 </dep></entry>
+      <entry><ind>   110 </ind><dep> 0.4943 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
