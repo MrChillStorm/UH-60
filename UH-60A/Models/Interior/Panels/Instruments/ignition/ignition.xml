@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- engine ignition switch: /controls/engines/ignition (the engines light off only with it ON) -->
+<PropertyList>
+
+  <path>ignition.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>panel</object-name>
+    <object-name>key</object-name>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>panel</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>key</object-name>
+    <property>/controls/engines/ignition</property>
+    <factor> 90 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>key</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>property-toggle</command>
+        <property>/controls/engines/ignition</property>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>uh60-ignition</tooltip-id>
+        <label>Engine ignition: %s</label>
+        <property>/controls/engines/ignition</property>
+        <mapping>on-off</mapping>
+      </binding>
+    </hovered>
+  </animation>
+
+</PropertyList>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- radar warning indicator (no threats are simulated) -->
+<PropertyList>
+
+  <path>rwr.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>panel</object-name>
+    <object-name>knobs</object-name>
+    <object-name>lamps</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>panel</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+</PropertyList>

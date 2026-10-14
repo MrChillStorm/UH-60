@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- caution/advisory panel: capsules lit by Systems/uh60a-cap.xml (fdm/cockpit/cap.py) -->
+<PropertyList>
+
+  <path>cap.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>panel</object-name>
+    <object-name>capsules</object-name>
+    <object-name>test-switch</object-name>
+    <object-name>lit-fuel-low-1</object-name>
+    <object-name>lit-gen-1</object-name>
+    <object-name>lit-gen-2</object-name>
+    <object-name>lit-fuel-low-2</object-name>
+    <object-name>lit-fuel-press-1</object-name>
+    <object-name>lit-gen-brg-1</object-name>
+    <object-name>lit-gen-brg-2</object-name>
+    <object-name>lit-fuel-press-2</object-name>
+    <object-name>lit-oil-press-1</object-name>
+    <object-name>lit-conv-1</object-name>
+    <object-name>lit-conv-2</object-name>
+    <object-name>lit-oil-press-2</object-name>
+    <object-name>lit-oil-temp-1</object-name>
+    <object-name>lit-ac-ess</object-name>
+    <object-name>lit-dc-ess</object-name>
+    <object-name>lit-oil-temp-2</object-name>
+    <object-name>lit-chip-1</object-name>
+    <object-name>lit-batt-low</object-name>
+    <object-name>lit-batt-fault</object-name>
+    <object-name>lit-chip-2</object-name>
+    <object-name>lit-fuel-fltr-1</object-name>
+    <object-name>lit-gust-lock</object-name>
+    <object-name>lit-pitch-bias</object-name>
+    <object-name>lit-fuel-fltr-2</object-name>
+    <object-name>lit-starter-1</object-name>
+    <object-name>lit-oil-fltr-1</object-name>
+    <object-name>lit-oil-fltr-2</object-name>
+    <object-name>lit-starter-2</object-name>
+    <object-name>lit-pri-servo-1</object-name>
+    <object-name>lit-hyd-pump-1</object-name>
+    <object-name>lit-hyd-pump-2</object-name>
+    <object-name>lit-pri-servo-2</object-name>
+    <object-name>lit-tr-quadrant</object-name>
+    <object-name>lit-ircm-inop</object-name>
+    <object-name>lit-aux-fuel</object-name>
+    <object-name>lit-tr-servo-1</object-name>
+    <object-name>lit-xmsn-oil-temp</object-name>
+    <object-name>lit-int-xmsn-temp</object-name>
+    <object-name>lit-tail-xmsn-temp</object-name>
+    <object-name>lit-apu-oil-temp</object-name>
+    <object-name>lit-boost-servo</object-name>
+    <object-name>lit-stabilator</object-name>
+    <object-name>lit-sas-off</object-name>
+    <object-name>lit-trim-fail</object-name>
+    <object-name>lit-pitot-l</object-name>
+    <object-name>lit-flt-path-stab</object-name>
+    <object-name>lit-iff</object-name>
+    <object-name>lit-pitot-r</object-name>
+    <object-name>lit-chip-input-l</object-name>
+    <object-name>lit-chip-int</object-name>
+    <object-name>lit-chip-tail</object-name>
+    <object-name>lit-chip-input-r</object-name>
+    <object-name>lit-chip-access-l</object-name>
+    <object-name>lit-chip-main</object-name>
+    <object-name>lit-apu-fail</object-name>
+    <object-name>lit-chip-access-r</object-name>
+    <object-name>lit-mr-deice-fail</object-name>
+    <object-name>lit-mr-deice-fault</object-name>
+    <object-name>lit-tr-deice-fail</object-name>
+    <object-name>lit-ice</object-name>
+    <object-name>lit-xmsn-oil-press</object-name>
+    <object-name>lit-rsvr-1</object-name>
+    <object-name>lit-rsvr-2</object-name>
+    <object-name>lit-rsvr-backup</object-name>
+    <object-name>lit-eng-ai-1</object-name>
+    <object-name>lit-inlet-ai-1</object-name>
+    <object-name>lit-inlet-ai-2</object-name>
+    <object-name>lit-eng-ai-2</object-name>
+    <object-name>lit-apu-on</object-name>
+    <object-name>lit-apu-gen</object-name>
+    <object-name>lit-prime-boost</object-name>
+    <object-name>lit-backup-pump</object-name>
+    <object-name>lit-apu-accum</object-name>
+    <object-name>lit-search-lt</object-name>
+    <object-name>lit-ldg-lt</object-name>
+    <object-name>lit-tr-servo-2</object-name>
+    <object-name>lit-cargo-hook</object-name>
+    <object-name>lit-hook-armed</object-name>
+    <object-name>lit-blank-1</object-name>
+    <object-name>lit-parking-brake</object-name>
+    <object-name>lit-ext-pwr</object-name>
+    <object-name>lit-blank-2</object-name>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>panel</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-low-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/fuel-low-1</property><property>/sim/model/uh60/cap-test</property></or><property>/sim/model/uh60/warning-flash</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-gen-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/gen-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-gen-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/gen-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-low-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/fuel-low-2</property><property>/sim/model/uh60/cap-test</property></or><property>/sim/model/uh60/warning-flash</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-press-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/fuel-press-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-gen-brg-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-gen-brg-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-press-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/fuel-press-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-press-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/oil-press-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-conv-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/conv-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-conv-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/conv-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-press-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/oil-press-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-temp-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/oil-temp-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-ac-ess</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/ac-ess</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-dc-ess</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-temp-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/oil-temp-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-batt-low</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-batt-fault</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-fltr-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-gust-lock</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-pitch-bias</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fuel-fltr-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-starter-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/starter-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-fltr-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-oil-fltr-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-starter-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/starter-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-pri-servo-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/pri-servo-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-hyd-pump-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/hyd-pump-1</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-hyd-pump-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/hyd-pump-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-pri-servo-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/pri-servo-2</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-tr-quadrant</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-ircm-inop</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-aux-fuel</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-tr-servo-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-xmsn-oil-temp</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/xmsn-oil-temp</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-int-xmsn-temp</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-tail-xmsn-temp</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-apu-oil-temp</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-boost-servo</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/boost-servo</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-stabilator</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/stabilator</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-sas-off</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/sas-off</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-trim-fail</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-pitot-l</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-flt-path-stab</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/flt-path-stab</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-iff</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-pitot-r</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-input-l</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-int</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-tail</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-input-r</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-access-l</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-main</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-apu-fail</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-chip-access-r</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-mr-deice-fail</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-mr-deice-fault</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-tr-deice-fail</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-ice</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-xmsn-oil-press</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/xmsn-oil-press</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-rsvr-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-rsvr-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-rsvr-backup</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-eng-ai-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-inlet-ai-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-inlet-ai-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-eng-ai-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-apu-on</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-apu-gen</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-prime-boost</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/prime-boost</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-backup-pump</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-apu-accum</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-search-lt</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-ldg-lt</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/ldg-lt</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-tr-servo-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-cargo-hook</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-hook-armed</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-blank-1</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-parking-brake</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <or><property>/sim/model/uh60/cap/parking-brake</property><property>/sim/model/uh60/cap-test</property></or>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-ext-pwr</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-blank-2</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+      <property>/sim/model/uh60/cap-test</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-fuel-low-1</object-name>
+    <object-name>lit-gen-1</object-name>
+    <object-name>lit-gen-2</object-name>
+    <object-name>lit-fuel-low-2</object-name>
+    <object-name>lit-fuel-press-1</object-name>
+    <object-name>lit-gen-brg-1</object-name>
+    <object-name>lit-gen-brg-2</object-name>
+    <object-name>lit-fuel-press-2</object-name>
+    <object-name>lit-oil-press-1</object-name>
+    <object-name>lit-conv-1</object-name>
+    <object-name>lit-conv-2</object-name>
+    <object-name>lit-oil-press-2</object-name>
+    <object-name>lit-oil-temp-1</object-name>
+    <object-name>lit-ac-ess</object-name>
+    <object-name>lit-dc-ess</object-name>
+    <object-name>lit-oil-temp-2</object-name>
+    <object-name>lit-chip-1</object-name>
+    <object-name>lit-batt-low</object-name>
+    <object-name>lit-batt-fault</object-name>
+    <object-name>lit-chip-2</object-name>
+    <object-name>lit-fuel-fltr-1</object-name>
+    <object-name>lit-gust-lock</object-name>
+    <object-name>lit-pitch-bias</object-name>
+    <object-name>lit-fuel-fltr-2</object-name>
+    <object-name>lit-starter-1</object-name>
+    <object-name>lit-oil-fltr-1</object-name>
+    <object-name>lit-oil-fltr-2</object-name>
+    <object-name>lit-starter-2</object-name>
+    <object-name>lit-pri-servo-1</object-name>
+    <object-name>lit-hyd-pump-1</object-name>
+    <object-name>lit-hyd-pump-2</object-name>
+    <object-name>lit-pri-servo-2</object-name>
+    <object-name>lit-tr-quadrant</object-name>
+    <object-name>lit-ircm-inop</object-name>
+    <object-name>lit-aux-fuel</object-name>
+    <object-name>lit-tr-servo-1</object-name>
+    <object-name>lit-xmsn-oil-temp</object-name>
+    <object-name>lit-int-xmsn-temp</object-name>
+    <object-name>lit-tail-xmsn-temp</object-name>
+    <object-name>lit-apu-oil-temp</object-name>
+    <object-name>lit-boost-servo</object-name>
+    <object-name>lit-stabilator</object-name>
+    <object-name>lit-sas-off</object-name>
+    <object-name>lit-trim-fail</object-name>
+    <object-name>lit-pitot-l</object-name>
+    <object-name>lit-flt-path-stab</object-name>
+    <object-name>lit-iff</object-name>
+    <object-name>lit-pitot-r</object-name>
+    <object-name>lit-chip-input-l</object-name>
+    <object-name>lit-chip-int</object-name>
+    <object-name>lit-chip-tail</object-name>
+    <object-name>lit-chip-input-r</object-name>
+    <object-name>lit-chip-access-l</object-name>
+    <object-name>lit-chip-main</object-name>
+    <object-name>lit-apu-fail</object-name>
+    <object-name>lit-chip-access-r</object-name>
+    <object-name>lit-mr-deice-fail</object-name>
+    <object-name>lit-mr-deice-fault</object-name>
+    <object-name>lit-tr-deice-fail</object-name>
+    <object-name>lit-ice</object-name>
+    <object-name>lit-xmsn-oil-press</object-name>
+    <object-name>lit-rsvr-1</object-name>
+    <object-name>lit-rsvr-2</object-name>
+    <object-name>lit-rsvr-backup</object-name>
+    <object-name>lit-eng-ai-1</object-name>
+    <object-name>lit-inlet-ai-1</object-name>
+    <object-name>lit-inlet-ai-2</object-name>
+    <object-name>lit-eng-ai-2</object-name>
+    <object-name>lit-apu-on</object-name>
+    <object-name>lit-apu-gen</object-name>
+    <object-name>lit-prime-boost</object-name>
+    <object-name>lit-backup-pump</object-name>
+    <object-name>lit-apu-accum</object-name>
+    <object-name>lit-search-lt</object-name>
+    <object-name>lit-ldg-lt</object-name>
+    <object-name>lit-tr-servo-2</object-name>
+    <object-name>lit-cargo-hook</object-name>
+    <object-name>lit-hook-armed</object-name>
+    <object-name>lit-blank-1</object-name>
+    <object-name>lit-parking-brake</object-name>
+    <object-name>lit-ext-pwr</object-name>
+    <object-name>lit-blank-2</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>test-switch</object-name>
+    <property>/sim/model/uh60/cap-test</property>
+    <factor> 30 </factor>
+    <center>
+      <x-m> 0.0060 </x-m>
+      <y-m> -0.0554 </y-m>
+      <z-m> -0.1096 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>test-switch</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>property-assign</command>
+        <property>/sim/model/uh60/cap-test</property>
+        <value>1</value>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>property-assign</command>
+          <property>/sim/model/uh60/cap-test</property>
+          <value>0</value>
+        </binding>
+      </mod-up>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>uh60-cap-test</tooltip-id>
+        <label>Caution/advisory lights: hold to test</label>
+      </binding>
+    </hovered>
+  </animation>
+
+</PropertyList>

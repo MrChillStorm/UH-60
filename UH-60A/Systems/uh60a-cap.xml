@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Caution/advisory panel: a flag per capsule the simulation can drive, /sim/model/uh60/cap/<id>, from
+     TM 1-1520-237-10 table 2-3 (fdm/cockpit/cap.py writes this file; see it for the assumptions) -->
+
+<PropertyList>
+
+  <logic>
+    <name>fuel-low-1</name>
+    <input>
+      <and><less-than><property>/consumables/fuel/tank[0]/level-lbs</property><value>172</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/fuel-low-1</output>
+  </logic>
+
+  <logic>
+    <name>gen-1</name>
+    <input>
+      <and><or><property>/gear/gear[0]/wow</property><property>/gear/gear[1]/wow</property><property>/gear/gear[2]/wow</property></or><less-than><property>/rotors/main/rpm-pct</property><value>93.75</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/gen-1</output>
+  </logic>
+
+  <logic>
+    <name>gen-2</name>
+    <input>
+      <and><or><property>/gear/gear[0]/wow</property><property>/gear/gear[1]/wow</property><property>/gear/gear[2]/wow</property></or><less-than><property>/rotors/main/rpm-pct</property><value>93.75</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/gen-2</output>
+  </logic>
+
+  <logic>
+    <name>fuel-low-2</name>
+    <input>
+      <and><less-than><property>/consumables/fuel/tank[1]/level-lbs</property><value>172</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/fuel-low-2</output>
+  </logic>
+
+  <logic>
+    <name>fuel-press-1</name>
+    <input>
+      <and><less-than><property>/engines/engine[0]/n1-pct</property><value>20</value></less-than><less-than><property>/controls/engines/engine[0]/fuel-pump</property><value>0.5</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/fuel-press-1</output>
+  </logic>
+
+  <logic>
+    <name>fuel-press-2</name>
+    <input>
+      <and><less-than><property>/engines/engine[1]/n1-pct</property><value>20</value></less-than><less-than><property>/controls/engines/engine[1]/fuel-pump</property><value>0.5</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/fuel-press-2</output>
+  </logic>
+
+  <logic>
+    <name>oil-press-1</name>
+    <input>
+      <and><less-than><property>/engines/engine[0]/oil-pressure-psi</property><value>20</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/oil-press-1</output>
+  </logic>
+
+  <logic>
+    <name>conv-1</name>
+    <input>
+      <and><or><property>/gear/gear[0]/wow</property><property>/gear/gear[1]/wow</property><property>/gear/gear[2]/wow</property></or><less-than><property>/rotors/main/rpm-pct</property><value>93.75</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/conv-1</output>
+  </logic>
+
+  <logic>
+    <name>conv-2</name>
+    <input>
+      <and><or><property>/gear/gear[0]/wow</property><property>/gear/gear[1]/wow</property><property>/gear/gear[2]/wow</property></or><less-than><property>/rotors/main/rpm-pct</property><value>93.75</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/conv-2</output>
+  </logic>
+
+  <logic>
+    <name>oil-press-2</name>
+    <input>
+      <and><less-than><property>/engines/engine[1]/oil-pressure-psi</property><value>20</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/oil-press-2</output>
+  </logic>
+
+  <logic>
+    <name>oil-temp-1</name>
+    <input>
+      <and><greater-than><property>/engines/engine[0]/oil-temperature-degc</property><value>150</value></greater-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/oil-temp-1</output>
+  </logic>
+
+  <logic>
+    <name>ac-ess</name>
+    <input>
+      <and><or><property>/gear/gear[0]/wow</property><property>/gear/gear[1]/wow</property><property>/gear/gear[2]/wow</property></or><less-than><property>/rotors/main/rpm-pct</property><value>93.75</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/ac-ess</output>
+  </logic>
+
+  <logic>
+    <name>oil-temp-2</name>
+    <input>
+      <and><greater-than><property>/engines/engine[1]/oil-temperature-degc</property><value>150</value></greater-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/oil-temp-2</output>
+  </logic>
+
+  <logic>
+    <name>starter-1</name>
+    <input>
+      <and><greater-than><property>/fdm/jsbsim/eng[0]/starter-on</property><value>0.5</value></greater-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/starter-1</output>
+  </logic>
+
+  <logic>
+    <name>starter-2</name>
+    <input>
+      <and><greater-than><property>/fdm/jsbsim/eng[1]/starter-on</property><value>0.5</value></greater-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/starter-2</output>
+  </logic>
+
+  <logic>
+    <name>pri-servo-1</name>
+    <input>
+      <and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/pri-servo-1</output>
+  </logic>
+
+  <logic>
+    <name>hyd-pump-1</name>
+    <input>
+      <and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/hyd-pump-1</output>
+  </logic>
+
+  <logic>
+    <name>hyd-pump-2</name>
+    <input>
+      <and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/hyd-pump-2</output>
+  </logic>
+
+  <logic>
+    <name>pri-servo-2</name>
+    <input>
+      <and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/pri-servo-2</output>
+  </logic>
+
+  <logic>
+    <name>xmsn-oil-temp</name>
+    <input>
+      <and><greater-than><property>/sim/model/uh60/xmsn-oil-temp-degc</property><value>120</value></greater-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/xmsn-oil-temp</output>
+  </logic>
+
+  <logic>
+    <name>boost-servo</name>
+    <input>
+      <and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/boost-servo</output>
+  </logic>
+
+  <logic>
+    <name>stabilator</name>
+    <input>
+      <and><less-than><property>/fdm/jsbsim/stab/auto</property><value>0.5</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/stabilator</output>
+  </logic>
+
+  <logic>
+    <name>sas-off</name>
+    <input>
+      <and><or><and><less-than><property>/fdm/jsbsim/ctl/sas1</property><value>0.5</value></less-than><less-than><property>/fdm/jsbsim/ctl/sas2</property><value>0.5</value></less-than></and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></or></and>
+    </input>
+    <output>/sim/model/uh60/cap/sas-off</output>
+  </logic>
+
+  <logic>
+    <name>flt-path-stab</name>
+    <input>
+      <and><less-than><property>/fdm/jsbsim/ctl/fps</property><value>0.5</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/flt-path-stab</output>
+  </logic>
+
+  <logic>
+    <name>xmsn-oil-press</name>
+    <input>
+      <and><less-than><property>/sim/model/uh60/xmsn-oil-press-psi</property><value>14</value></less-than></and>
+    </input>
+    <output>/sim/model/uh60/cap/xmsn-oil-press</output>
+  </logic>
+
+  <logic>
+    <name>prime-boost</name>
+    <input>
+      <and><or><property>/controls/engines/engine[0]/fuel-pump</property><property>/controls/engines/engine[1]/fuel-pump</property></or></and>
+    </input>
+    <output>/sim/model/uh60/cap/prime-boost</output>
+  </logic>
+
+  <logic>
+    <name>ldg-lt</name>
+    <input>
+      <and><property>/controls/lighting/landing-lights</property></and>
+    </input>
+    <output>/sim/model/uh60/cap/ldg-lt</output>
+  </logic>
+
+  <logic>
+    <name>parking-brake</name>
+    <input>
+      <and><property>/controls/gear/brake-parking</property></and>
+    </input>
+    <output>/sim/model/uh60/cap/parking-brake</output>
+  </logic>
+
+</PropertyList>

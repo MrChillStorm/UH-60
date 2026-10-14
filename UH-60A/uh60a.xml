@@ -10,7 +10,8 @@
     <wingspan unit="FT">53.66</wingspan>
     <chord unit="FT">1.73</chord>
     <location name="AERORP" unit="IN"><x>358.0</x><y>0.0</y><z>251.0</z></location>
-    <location name="EYEPOINT" unit="IN"><x>229.0</x><y>26.7</y><z>257.0</z></location>
+    <!-- pilot's design eye: on the seat centreline BL 24 at WL 257 (GenHel fig. 6.1.3) -->
+    <location name="EYEPOINT" unit="IN"><x>229.0</x><y>24.0</y><z>257.0</z></location>
     <location name="VRP" unit="IN"><x>460.9</x><y>0.0</y><z>267.4</z></location>
   </metrics>
   <mass_balance>

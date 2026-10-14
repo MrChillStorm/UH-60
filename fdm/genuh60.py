@@ -1142,7 +1142,8 @@ def fdm_file(aero_functions, axes, cg=None, weight=None):
     <wingspan unit="FT">%.2f</wingspan>
     <chord unit="FT">%.2f</chord>
     <location name="AERORP" unit="IN"><x>%.1f</x><y>%.1f</y><z>%.1f</z></location>
-    <location name="EYEPOINT" unit="IN"><x>229.0</x><y>26.7</y><z>257.0</z></location>
+    <!-- pilot's design eye: on the seat centreline BL 24 at WL 257 (GenHel fig. 6.1.3) -->
+    <location name="EYEPOINT" unit="IN"><x>229.0</x><y>24.0</y><z>257.0</z></location>
     <location name="VRP" unit="IN"><x>%.1f</x><y>%.1f</y><z>%.1f</z></location>
   </metrics>
   <mass_balance>

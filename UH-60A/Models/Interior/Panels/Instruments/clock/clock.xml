@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- clock: local time -->
+<PropertyList>
+
+  <path>clock.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>face</object-name>
+    <object-name>hour</object-name>
+    <object-name>minute</object-name>
+    <object-name>second</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>face</object-name>
+    <object-name>hour</object-name>
+    <object-name>minute</object-name>
+    <object-name>second</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>hour</object-name>
+    <property>/sim/time/local-day-seconds</property>
+    <factor> 0.00833333 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>minute</object-name>
+    <property>/sim/time/local-day-seconds</property>
+    <factor> 0.1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>second</object-name>
+    <property>/sim/time/local-day-seconds</property>
+    <factor> 6 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

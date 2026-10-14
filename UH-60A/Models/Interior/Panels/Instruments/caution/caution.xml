@@ -2,7 +2,8 @@
 
 <!-- Master warning panel. The lights follow the UH-60A's (TM 1-1520-237-10, 2.81 and table 2-3) with the
      flight model's values: the legends of this panel stand for ENG OUT, LOW ROTOR RPM, MASTER CAUTION and the
-     state of the automatic flight control system. All need dc power (battery switch). -->
+     state of the automatic flight control system. All need dc power (battery switch) and all light in the lamp test
+     of the caution/advisory panel. Written by fdm/cockpit/cap.py. -->
 
 <PropertyList>
 
@@ -49,14 +50,8 @@
     <condition>
       <property>controls/electric/battery-switch</property>
       <or>
-        <less-than>
-          <property>engines/engine[0]/n1-pct</property>
-          <value>55</value>
-        </less-than>
-        <less-than>
-          <property>engines/engine[1]/n1-pct</property>
-          <value>55</value>
-        </less-than>
+        <property>sim/model/uh60/cap-test</property>
+        <or><less-than><property>engines/engine[0]/n1-pct</property><value>55</value></less-than><less-than><property>engines/engine[1]/n1-pct</property><value>55</value></less-than></or>
       </or>
     </condition>
   </animation>
@@ -68,56 +63,44 @@
     <condition>
       <property>controls/electric/battery-switch</property>
       <property>sim/model/uh60/warning-flash</property>
-      <less-than>
-        <property>rotors/main/rpm-pct</property>
-        <value>96</value>
-      </less-than>
+      <or>
+        <property>sim/model/uh60/cap-test</property>
+        <less-than><property>rotors/main/rpm-pct</property><value>96</value></less-than>
+      </or>
     </condition>
   </animation>
 
-  <!-- MASTER CAUTION: a caution light is on. Those this simulation has: STABILATOR (manual mode), FLT-PATH STAB
-       (FPS off), #1 / #2 FUEL LOW (about 172 lb in the tank), #1 / #2 ENGINE OIL PRESS (engine not running);
-       and, from the original panel, rotor brake on and cabin door open -->
+  <!-- MASTER CAUTION: an amber capsule of the caution/advisory panel has lit (Nasal/caution.nas) -->
   <animation>
     <type>select</type>
     <object-name>caution3</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
       <or>
-        <less-than>
-          <property>fdm/jsbsim/stab/auto</property>
-          <value>0.5</value>
-        </less-than>
-        <less-than>
-          <property>fdm/jsbsim/ctl/fps</property>
-          <value>0.5</value>
-        </less-than>
-        <less-than>
-          <property>consumables/fuel/tank[0]/level-lbs</property>
-          <value>172</value>
-        </less-than>
-        <less-than>
-          <property>consumables/fuel/tank[1]/level-lbs</property>
-          <value>172</value>
-        </less-than>
-        <less-than>
-          <property>engines/engine[0]/oil-pressure-psi</property>
-          <value>20</value>
-        </less-than>
-        <less-than>
-          <property>engines/engine[1]/oil-pressure-psi</property>
-          <value>20</value>
-        </less-than>
-        <greater-than>
-          <property>controls/rotor/brake</property>
-          <value>0.1</value>
-        </greater-than>
-        <greater-than>
-          <property>instrumentation/doors/crew/position-norm</property>
-          <value>0.05</value>
-        </greater-than>
+        <property>sim/model/uh60/cap-test</property>
+        <property>sim/model/uh60/master-caution</property>
       </or>
     </condition>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>caution3</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>caution.reset()</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>uh60-master-caution</tooltip-id>
+        <label>Master caution: press to reset</label>
+      </binding>
+    </hovered>
   </animation>
 
   <!-- AFCS READY: both SAS channels, the FPS, the pitch bias actuator and the stabilator's automatic mode on -->
@@ -126,26 +109,10 @@
     <object-name>caution4</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
-      <greater-than>
-        <property>fdm/jsbsim/ctl/sas1</property>
-        <value>0.5</value>
-      </greater-than>
-      <greater-than>
-        <property>fdm/jsbsim/ctl/sas2</property>
-        <value>0.5</value>
-      </greater-than>
-      <greater-than>
-        <property>fdm/jsbsim/ctl/fps</property>
-        <value>0.5</value>
-      </greater-than>
-      <greater-than>
-        <property>fdm/jsbsim/ctl/pba</property>
-        <value>0.5</value>
-      </greater-than>
-      <greater-than>
-        <property>fdm/jsbsim/stab/auto</property>
-        <value>0.5</value>
-      </greater-than>
+      <or>
+        <property>sim/model/uh60/cap-test</property>
+        <and><greater-than><property>fdm/jsbsim/ctl/sas1</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/sas2</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/fps</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/pba</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/stab/auto</property><value>0.5</value></greater-than></and>
+      </or>
     </condition>
   </animation>
 

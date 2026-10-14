@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- stabilator position indicator: /fdm/jsbsim/stab/pos-deg, trailing edge down + -->
+<PropertyList>
+
+  <path>stab.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>face</object-name>
+    <object-name>needle</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>face</object-name>
+    <object-name>needle</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>needle</object-name>
+    <property>/fdm/jsbsim/stab/pos-deg</property>
+    <factor> 1 </factor>
+    <min-deg> -12 </min-deg>
+    <max-deg> 45 </max-deg>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> -0.0101 </y-m>
+      <z-m> 0.0071 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

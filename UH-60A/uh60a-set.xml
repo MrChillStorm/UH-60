@@ -28,6 +28,10 @@
         <name>UH-60A test autopilot</name>
         <path>Aircraft/UH-60A/Systems/uh60a-autopilot.xml</path>
       </autopilot>
+      <property-rule n="11">
+        <name>UH-60A caution/advisory panel</name>
+        <path>Aircraft/UH-60A/Systems/uh60a-cap.xml</path>
+      </property-rule>
     </systems>
 
     <rating>

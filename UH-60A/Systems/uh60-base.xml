@@ -230,21 +230,16 @@
       <file>Aircraft/UH-60A/Nasal/liveries.nas</file>
       <file>Aircraft/UH-60A/Nasal/uh60.nas</file>
       <file>Aircraft/UH-60A/Nasal/Electrical.nas</file>
-      <file>Aircraft/UH-60A/Nasal/map.nas</file>
       <file>Aircraft/UH-60A/Nasal/dialogs.nas</file>
     </uh60>
     <PA>
       <file>Aircraft/UH-60A/Nasal/PA.nas</file>
     </PA>
-    <radar>
-      <file>Aircraft/UH-60A/Nasal/radar.nas</file>
-    </radar>
-    <terrain-map>
-      <file>Aircraft/UH-60A/Nasal/terrain-map.nas</file>
-    </terrain-map>
-    <zkv1000>
-      <file>Aircraft/UH-60A/Models/Interior/Panels/Instruments/zkv1000/zkv1000.nas</file>
-    </zkv1000>
+    <caution>
+      <file>Aircraft/UH-60A/Nasal/caution.nas</file>
+    </caution>
+    <!-- map.nas, radar.nas, terrain-map.nas and zkv1000.nas drove the glass displays and moving maps, which a
+         UH-60A doesn't have and the panel no longer carries -->
 
     aircraft.data.add(
 

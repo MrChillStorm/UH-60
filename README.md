@@ -80,10 +80,18 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
   the SAS, a hover takes your full attention, as in the real aircraft.
   FlightGear can't move your stick, so the FPS moves the stick's trim point
   instead.
-- **Warning panel**, with the real meanings: ENG OUT (Ng below 55 %), LOW
-  ROTOR RPM (below 96 %, flashing), MASTER CAUTION (stabilator in manual,
-  FPS off, fuel low, engine oil pressure low, rotor brake, door open) and a
-  green light when the whole AFCS is on.
+- **Warning lights.** The master warning panel has ENG OUT (Ng below 55 %),
+  LOW ROTOR RPM (below 96 %, flashing), MASTER CAUTION and a green light
+  when the whole AFCS is on. The caution/advisory panel lights the capsules
+  the simulation can drive, as the operator's manual describes them: fuel
+  low and fuel pressure, engine oil, starters, generators and converters
+  (off line below 93.75 % rotor speed on the ground), hydraulic pumps and
+  servos, stabilator, SAS and FPS, transmission oil, prime pump, landing
+  light and parking brake. MASTER CAUTION comes on with each new amber
+  capsule; click it to reset. Hold the panel's BRT/DIM-TEST switch down to
+  test every light.
+- **Engine ignition switch** below the caution/advisory panel: click to turn
+  it; the engines only light off with it ON.
 - **Feel.** The rotor's wake is turbulent near the ground, through
   translational lift and in vortex ring; the cockpit shakes with the rotor's
   vibration, more at high speed and a lot in blade stall. The wake's
@@ -126,8 +134,11 @@ Sikorsky's simulation as NASA ran it.
   retreating blade stalls early instead), rotor damage and overstress,
   hydraulic and most electrical failures. The transmission oil gauges are
   cosmetic.
-- The glass multi-function display is the original aircraft's and a UH-60A
-  never had one; its piston-aircraft engine page is hidden.
+- **Cockpit:** the mode selectors, the auxiliary fuel management panel, the
+  radar warning indicator, the ice rate meter and the blade deice and IRCM
+  panels are there but drive nothing. The caution capsules for failures the
+  simulation doesn't have stay dark, and the hydraulic ones are lit below
+  half rotor speed, an estimate.
 
 ## Rebuilding the model and the report
 
@@ -160,6 +171,14 @@ python3 genap.py
 - `report/mkresults.py` runs the whole programme (a few minutes on 8 cores)
   into `report/results/`; `report/build.sh` makes every figure, table and
   number of the report from them and builds the PDF.
+- `cockpit/panel_layout.py` measures the instrument panel from the
+  operator's manual's figure (`cockpit/panel-layout.md` and `.png`), and
+  `cockpit/panel_face.py` builds the cockpit panel from it: the face plate,
+  its texture and the instruments' places. `cockpit/instruments.py` (with
+  `cap.py`) builds the instruments the old panel lacked. Both draw their
+  textures from the manual's PDF:
+  `python3 instruments.py TM-1-1520-237-10.pdf`, then
+  `python3 panel_face.py TM-1-1520-237-10.pdf`.
 
 The NASA and Army reports are not included; the report lists them as sources.
 
@@ -180,19 +199,42 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   loaded.
 - **Flight controls dialog** `Dialogs/afcs.xml`, with its menu entry in
   `Dialogs/uh60-menu.xml` and `Nasal/dialogs.nas`.
+- **Instrument panel** laid out as in the operator's manual (figure 2-9):
+  the instruments moved to their places and sized (`Panels/panel.xml`), a
+  new face plate with its cut-outs (`panel2` in `Panels/panel.ac`) and its
+  texture `Panels/panel-face.png` with the manual's placards. The torque
+  dials, glass displays and moving maps, which a UH-60A doesn't have, are
+  removed, and their Nasal (`map.nas`, `radar.nas`, `terrain-map.nas`,
+  `zkv1000.nas`) is no longer loaded. `fdm/cockpit/panel_face.py` writes
+  all of it.
+- **New instruments** (`Panels/Instruments/`): vertical speed indicators
+  (`vsi`, the airspeed indicator's case with the manual's dial), clocks
+  (`clock`), stabilator position indicators (`stab`), the caution/advisory
+  panel (`cap`, with `Systems/uh60a-cap.xml` and `Nasal/caution.nas`), the
+  engine ignition switch (`ignition`), and the mode selectors, auxiliary
+  fuel management panel, radar warning indicator, deice and IRCM panels and
+  dimming controls (`modesel`, `cismode`, `afms`, `rwr`, `deice`, `nvgdim`,
+  `radaltdim`), their faces from the manual's figure.
+  `fdm/cockpit/instruments.py` and `cap.py` write them.
 - **Cockpit instruments** calibrated to the new flight model: the pilot
   display unit (`prop-rpm`: % RPM of both engines and the rotor, % torque;
   its green band in `prop-rpm.png` lengthened to fill the whole scale), the
   central display unit (`combimeter`: Ng, oil, TGT and transmission per
-  engine), the dual torque dial (`torque`), the radar altimeter (`RadarAlt`,
-  wheel height), the warning panel (`caution`) and the glass display's engine
-  page, now hidden (`zkv1000`; `/sim/model/uh60/show-mfd-eis` brings it back).
+  engine), the radar altimeter (`RadarAlt`, wheel height) and the master
+  warning panel (`caution`, MASTER CAUTION from the caution/advisory panel).
 - **Fixes** to bugs of the original aircraft: the cockpit collective lever
   moved with the passenger door instead of the collective
   (`sticks/collective.xml`), and the warning panel's thresholds were set for
   the old flight model (master caution always on).
-- **Views and sound.** The cockpit eye point at the design eye height
-  (`Systems/views.xml`); the pilots hidden from their own seat in
+- **Crew station** on the aircraft's butt lines (GenHel's cockpit
+  geometry): the seats, pilots, cyclics and pedals on the seat centrelines
+  at BL 24, the collectives at BL 11 (pilot) and BL 37 (copilot); they were
+  about 7 cm further out (`Seats/all-seats.xml`, `Pilot/all-pilots.xml`,
+  `sticks/all-sticks.xml`, `Pedals/all-pedals.xml`).
+- **Views and sound.** The cockpit eye points at the design eye, BL 24 and
+  WL 257, looking 21° down with a 90° field of view, so that the
+  windshield's top frame stays just out of sight (`Systems/views.xml`); the
+  pilots hidden from their own seat in
   FlightGear's and FGCamera's cockpit views (`Models/Pilot/all-pilots.xml`);
   a vibration rattle in `Sounds/uh60-sound.xml`.
 - **Set file.** Description, a description for the launcher, credits and the
