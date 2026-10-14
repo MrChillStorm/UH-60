@@ -5,14 +5,14 @@ Measured from TM 1-1520-237-10 figure 2-9 sheets 1-2 by `panel_layout.py`; y, z 
 | No. | Item | Side | Size, in | Size, mm | Centre y, m | Centre z, m | Model: y, z; size, mm |
 |---|---|---|---|---|---|---|---|
 | 9 | Stabilator indicator | copilot | 2.57 x 1.90 | 65 x 48 | -0.769 | -0.085 | stab -0.769, -0.085; 65 x 48 |
-| 7 | Airspeed indicator | copilot | 3.28 x 3.29 | 83 x 83 | -0.757 | +0.004 | asi60 -0.757, +0.004; 82 x 82 |
+| 7 | Airspeed indicator | copilot | 3.28 x 3.29 | 83 x 83 | -0.757 | +0.004 | asi60-copilot -0.757, +0.004; 82 x 82 |
 | 11 | VSI/HSI mode selector | copilot | 3.68 x 3.88 | 93 x 98 | -0.755 | -0.176 | modesel-copilot -0.755, -0.176; 94 x 96 |
 | 8 | Stabilator position placard | copilot | 1.25 x 2.26 | 32 x 57 | -0.715 | -0.090 | - |
 | 4 | Master warning panel | copilot | 4.44 x 1.13 | 113 x 29 | -0.617 | +0.067 | caution -0.617, +0.067; 113 x 29 |
 | 5 | Vertical situation indicator | copilot | 5.75 x 5.99 | 146 x 152 | -0.616 | -0.025 | ai-copilot -0.616, -0.021; 131 x 140 |
-| 6 | Horizontal situation indicator | copilot | 5.85 x 4.94 | 149 x 125 | -0.615 | -0.168 | hsi60-copilot -0.615, -0.176; 149 x 126 |
-| 3 | Vertical speed indicator | copilot | 3.25 x 3.25 | 83 x 83 | -0.478 | -0.189 | vsi60 -0.478, -0.189; 82 x 82 |
-| 2 | Barometric altimeter | copilot | 3.25 x 3.25 | 83 x 83 | -0.478 | -0.090 | alt60 -0.478, -0.090; 82 x 82 |
+| 6 | Horizontal situation indicator | copilot | 5.85 x 4.94 | 149 x 125 | -0.615 | -0.168 | hsi60-copilot -0.615, -0.176; 149 x 125 |
+| 3 | Vertical speed indicator | copilot | 3.25 x 3.25 | 83 x 83 | -0.478 | -0.189 | vsi60-copilot -0.478, -0.189; 82 x 82 |
+| 2 | Barometric altimeter | copilot | 3.25 x 3.25 | 83 x 83 | -0.478 | -0.090 | alt60-copilot -0.478, -0.090; 82 x 82 |
 | 1 | Radar altimeter | copilot | 3.40 x 3.39 | 86 x 86 | -0.478 | +0.008 | apn209-copilot -0.478, +0.011; 87 x 86 |
 | 12 | Radio call placard | copilot | 1.46 x 0.63 | 37 x 16 | -0.472 | +0.062 | - |
 | 27 | Rad alt dimming | copilot | 0.93 x 0.82 | 24 x 21 | -0.408 | +0.066 | radaltdim -0.408, +0.066; 24 x 21 |
@@ -42,7 +42,7 @@ Measured from TM 1-1520-237-10 figure 2-9 sheets 1-2 by `panel_layout.py`; y, z 
 | 8 | Stabilator position placard | pilot | 1.24 x 2.24 | 31 x 57 | +0.514 | -0.059 | - |
 | 4 | Master warning panel | pilot | 4.45 x 1.13 | 113 x 29 | +0.614 | +0.068 | caution +0.614, +0.068; 113 x 29 |
 | 5 | Vertical situation indicator | pilot | 5.75 x 5.99 | 146 x 152 | +0.615 | -0.023 | ai +0.615, -0.019; 131 x 140 |
-| 6 | Horizontal situation indicator | pilot | 5.85 x 4.94 | 149 x 125 | +0.615 | -0.169 | hsi60 +0.615, -0.176; 149 x 126 |
+| 6 | Horizontal situation indicator | pilot | 5.85 x 4.94 | 149 x 125 | +0.615 | -0.169 | hsi60 +0.615, -0.176; 149 x 125 |
 | 3 | Vertical speed indicator | pilot | 3.25 x 3.25 | 83 x 83 | +0.753 | -0.190 | vsi60 +0.753, -0.190; 82 x 82 |
 | 2 | Barometric altimeter | pilot | 3.25 x 3.24 | 83 x 82 | +0.753 | -0.090 | alt60 +0.753, -0.090; 82 x 82 |
 | 1 | Radar altimeter | pilot | 3.40 x 3.40 | 86 x 86 | +0.753 | +0.009 | apn209 +0.753, +0.012; 87 x 86 |

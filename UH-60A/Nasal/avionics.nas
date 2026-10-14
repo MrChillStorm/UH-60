@@ -329,6 +329,26 @@ var step_systems = func {
     setprop("/sim/model/uh60/cap/ircm-inop", p and ice.ircm_cool > 0);
 };
 
+# ---------------------------------------------------------------- instrument lights
+# TM 2.70.3: NVG blue-green bezel lights on three circuits with their INSTR LT rheostats (OFF-BRT, 0-1 here):
+# /controls/lighting/instr-plt-flt, instr-cplt-flt and instr-non-flt (Aircraft menu > Instrument lights). The pilot's
+# flight instruments and the nonflight ones are on the No. 2 ac primary bus, the copilot's on No. 1; the generators
+# feed them, off line on the ground below 93.75 % rotor speed (the simulation has no APU or external power). The radar
+# altimeters' lights dim besides with RAD ALT DIMMING. Levels for the instruments' XML in /instrumentation/uh60/lights.
+var LT = U ~ "lights/";
+var lights = func {
+    var wow = b("/gear/gear[0]/wow") or b("/gear/gear[1]/wow") or b("/gear/gear[2]/wow");
+    var ac = !(wow and val("/rotors/main/rpm-pct") < 93.75);
+    var knob = func(k) { ac ? clamp(val("/controls/lighting/instr-" ~ k), 0, 1) : 0; };
+    var plt = knob("plt-flt"); var cplt = knob("cplt-flt");
+    setprop(LT ~ "plt-flt", plt);
+    setprop(LT ~ "cplt-flt", cplt);
+    setprop(LT ~ "non-flt", knob("non-flt"));
+    var ra = clamp(val("/controls/lighting/radalt-norm", 1), 0, 1);
+    setprop(LT ~ "radalt[0]", plt * ra);
+    setprop(LT ~ "radalt[1]", cplt * ra);
+};
+
 # ---------------------------------------------------------------- init and loop
 
 var init = func {
@@ -348,6 +368,13 @@ var init = func {
     }
     foreach (var k; ["ma-wrn-norm", "caut-advsy-norm", "radalt-norm"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, 1);
+    # instrument lights: set for the night, off by day (the sun more than 3 deg below the horizon: night), once the
+    # sun's place is known
+    settimer(func {
+        var night = val("/sim/time/sun-angle-rad") > 1.62;
+        foreach (var k; ["plt-flt", "cplt-flt", "non-flt"])
+            if (getprop("/controls/lighting/instr-" ~ k) == nil) setprop("/controls/lighting/instr-" ~ k, night ? 0.7 : 0);
+    }, 2);
 };
 
 var update = func {
@@ -359,6 +386,7 @@ var update = func {
     step_radalt();
     displays();
     step_systems();
+    lights();
 };
 
 init();

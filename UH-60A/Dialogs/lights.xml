@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- UH-60A instrument lights (TM 1-1520-237-10 2.70.3): the INSTR LT rheostats of the upper console; Nasal/avionics.nas
+     lights the instruments from them (NVG blue-green, with ac power) -->
+<PropertyList>
+
+  <name>lights</name>
+  <modal>false</modal>
+  <layout>vbox</layout>
+
+  <group>
+    <layout>hbox</layout>
+    <empty><stretch>1</stretch></empty>
+    <text>
+      <label>Instrument lights</label>
+    </text>
+    <empty><stretch>1</stretch></empty>
+    <button>
+      <pref-width>16</pref-width>
+      <pref-height>16</pref-height>
+      <legend></legend>
+      <keynum>27</keynum>
+      <border>2</border>
+      <binding>
+        <command>dialog-close</command>
+      </binding>
+    </button>
+  </group>
+
+  <hrule/>
+
+  <group>
+    <layout>table</layout>
+
+    <text>
+      <row>0</row><col>0</col>
+      <halign>left</halign>
+      <label>INSTR LT PILOT FLT</label>
+    </text>
+    <text><row>0</row><col>1</col><label>OFF</label></text>
+    <slider>
+      <row>0</row><col>2</col>
+      <name>plt-flt</name>
+      <pref-width>160</pref-width>
+      <min>0</min>
+      <max>1</max>
+      <step>0.05</step>
+      <live>true</live>
+      <property>/controls/lighting/instr-plt-flt</property>
+      <binding>
+        <command>dialog-apply</command>
+        <object-name>plt-flt</object-name>
+      </binding>
+    </slider>
+    <text><row>0</row><col>3</col><label>BRT</label></text>
+
+    <text>
+      <row>1</row><col>0</col>
+      <halign>left</halign>
+      <label>CPLT FLT INST LTS</label>
+    </text>
+    <text><row>1</row><col>1</col><label>OFF</label></text>
+    <slider>
+      <row>1</row><col>2</col>
+      <name>cplt-flt</name>
+      <pref-width>160</pref-width>
+      <min>0</min>
+      <max>1</max>
+      <step>0.05</step>
+      <live>true</live>
+      <property>/controls/lighting/instr-cplt-flt</property>
+      <binding>
+        <command>dialog-apply</command>
+        <object-name>cplt-flt</object-name>
+      </binding>
+    </slider>
+    <text><row>1</row><col>3</col><label>BRT</label></text>
+
+    <text>
+      <row>2</row><col>0</col>
+      <halign>left</halign>
+      <label>INSTR LT NON FLT</label>
+    </text>
+    <text><row>2</row><col>1</col><label>OFF</label></text>
+    <slider>
+      <row>2</row><col>2</col>
+      <name>non-flt</name>
+      <pref-width>160</pref-width>
+      <min>0</min>
+      <max>1</max>
+      <step>0.05</step>
+      <live>true</live>
+      <property>/controls/lighting/instr-non-flt</property>
+      <binding>
+        <command>dialog-apply</command>
+        <object-name>non-flt</object-name>
+      </binding>
+    </slider>
+    <text><row>2</row><col>3</col><label>BRT</label></text>
+  </group>
+
+  <hrule/>
+
+  <text>
+    <halign>left</halign>
+    <label>The lights need ac power: the generators, on line above 93.75 % rotor speed.</label>
+  </text>
+  <text>
+    <halign>left</halign>
+    <label>RAD ALT DIMMING, MA WRN and CAUT/ADVSY dimmers are on the instrument panel.</label>
+  </text>
+
+</PropertyList>

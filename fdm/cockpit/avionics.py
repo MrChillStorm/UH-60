@@ -181,7 +181,7 @@ def hsi():
         H = U + 'hsi[%d]/' % n
         bugp = '/autopilot/settings/heading-bug-deg' if n == 0 else H + 'heading-bug-deg'
         x = I.common_xml(names, lit=['card', 'lubber', 'hdg-bug', 'brg1', 'brg2', 'course', 'to', 'from', 'dev-bar'],
-                         glass=['glass'], extra='')
+                         glass=['glass'], extra='', light=('plt-flt', 'cplt-flt')[n])
         x = x.replace('%s', 'hsi60.ac', 1).replace('<PropertyList>', '<!-- %s horizontal situation indicator, TM 1-1520-237-10 '
                       'figure 3-31 (%s); data from Nasal/avionics.nas -->\n<PropertyList>' % (('pilot\'s', 'copilot\'s')[n], MARK), 1)
         a = ''
@@ -197,7 +197,7 @@ def hsi():
         a += knob_pick('hdg-knob', bugp, 'Heading select') + knob_pick('crs-knob', H + 'course-deg', 'Course')
         a += text_node('course-digits', H + 'course-deg', '%03.0f', 0.0075, 0.053, bz + 0.033, 0.0187)
         a += text_node('km-digits', H + 'km', '%04.0f', 0.0075, -0.048, bz + 0.035, 0.0184, 0.026)
-        a += emissive(['course-digits', 'km-digits'], (0.9, 0.9, 0.9), 'controls/lighting/instruments-norm')
+        a += I.light_xml(['course-digits', 'km-digits'], ('plt-flt', 'cplt-flt')[n])
         a += select(['course-digits', 'km-digits'], '<property>controls/electric/battery-switch</property>')
         x = x.replace('\n</PropertyList>', a + '\n</PropertyList>')
         open(os.path.join(HSI_DIR, fname), 'w').write(x)
@@ -250,7 +250,8 @@ def vsi():
     names = [o.name for o in objs]
     for n in (0, 1):
         V = U + 'vsi[%d]/' % n
-        x = I.common_xml(names, lit=['gs-scale-r', 'gs-ptr', 'dev-scale', 'dev-ptr', 'turn', 'turn-marks'])
+        x = I.common_xml(names, lit=['gs-scale-r', 'gs-ptr', 'dev-scale', 'dev-ptr', 'turn', 'turn-marks'],
+                         light=('plt-flt', 'cplt-flt')[n])
         x = x.replace('%s', 'cis.ac', 1).replace('<PropertyList>', '<!-- %s VSI: what the old attitude indicator lacked '
                       '(TM 1-1520-237-10 figure 3-30); %s -->\n<PropertyList>' % (('pilot\'s', 'copilot\'s')[n], MARK), 1)
         a = translate(['gs-ptr'], V + 'gs-norm', 0.020, (0, 0, 1)) + translate(['dev-ptr'], V + 'dev-norm', 0.016, (0, 1, 0))
@@ -269,7 +270,15 @@ def vsi():
     base = re.sub(r'\n  <animation>\s*<type>rotate</type>\s*<property>orientation/roll-deg</property>\s*<min-deg>-120</min-deg>.*?</animation>\n',
                   '\n', base, flags=re.S)
     C = U + 'cis/'
+    old = re.search(r'\n  <animation>\n    <type>material</type>\n    <object-name>AttitudeBall</object-name>.*?</animation>\n',
+                    base, flags=re.S)
+    lit = re.findall(r'<object-name>(\S+)</object-name>', old.group(0))
+    lit += [o for o in ('ring-slip', 'ai-ring', 'gs-scale') if o not in lit]   # the slip tube (the black ball shows
+                                                                               # against it), bank scale, collective scale
     for n, fname in ((0, 'ai.xml'), (1, 'ai-copilot.xml')):
+        base = base[:old.start()] + I.light_xml(lit, ('plt-flt', 'cplt-flt')[n]) + base[old.end():]
+        old = re.search(r'\n  <animation>\n    <type>material</type>\n    <object-name>AttitudeBall</object-name>.*?</animation>\n',
+                        base, flags=re.S)
         a = '\n  <!-- CIS: %s -->\n' % MARK
         a += '  <model>\n    <path>%s</path>\n  </model>\n' % ('cis.xml', 'cis-copilot.xml')[n]
         a += translate(['nav-pitch-steering-ba'], C + 'roll-cmd', 0.025, (0, 1, 0))

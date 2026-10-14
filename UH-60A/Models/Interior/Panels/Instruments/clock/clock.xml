@@ -28,14 +28,11 @@
     <object-name>hour</object-name>
     <object-name>minute</object-name>
     <object-name>second</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-    </condition>
     <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red>   0.50 </red>
-      <green> 0.40 </green>
-      <blue>  0.30 </blue>
+      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
     </emission>
   </animation>
 

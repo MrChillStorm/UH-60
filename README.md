@@ -115,6 +115,14 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
   light and parking brake. MASTER CAUTION comes on with each new amber
   capsule; click it to reset. Hold the panel's BRT/DIM-TEST switch down to
   test every light.
+- **Instrument lights** in NVG blue-green (NVIS Green A), on the three
+  circuits of the manual: the pilot's and the copilot's flight instruments
+  and the nonflight instruments, each with its INSTR LT dimmer (Aircraft
+  menu → Instrument lights). The radar altimeters dim besides with RAD ALT
+  DIMMING; the display units' lamp columns and digits light themselves.
+  The lights need ac power, so they come on with the generators (above
+  93.75 % rotor speed on the ground: the simulation has no APU). They are
+  set for the night when the flight starts in the dark, off by day.
 - **Engine ignition switch** below the caution/advisory panel: click to turn
   it; the engines only light off with it ON.
 - **Feel.** The rotor's wake is turbulent near the ground, through
@@ -231,7 +239,8 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
 - **Nasal.** `Nasal/uh60.nas` is rewritten: the start and stop sequencer, the
   AFCS messages and the vibration of the view; `convert.nas` is no longer
   loaded.
-- **Flight controls dialog** `Dialogs/afcs.xml`, with its menu entry in
+- **Flight controls dialog** `Dialogs/afcs.xml` and **instrument lights
+  dialog** `Dialogs/lights.xml`, with their menu entries in
   `Dialogs/uh60-menu.xml` and `Nasal/dialogs.nas`.
 - **Instrument panel** laid out as in the operator's manual (figure 2-9):
   the instruments moved to their places and sized (`Panels/panel.xml`), a

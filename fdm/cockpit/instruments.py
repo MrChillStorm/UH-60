@@ -72,8 +72,23 @@ def text(d, xy, s, f, fill, anchor='mm'):
     d.text(xy, s, font=f, fill=fill, anchor=anchor)
 
 
-def common_xml(objs, lit=(), glass=(), extra=''):
-    """The animations every instrument has: no shadows, the glass effect, the instrument lighting on `lit`."""
+# Instrument lighting (TM 1-1520-237-10 2.70.3): NVG blue-green bezel lights on three circuits, the pilot's and the
+# copilot's flight instruments and the nonflight instruments, each on its INSTR LT rheostat; Nasal/avionics.nas sets
+# their levels (0 without ac power) in LIGHTS: plt-flt, cplt-flt, non-flt, and radalt[n] (RAD ALT DIMMING besides)
+LIGHTS = '/instrumentation/uh60/lights/'
+NVG_GREEN = (0.10, 1.00, 0.45)         # NVIS Green A (MIL-L-85762A: u' 0.088, v' 0.543), sRGB about (0, 255, 110)
+
+
+def light_xml(objs, light):
+    """The NVG instrument lighting of `objs` on circuit `light` (a name in LIGHTS)."""
+    return ('\n  <animation>\n    <type>material</type>\n%s    <emission>\n      <factor-prop>%s%s</factor-prop>\n'
+            '      <red>   %.2f </red>\n      <green> %.2f </green>\n      <blue>  %.2f </blue>\n    </emission>\n'
+            '  </animation>\n' % (''.join('    <object-name>%s</object-name>\n' % o for o in objs), LIGHTS, light, *NVG_GREEN))
+
+
+def common_xml(objs, lit=(), glass=(), extra='', light='non-flt'):
+    """The animations every instrument has: no shadows, the glass effect, the instrument lighting on `lit` (circuit
+    `light`)."""
     names = ''.join('    <object-name>%s</object-name>\n' % o for o in objs)
     out = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<!-- written by fdm/cockpit/instruments.py -->\n\n'
     out += '<PropertyList>\n\n  <path>%%s</path>\n\n  <animation>\n    <type>noshadow</type>\n%s  </animation>\n' % names
@@ -81,11 +96,7 @@ def common_xml(objs, lit=(), glass=(), extra=''):
         out += ('\n  <effect>\n    <inherits-from>../../../../Effects/Glass/glass</inherits-from>\n'
                 '    <object-name>%s</object-name>\n  </effect>\n' % g)
     if lit:
-        out += ('\n  <animation>\n    <type>material</type>\n%s    <condition>\n      <property>controls/electric/'
-                'battery-switch</property>\n    </condition>\n    <emission>\n      <factor-prop>controls/lighting/'
-                'instruments-norm</factor-prop>\n      <red>   0.50 </red>\n      <green> 0.40 </green>\n'
-                '      <blue>  0.30 </blue>\n    </emission>\n  </animation>\n'
-                % ''.join('    <object-name>%s</object-name>\n' % o for o in lit))
+        out += light_xml(lit, light)
     return out + extra + '\n</PropertyList>\n'
 
 
@@ -361,11 +372,11 @@ class Panel:
         cy, cz = s.at(x, y); o = s.parts.setdefault('glass', A.Obj('glass', None, A.GLASS))
         A.flat(o, A.circle(dia * PT / 2, cy, cz, 40), s.depth + 0.0015, A.const(0, 0))
 
-    def write(s, comment, extra='', variants=None):
+    def write(s, comment, extra='', variants=None, light='non-flt'):
         """variants: [(xml name, {text: replacement})] for instances that differ only in their properties."""
         objs = [s.body] + list(s.parts.values())
         glass = ['glass'] if 'glass' in s.parts else []
-        xml = common_xml([o.name for o in objs], lit=s.lit, glass=glass, extra=s.xml + extra)
+        xml = common_xml([o.name for o in objs], lit=s.lit, glass=glass, extra=s.xml + extra, light=light)
         xml = xml.replace('<PropertyList>', '<!-- %s -->\n<PropertyList>' % comment, 1)
         write_instrument(s.name, objs, xml)
         for fname, subs in variants or ():
@@ -551,6 +562,7 @@ def panels(art):
                                      ('securepl', 25, 'centre', 'secure warning placard'),
                                      ('radiosel', 23, 'centre', 'radio select placard')):
         p = Panel(name, art, num, side, 0.0006, px_mm=20)
+        p.lit = []                                   # placards aren't lit
         p.write(comment)
 
 

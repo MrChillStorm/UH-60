@@ -116,9 +116,9 @@ class Gauge:
     def glass(s):
         A.flat(s.obj('glass', True), A.circle(s.R + 0.0006, n=64), s.front - 0.0012, A.const(0, 0))
 
-    def write(s, comment, variants=None):
+    def write(s, comment, variants=None, light='non-flt'):
         objs = list(s.objs.values())
-        x = I.common_xml([o.name for o in objs], lit=s.lit, glass=['glass'], extra=s.xml)
+        x = I.common_xml([o.name for o in objs], lit=s.lit, glass=['glass'], extra=s.xml, light=light)
         x = x.replace('<PropertyList>', '<!-- %s; written by fdm/cockpit/gauges.py -->\n<PropertyList>' % comment, 1)
         I.write_instrument(s.name, objs, x)
         for fname, subs in variants or ():
@@ -189,7 +189,7 @@ def asi():
     g.needle('needle', DIAL_R * 0.90, 0.0022, 0.009, s_d(g, 1))
     g.glass()
     g.xml += rot('needle', 'instrumentation/airspeed-indicator/indicated-speed-kt', [(-999, 0)] + ASI_TABLE + [(400, 359)])
-    g.write('airspeed indicator, TM 1-1520-237-10 figure 2-9')
+    g.write('airspeed indicator, TM 1-1520-237-10 figure 2-9', variants=[('asi60-copilot.xml', {'lights/plt-flt': 'lights/cplt-flt'})], light='plt-flt')
 
 
 def s_d(g, k):
@@ -224,7 +224,7 @@ def vsi():
     table = [(-9999, -272)] + [(-v, -90 - sweep(v)) for v in (6000, 4000, 2000, 1000, 500)] + \
             [(v, -90 + sweep(v)) for v in (0, 500, 1000, 2000, 4000, 6000)] + [(9999, 92)]
     g.xml += rot('needle', 'instrumentation/vertical-speed-indicator/indicated-speed-fpm', table)
-    g.write('vertical speed indicator, TM 1-1520-237-10 figure 2-9')
+    g.write('vertical speed indicator, TM 1-1520-237-10 figure 2-9', variants=[('vsi60-copilot.xml', {'lights/plt-flt': 'lights/cplt-flt'})], light='plt-flt')
 
 
 # ---------------------------------------------------------------- altimeter
@@ -261,7 +261,7 @@ def alt():
                        font='LiberationFonts/LiberationSans-Bold.ttf', scale=0.001, truncate=True)
     g.xml += text_node('inhg', 'instrumentation/altimeter/setting-inhg', '%4.0f', 0.0050, 0.0090, -0.0109, g.dd + 0.0006,
                        font='LiberationFonts/LiberationSans-Bold.ttf', scale=100)
-    g.xml += emissive(['thousands', 'inhg'], (0.9, 0.9, 0.9), PWR, 'controls/lighting/instruments-norm')
+    g.xml += I.light_xml(['thousands', 'inhg'], 'plt-flt')                  # its counters, lit with the dial
     step = 'instrumentation/altimeter/setting-inhg'
     acts = ''
     for button, sgn in ((0, 1), (2, -1), (3, 1), (4, -1)):
@@ -274,7 +274,7 @@ def alt():
               '        <command>set-tooltip</command>\n        <tooltip-id>alt-baro</tooltip-id>\n        <label>Baro setting: %%.2f inHg</label>\n'
               '        <property>%s</property>\n      </binding>\n    </hovered>\n  </animation>\n' % (acts, step))
     g.xml += rot('knob', step, factor=400, centre=(0, -0.0325, -0.0325))
-    g.write('barometric altimeter (counter-pointer), TM 1-1520-237-10 figure 2-9')
+    g.write('barometric altimeter (counter-pointer), TM 1-1520-237-10 figure 2-9', variants=[('alt60-copilot.xml', {'lights/plt-flt': 'lights/cplt-flt'})], light='plt-flt')
 
 
 # ---------------------------------------------------------------- radar altimeter AN/APN-209
@@ -361,7 +361,8 @@ def apn209():
                         'HI SET: high altitude bug (middle click: PUSH TO TEST)')
     g.xml += I.pick_xml('hi-knob', [(1, 'setprop("%stest", 1);' % RA)], 'HI SET: PUSH TO TEST', release='setprop("%stest", 0);' % RA)
     g.write('radar altimeter AN/APN-209, TM 1-1520-237-10 3.29 and figure 3-34; Nasal/avionics.nas',
-            variants=[('apn209-copilot.xml', {'radalt[0]': 'radalt[1]', 'avionics.radalt_bug(0,': 'avionics.radalt_bug(1,'})])
+            variants=[('apn209-copilot.xml', {'radalt[0]': 'radalt[1]', 'avionics.radalt_bug(0,': 'avionics.radalt_bug(1,'})],
+            light='radalt[0]')
 
 
 # ---------------------------------------------------------------- attitude sphere
@@ -571,6 +572,18 @@ def pdu():
         dc.text((cx, 32 * K * SS), str(k), font=f, fill=(255, 112, 10), anchor='mm')
     big.paste(cells.resize((2048, 64 * K), Image.LANCZOS), (0, 448 * K))
     big.save(os.path.join(I.INSTR, 'prop-rpm', 'prop-rpm.png'), optimize=True)
+    vids_lighting('prop-rpm')
+
+
+def vids_lighting(name):
+    """The display unit's scales (object fond) lit by the nonflight instrument lights (TM 2.70.3: NVG information panel
+    lighting); its lamp columns and digits light themselves. A marked block in the original's XML, replaced each time."""
+    path = os.path.join(I.INSTR, name, name + '.xml')
+    x = open(path, encoding='latin-1').read()
+    x = re.sub(r'\n  <!-- NVG panel lighting.*?<!-- /NVG -->\n', '\n', x, flags=re.S)
+    blk = ('\n  <!-- NVG panel lighting: written by fdm/cockpit/gauges.py -->' + I.light_xml(['fond'], 'non-flt')
+           + '  <!-- /NVG -->\n')
+    open(path, 'w', encoding='latin-1').write(x.replace('\n</PropertyList>', blk + '</PropertyList>', 1))
 
 
 # ---------------------------------------------------------------- central display unit
@@ -654,6 +667,7 @@ def cdu():
         dc.text((cx, (959.5 - 857) * K * SS), str(k), font=f, fill=(255, 112, 10), anchor='mm')
     big.paste(cells.resize((2048, 167 * K), Image.LANCZOS), (0, 857 * K))
     big.save(os.path.join(I.INSTR, 'combimeter', 'combimeter.png'), optimize=True)
+    vids_lighting('combimeter')
 
 
 if __name__ == '__main__':

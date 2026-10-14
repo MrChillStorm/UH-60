@@ -88,7 +88,7 @@
   </model>
 
   <model>
-    <path>Instruments/asi60/asi60.xml</path>
+    <path>Instruments/asi60/asi60-copilot.xml</path>
     <offsets>
       <x-m>  0.0435 </x-m>
       <y-m> -0.7572 </y-m>
@@ -109,7 +109,7 @@
   </model>
 
   <model>
-    <path>Instruments/alt60/alt60.xml</path>
+    <path>Instruments/alt60/alt60-copilot.xml</path>
     <offsets>
       <x-m>  0.0418 </x-m>
       <y-m> -0.4781 </y-m>
@@ -222,7 +222,7 @@
   </model>
 
   <model>
-    <path>Instruments/vsi60/vsi60.xml</path>
+    <path>Instruments/vsi60/vsi60-copilot.xml</path>
     <offsets>
       <x-m>  0.0401 </x-m>
       <y-m> -0.4783 </y-m>

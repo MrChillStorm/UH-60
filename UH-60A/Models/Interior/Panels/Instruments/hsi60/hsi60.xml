@@ -43,14 +43,11 @@
     <object-name>to</object-name>
     <object-name>from</object-name>
     <object-name>dev-bar</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-    </condition>
     <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red>   0.50 </red>
-      <green> 0.40 </green>
-      <blue>  0.30 </blue>
+      <factor-prop>/instrumentation/uh60/lights/plt-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
     </emission>
   </animation>
 
@@ -516,10 +513,10 @@
     <object-name>course-digits</object-name>
     <object-name>km-digits</object-name>
     <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red> 0.9 </red>
-      <green> 0.9 </green>
-      <blue> 0.9 </blue>
+      <factor-prop>/instrumentation/uh60/lights/plt-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
     </emission>
   </animation>
 

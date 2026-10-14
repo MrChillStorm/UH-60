@@ -92,6 +92,13 @@
         </binding>
       </item>
       <item>
+        <label>Instrument lights</label>
+        <binding>
+          <command>nasal</command>
+          <script>uh60.lights_dlg.open()</script>
+        </binding>
+      </item>
+      <item>
         <label>Options</label>
         <binding>
           <command>nasal</command>

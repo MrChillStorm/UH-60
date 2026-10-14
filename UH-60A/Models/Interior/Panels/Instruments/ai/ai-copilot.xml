@@ -62,14 +62,14 @@
     <object-name>barre2</object-name>
     <object-name>nav-pitch-steering-ba</object-name>
     <object-name>nav-yaw-steering-bar</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-    </condition>
+    <object-name>ring-slip</object-name>
+    <object-name>ai-ring</object-name>
+    <object-name>gs-scale</object-name>
     <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red>   0.50 </red>
-      <green> 0.40 </green>
-      <blue>  0.30 </blue>
+      <factor-prop>/instrumentation/uh60/lights/cplt-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
     </emission>
   </animation>
 

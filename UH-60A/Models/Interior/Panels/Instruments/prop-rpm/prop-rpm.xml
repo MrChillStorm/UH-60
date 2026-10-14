@@ -224,4 +224,16 @@
     </axis>
   </animation>
 
+  <!-- NVG panel lighting: written by fdm/cockpit/gauges.py -->
+  <animation>
+    <type>material</type>
+    <object-name>fond</object-name>
+    <emission>
+      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
+    </emission>
+  </animation>
+  <!-- /NVG -->
 </PropertyList>

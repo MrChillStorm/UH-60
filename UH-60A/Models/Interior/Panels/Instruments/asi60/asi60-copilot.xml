@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- airspeed indicator, TM 1-1520-237-10 figure 2-9; written by fdm/cockpit/gauges.py -->
+<PropertyList>
+
+  <path>asi60.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>dial</object-name>
+    <object-name>needle</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>dial</object-name>
+    <object-name>needle</object-name>
+    <emission>
+      <factor-prop>/instrumentation/uh60/lights/cplt-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>needle</object-name>
+    <property>instrumentation/airspeed-indicator/indicated-speed-kt</property>
+    <interpolation>
+      <entry><ind> -999 </ind><dep> 0 </dep></entry>
+      <entry><ind> 0 </ind><dep> 0 </dep></entry>
+      <entry><ind> 10 </ind><dep> 10 </dep></entry>
+      <entry><ind> 50 </ind><dep> 68 </dep></entry>
+      <entry><ind> 100 </ind><dep> 139 </dep></entry>
+      <entry><ind> 150 </ind><dep> 209 </dep></entry>
+      <entry><ind> 200 </ind><dep> 282 </dep></entry>
+      <entry><ind> 250 </ind><dep> 354 </dep></entry>
+      <entry><ind> 400 </ind><dep> 359 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>
