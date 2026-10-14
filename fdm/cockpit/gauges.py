@@ -8,7 +8,8 @@ their faces are sharp: dials drawn at 1024 px (about 13 px/mm), supersampled; co
 - radar altimeter AN/APN-209 (apn209): 0-200 ft linear at 10 ft per mark, 200-1500 ft at 100, dial mask, OFF flag, L and
   H bugs with LO and HI lights, four-digit readout, LO SET (with OFF) and HI SET (PUSH TO TEST) knobs; each pilot's own
   (Nasal/avionics.nas works it);
-- the VSI's attitude sphere (Instruments/ai/ai.png): redrawn at 4x.
+- the VSI's attitude sphere (Instruments/ai/ai.png): redrawn at 4x, its case black, the slip indicator's tube on the
+  ball's path; the sphere's and the slip ball's meshes, smooth (ball);
 - the pilot's and central display units' faces (prop-rpm.png 4x, combimeter.png 2x): redrawn in their old layout,
   the labels re-typeset and the digits in a seven-segment font, the tapes' band copied pixel for pixel so that
   their calibration holds (the originals are in src/).
@@ -370,6 +371,15 @@ def sphere():
     ladder: marks every 5 deg, 30 and 60 numbered, CLIMB and DIVE; the rest of the texture upscaled."""
     path = os.path.join(I.INSTR, 'ai', 'ai.png')
     old = Image.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'ai-512.png')).convert('RGB')   # the original
+    # the case's face and the bore round the sphere black, as a VSI's are (they were the panel's grey, and the bore's
+    # flat sides cutting the sphere looked like the panel showing through it); its screws stay
+    a = np.asarray(old).astype(int); case = a[0:400, 0:250]
+    grey = (np.abs(case.mean(2) - 50) < 20) & (case.max(2) - case.min(2) < 12)
+    yy, xx = np.mgrid[0:400, 0:250]
+    grey[252:326, 0:63] = True                                      # the screw's square, but its head
+    grey &= (yy - 288.5) ** 2 + (xx - 29.5) ** 2 > 33 ** 2
+    case[grey] = 16
+    old = Image.fromarray(a.astype(np.uint8))
     big = old.resize((2048, 2048), Image.LANCZOS)
     N = 1024 * SS
     im = Image.new('RGB', (N, N)); d = ImageDraw.Draw(im)
@@ -395,7 +405,119 @@ def sphere():
     d.text((cx, row(42)), 'CLIMB', font=f, fill=(20, 20, 20), anchor='mm')
     d.text((cx, row(-42)), 'DIVE', font=f, fill=(240, 240, 240), anchor='mm')
     big.paste(im.resize((1024, 1024), Image.LANCZOS), (1024, 0))
+    slip_face(big)
+    ring_lower(big)
     big.save(path, optimize=True)
+
+
+RING_U, RING_V = (3.4950, 0.7558), (3.5378, 0.2665)             # the ring round the sphere (ai-ring), mapped flat
+
+
+def ring_lower(big):
+    """The ring's lower half plain black: its bank marks and centre line there (the UH-60A's bank scale and index are
+    at the top, TM figure 3-30); no brown smudges (one on its left, one under the sky pointer); its 90 degree marks,
+    0 degree line and the glide slope bar stay."""
+    a = np.asarray(big).copy()
+    yy, xx = np.mgrid[0:2048, 0:2048]
+    y = (xx / 2048 - RING_U[1]) / RING_U[0]; z = ((1 - yy / 2048) - RING_V[1]) / RING_V[0]
+    m = (xx >= 0.530 * 2048) & (xx <= 0.976 * 2048) & (yy >= (1 - 0.486) * 2048) & (yy <= (1 - 0.042) * 2048)
+    ring = m & (np.hypot(y, z) >= 0.0445)
+    c = a.astype(int)
+    brown = (c[..., 0] - c[..., 2] > 6) & (c[..., 0] > c[..., 1]) & (c[..., 0] > 10)     # smudges (the ring is neutral)
+    a[ring & (((z < -0.004) & (y < 0.051)) | brown)] = 0
+    big.paste(Image.fromarray(a))
+
+
+# the slip indicator: the ball's path (an arc about the sphere's axis, the ball's roll travel), the face (object
+# ring-slip, mapped flat: u, v of y, z) and its region in the texture
+SLIP_R, SLIP_BALL, SLIP_TRAVEL = 0.0562, 0.0029, 13.0
+SLIP_U, SLIP_V = (4.0859, -0.0292, 0.2551), (5.0624, 0.3483)
+SLIP_BOX = (0, 1700, 1032, 1966)                                  # px in the 2048 texture
+
+
+def slip_face(big):
+    """The face below the sphere: black, the inclinometer's tube (cream glass on the ball's path) and its two
+    reference wires; the old one had a smudged tube above the ball's path and a khaki block under it."""
+    x0, y0, x1, y1 = SLIP_BOX; q = SS * 2
+    im = Image.new('RGB', ((x1 - x0) * q, (y1 - y0) * q), (16, 16, 16)); d = ImageDraw.Draw(im)
+    def px(y, z):
+        u = SLIP_U[0] * y + SLIP_U[1] * z + SLIP_U[2]; v = SLIP_V[0] * z + SLIP_V[1]
+        return ((u * 2048 - x0) * q, ((1 - v) * 2048 - y0) * q)
+    arc = lambda r, a: px(r * math.sin(math.radians(a)), -r * math.cos(math.radians(a)))
+    half = SLIP_TRAVEL + math.degrees(SLIP_BALL / SLIP_R) + 0.5         # the tube's ends, degrees off centre
+    w = SLIP_BALL + 0.0007                                              # its half width
+    edge = [arc(SLIP_R - w, a) for a in np.linspace(-half, half, 60)] + [arc(SLIP_R + w, a) for a in np.linspace(half, -half, 60)]
+    for a in (-half, half):                                             # round ends
+        c = arc(SLIP_R, a); r = (px(0, -w)[1] - px(0, 0)[1])
+        d.ellipse([c[0] - abs(r), c[1] - abs(r), c[0] + abs(r), c[1] + abs(r)], fill=(70, 70, 70))
+    d.polygon(edge, fill=(70, 70, 70))
+    inner = [arc(SLIP_R - w + 0.0003, a) for a in np.linspace(-half, half, 60)] + \
+            [arc(SLIP_R + w - 0.0003, a) for a in np.linspace(half, -half, 60)]
+    for a in (-half, half):
+        c = arc(SLIP_R, a); r = abs(px(0, -w + 0.0003)[1] - px(0, 0)[1])
+        d.ellipse([c[0] - r, c[1] - r, c[0] + r, c[1] + r], fill=(226, 222, 204))
+    d.polygon(inner, fill=(226, 222, 204))
+    wa = math.degrees((SLIP_BALL + 0.0004) / SLIP_R)                     # the wires, just clear of the centred ball
+    for a in (-wa, wa):
+        d.line([arc(SLIP_R - w, a), arc(SLIP_R + w, a)], fill=(10, 10, 10), width=int(0.0005 * SLIP_U[0] * 2048 * q))
+    big.paste(im.resize((x1 - x0, y1 - y0), Image.LANCZOS), (x0, y0))
+
+
+# the old sphere mesh's centre (d, y, z) and radius in ai.ac, and its texture mapping (u, v per degree of longitude from
+# straight ahead and of latitude, both from the middle of the texture's sphere quarter)
+BALL_C, BALL_R = (-0.05585, -0.0007, -0.00062), 0.0591
+BALL_U, BALL_V = (0.7498, 0.0013497), (0.7501, 0.0026990)
+
+
+def ball(nlat=64, nlon=96):
+    """The VSI's sphere (ai.ac, object AttitudeBall) as a fine mesh: the old one had 16 x 16 facets, its outline a
+    polygon with long straight sides and its shading broken up along them. Same place, size and texture mapping, so
+    the pitch and roll animations and the texture stay as they were."""
+    o = A.Obj('AttitudeBall', 'ai.png')
+    cd, cy, cz = BALL_C
+    def point(lat, lon):
+        a, b = math.radians(lat), math.radians(lon)
+        return (cd + BALL_R * math.cos(a) * math.cos(b), cy + BALL_R * math.cos(a) * math.sin(b), cz + BALL_R * math.sin(a))
+    uv = lambda lat, lon: (BALL_U[0] + BALL_U[1] * lon, BALL_V[0] + BALL_V[1] * lat)
+    for i in range(nlat):
+        la0, la1 = -90 + 180 * i / nlat, -90 + 180 * (i + 1) / nlat
+        for j in range(nlon):
+            lo0, lo1 = -180 + 360 * j / nlon, -180 + 360 * (j + 1) / nlon
+            corners = [(la0, lo0), (la0, lo1), (la1, lo1), (la1, lo0)]
+            if i == 0:                                                   # the poles: triangles
+                corners = [(la0, (lo0 + lo1) / 2), (la1, lo1), (la1, lo0)]
+            elif i == nlat - 1:
+                corners = [(la0, lo0), (la0, lo1), (la1, (lo0 + lo1) / 2)]
+            mid = point((la0 + la1) / 2, (lo0 + lo1) / 2)
+            o.face([point(*c) for c in corners], [uv(*c) for c in corners], tuple(m - c for m, c in zip(mid, BALL_C)))
+    # the inclinometer's ball: a smooth black sphere on its path below the sphere (texture: black of the slip face)
+    s = A.Obj('slip-ball', 'ai.png')
+    black = A.const(SLIP_U[0] * -0.050 + SLIP_U[1] * -0.059 + SLIP_U[2], SLIP_V[0] * -0.059 + SLIP_V[1])
+    c = (0.0010, 0.0, -SLIP_R)
+    for i in range(12):
+        la0, la1 = -90 + 15 * i, -75 + 15 * i
+        for j in range(24):
+            lo0, lo1 = 15 * j, 15 * (j + 1)
+            pt = lambda la, lo: tuple(cc + SLIP_BALL * v for cc, v in zip(c, (math.cos(math.radians(la)) * math.cos(math.radians(lo)),
+                                      math.cos(math.radians(la)) * math.sin(math.radians(lo)), math.sin(math.radians(la)))))
+            corners = [(la0, lo0), (la0, lo1), (la1, lo1), (la1, lo0)]
+            if i == 0: corners = [(la0, lo0), (la1, lo1), (la1, lo0)]
+            if i == 11: corners = [(la0, lo0), (la0, lo1), (la1, lo0)]
+            mid = pt((la0 + la1) / 2, (lo0 + lo1) / 2)
+            s.face([pt(*k) for k in corners], [black(0, 0)] * len(corners), tuple(m - cc for m, cc in zip(mid, c)))
+    path = os.path.join(I.INSTR, 'ai', 'ai.ac')
+    L = open(path, encoding='latin-1').read().split('\n')
+    if 'name "bank-index"' in L:                     # the lower bank index: the UH-60A's is at the top (SkyPointer)
+        i = L.index('name "bank-index"') - 1
+        j = next(k for k in range(i + 1, len(L)) if L[k].startswith('kids'))
+        del L[i:j + 1]
+        w = next(k for k in range(len(L)) if L[k].startswith('kids'))     # the world's
+        L[w] = 'kids %d' % (int(L[w].split()[1]) - 1)
+    for obj in (o, s):
+        i = L.index('name "%s"' % obj.name) - 1
+        j = next(k for k in range(i + 1, len(L)) if L[k].startswith('kids'))
+        L[i:j + 1] = obj.lines()
+    open(path, 'w', encoding='latin-1').write('\n'.join(L))
 
 
 # ---------------------------------------------------------------- pilot's display unit
@@ -535,4 +657,4 @@ def cdu():
 
 
 if __name__ == '__main__':
-    asi(); vsi(); alt(); apn209(); sphere(); pdu(); cdu()
+    asi(); vsi(); alt(); apn209(); sphere(); ball(); pdu(); cdu()

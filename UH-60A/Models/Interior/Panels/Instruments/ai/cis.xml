@@ -24,6 +24,7 @@
     <object-name>mb-off</object-name>
     <object-name>mb-on</object-name>
     <object-name>turn</object-name>
+    <object-name>turn-marks</object-name>
   </animation>
 
   <animation>
@@ -33,6 +34,7 @@
     <object-name>dev-scale</object-name>
     <object-name>dev-ptr</object-name>
     <object-name>turn</object-name>
+    <object-name>turn-marks</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
     </condition>

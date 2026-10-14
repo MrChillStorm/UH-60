@@ -1,6 +1,7 @@
 """The caution/advisory panel (TM 1-1520-237-10 2.81.1, figure 2-24, table 2-3) and what lights it.
 
-Writes Instruments/cap (the panel: the TM's face art, a raised capsule per legend and its lit version),
+Writes Instruments/cap (the panel: the flat LED unit that replaces the incandescent capsules in fielded aircraft, a low
+bezel with two windows and the TM's legends on them, each unlit and lit),
 Systems/uh60a-cap.xml (property rules: one flag per legend that the simulation can drive, /sim/model/uh60/cap/<id>),
 Nasal/caution.nas (MASTER CAUTION: on when an amber capsule lights, off when pressed) and the master
 warning panel's conditions in Instruments/caution/caution.xml (MASTER CAUTION and the lamp test).
@@ -8,7 +9,7 @@ warning panel's conditions in Instruments/caution/caution.xml (MASTER CAUTION an
 Capsules light with dc power (the battery: the model has no APU), from their flag, or all of them while the BRT/DIM-TEST
 switch is held at TEST; the fuel-low capsules flash. Legends for failures the simulation doesn't have get no flag.
 """
-import os, re
+import math, os, re
 from PIL import Image, ImageDraw
 
 import acmesh as A
@@ -119,7 +120,35 @@ CAUTION_ROWS = 16
 # the capsules on figure 2-9 (sheet 1 pt): columns' left edges, the first row's top, row pitch, capsule size
 COLS, ROW0, PITCH, CW, CH = (369.8, 388.4, 407.0, 425.6), 97.3, 6.38, 17.32, 4.88
 TEST_SWITCH = (376.0, 225.5)                   # BRT/DIM-TEST switch, sheet 1 pt
+# the capsule field's outline (figure 2-9, sheet 1 pt) and its notch for the switch (right edge, top)
+FIELD, NOTCH = (368.73, 444.10, 96.0, 231.05), (387.07, 218.5)
+# The panel is the flat LED replacement (Luma Technologies' UH-60/S-70 panel) as fielded aircraft have it, the TM
+# giving no depths: a bezel 0.08 in proud of the face plate, held by eight hefty slotted finger screws, the legends
+# flat behind two windows split at mid-height; the upper rows moved up TOP_UP to make room for the bar between them
+PLATE = 0.002
+SPLIT, TOP_UP, MARGIN = 11, 4.5, 1.25           # the lower window's first row; pt; a window's margin round its legends
+WINDOW_R = 0.0015                               # m, its corners
+SCREWS = (0.08, 0.36, 0.64, 0.92)               # their heights on the panel, from the top, four a side
+SCREW_R, SCREW_H = 0.0045, 0.005                # m
 AMBER, GREEN = (255, 176, 0), (60, 255, 80)
+
+
+def row_top(r):
+    """A legend row's top, sheet 1 pt."""
+    return ROW0 + PITCH * r - (TOP_UP if r < SPLIT else 0)
+
+
+def rounded(y0, y1, z0, z1, radii, n=4):
+    """A rectangle with its corners (bottom left, bottom right, top right, top left) rounded by radii."""
+    out = []
+    for (cy, cz, sy, sz, a0), r in zip(((y0, z0, 1, 1, 180), (y1, z0, -1, 1, 270), (y1, z1, -1, -1, 0),
+                                        (y0, z1, 1, -1, 90)), radii):
+        if r <= 0:
+            out.append((cy, cz)); continue
+        for k in range(n + 1):
+            a = math.radians(a0 + 90 * k / n)
+            out.append((cy + sy * r + r * math.cos(a), cz + sz * r + r * math.sin(a)))
+    return out
 
 
 def legend(d, box, lines, rgb):
@@ -139,13 +168,34 @@ def build(art):
     it = I.item(num, side); bx0, bx1, by0, by1 = it[4:8]
     cx, cy = (bx0 + bx1) / 2, (by0 + by1) / 2
     w, h = (bx1 - bx0) * I.PT, (by1 - by0) * I.PT
-    depth = 0.006
     t = I.Tex(2048, 2048, (I.GROUND,) * 3)
     pw = 1024; ph = int(round(pw * h / w))
     t.im.paste(tmart.light(art.vector(bx0, bx1, by0, by1, 1, pw, ph), I.GROUND, I.LETTER).convert('RGB'), (0, 0))
     face_uv = t.area(0, 0, pw, ph, -w / 2, w / 2, -h / 2, h / 2)
-    paint, side_uv, metal = t.swatch((30, 30, 30)), t.swatch((16, 16, 16)), t.swatch((170, 170, 172))
-    body = A.Obj('panel', 'cap.png'); A.prism(body, A.rrect(w, h, 0.002), 0, depth, face_uv, paint)
+    fx0, fx1, fy0, fy1 = FIELD
+    px = lambda x, y: ((x - bx0) / (bx1 - bx0) * pw, (y - by0) / (by1 - by0) * ph)
+    e = 0.35                                    # the figure's field and capsules off the face: the windows replace them
+    t.d.polygon([px(fx0 - e, fy0 - e), px(fx1 + e, fy0 - e), px(fx1 + e, fy1 + e), px(NOTCH[0] - e, fy1 + e),
+                 px(NOTCH[0] - e, NOTCH[1] + e), px(fx0 - e, NOTCH[1] + e)], fill=(I.GROUND,) * 3)
+    t.d.rectangle([0, 0, pw - 1, ph - 1], outline=(I.GROUND,) * 3, width=int(pw / (bx1 - bx0) * 0.7))  # its outline
+    paint, metal = t.swatch((30, 30, 30)), t.swatch((170, 170, 172))
+    head, slot, glass = t.swatch((40, 40, 40)), t.swatch((8, 8, 8)), t.swatch((14, 14, 14))
+    Y = lambda x: (x - cx) * I.PT
+    Z = lambda y: -(y - cy) * I.PT
+    body = A.Obj('panel', 'cap.png')
+    A.box(body, -w / 2, w / 2, -h / 2, h / 2, 0, PLATE, face_uv, paint)
+    win = A.Obj('windows', 'cap.png'); R = WINDOW_R
+    for (x0, x1, y0, y1), radii in (((fx0, fx1, row_top(0) - MARGIN, row_top(SPLIT - 1) + CH + MARGIN), (R, R, R, R)),
+                                    ((fx0, fx1, row_top(SPLIT) - MARGIN, NOTCH[1]), (R, 0, R, R)),  # the lower, beside
+                                    ((NOTCH[0], fx1, NOTCH[1], fy1), (R, R, 0, 0))):                # and below the switch
+        A.flat(win, rounded(Y(x0), Y(x1), Z(y1), Z(y0), radii), PLATE + 0.0001, glass)
+    fast = A.Obj('screws', 'cap.png')
+    for x in ((bx0 + fx0) / 2, (fx1 + bx1) / 2):
+        for f in SCREWS:
+            fy, fz = Y(x), Z(by0 + f * (by1 - by0))
+            A.cylinder(fast, SCREW_R, fy, fz, PLATE, PLATE + SCREW_H, head, head, n=24)
+            A.box(fast, fy - SCREW_R * 0.8, fy + SCREW_R * 0.8, fz - 0.0004, fz + 0.0004, PLATE + SCREW_H,
+                  PLATE + SCREW_H + 0.0001, slot, slot)
     caps = A.Obj('capsules', 'cap.png'); lit = []
     cell = [1040 + 192 * (k % 5) for k in range(5)]
     n = 0; legends = []
@@ -159,20 +209,20 @@ def build(art):
             ux, uy = cell[n % 5], 4 + 54 * (n // 5) * 2; n += 1
             legend(t.d, (ux, uy, ux + 186, uy + 50), lines, (58, 58, 58))
             legend(t.d, (ux, uy + 54, ux + 186, uy + 104), lines, colour)
-            ccy, ccz = (COLS[c] + CW / 2 - cx) * I.PT, -(ROW0 + PITCH * r + CH / 2 - cy) * I.PT
+            ccy, ccz = (COLS[c] + CW / 2 - cx) * I.PT, -(row_top(r) + CH / 2 - cy) * I.PT
             cw, ch = CW * I.PT, CH * I.PT
             y0, y1, z0, z1 = ccy - cw / 2, ccy + cw / 2, ccz - ch / 2, ccz + ch / 2
-            A.prism(caps, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], depth, depth + 0.002,
-                    t.area(ux, uy, ux + 186, uy + 50, y0, y1, z0, z1), side_uv)
+            A.flat(caps, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], PLATE + 0.0002,
+                   t.area(ux, uy, ux + 186, uy + 50, y0, y1, z0, z1))
             o = A.Obj('lit-' + cid, 'cap.png')
-            A.flat(o, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], depth + 0.0022, t.area(ux, uy + 54, ux + 186, uy + 104, y0, y1, z0, z1))
+            A.flat(o, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], PLATE + 0.0003, t.area(ux, uy + 54, ux + 186, uy + 104, y0, y1, z0, z1))
             lit.append(o); legends.append((cid, r < CAUTION_ROWS))
     # BRT/DIM-TEST switch: a lever straight out, held down at TEST
     sw = A.Obj('test-switch', 'cap.png')
     sy, sz = (TEST_SWITCH[0] - cx) * I.PT, -(TEST_SWITCH[1] - cy) * I.PT
-    A.cylinder(sw, 0.0035, sy, sz, depth, depth + 0.003, metal, metal, n=6)
-    A.beam(sw, (depth + 0.003, sy, sz), (depth + 0.014, sy, sz), 0.0022, metal)
-    objs = [body, caps, sw] + lit
+    A.cylinder(sw, 0.0035, sy, sz, PLATE, PLATE + 0.003, metal, metal, n=6)
+    A.beam(sw, (PLATE + 0.003, sy, sz), (PLATE + 0.014, sy, sz), 0.0022, metal)
+    objs = [body, win, caps, fast, sw] + lit
     xml = ''
     for o, (cid, amber) in zip(lit, legends):
         cond = '<property>%s%s</property>' % (P, cid) if cid in COND or cid in NASAL else ''
@@ -189,7 +239,7 @@ def build(art):
     xml += ('\n  <animation>\n    <type>rotate</type>\n    <object-name>test-switch</object-name>\n'
             '    <property>/sim/model/uh60/cap-test</property>\n    <factor> 30 </factor>\n'
             '    <center>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </center>\n'
-            '    <axis>\n      <x> 0 </x>\n      <y> 1 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n' % (depth, sy, sz))
+            '    <axis>\n      <x> 0 </x>\n      <y> 1 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n' % (PLATE, sy, sz))
     xml += ('\n  <animation>\n    <type>pick</type>\n    <object-name>test-switch</object-name>\n    <action>\n'
             '      <button>0</button>\n      <repeatable>false</repeatable>\n      <binding>\n'
             '        <command>property-assign</command>\n        <property>/sim/model/uh60/cap-test</property>\n'

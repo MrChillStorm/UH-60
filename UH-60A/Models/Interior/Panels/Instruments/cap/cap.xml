@@ -10,7 +10,9 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
+    <object-name>windows</object-name>
     <object-name>capsules</object-name>
+    <object-name>screws</object-name>
     <object-name>test-switch</object-name>
     <object-name>lit-fuel-low-1</object-name>
     <object-name>lit-gen-1</object-name>
@@ -946,7 +948,7 @@
     <property>/sim/model/uh60/cap-test</property>
     <factor> 30 </factor>
     <center>
-      <x-m> 0.0060 </x-m>
+      <x-m> 0.0020 </x-m>
       <y-m> -0.0554 </y-m>
       <z-m> -0.1096 </z-m>
     </center>

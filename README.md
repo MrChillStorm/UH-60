@@ -259,14 +259,21 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   write them;
   `Nasal/avionics.nas` runs the mode selectors, the CIS and the panel
   systems.
+- **Caution/advisory panel** in its later dress: the manual's legends on the
+  flat LED unit (Luma Technologies' UH-60/S-70 panel) that has replaced the
+  original incandescent capsules in some aircraft still flying, and that
+  promises "no more bulb or cap assembly replacements". Somebody, somewhere,
+  changed one bulb too many.
 - **Cockpit instruments** calibrated to the new flight model: the pilot
   display unit (`prop-rpm`: % RPM of both engines and the rotor, % torque;
   its green band in `prop-rpm.png` lengthened to fill the whole scale), the
   central display unit (`combimeter`: Ng, oil, TGT and transmission per
   engine) and the master warning panel (`caution`, MASTER CAUTION from the
   caution/advisory panel). The display units' faces and the VSI's attitude
-  sphere (`ai.png`) are redrawn at 2048 px in their old layout, the tapes'
-  calibration untouched; the radar altimeters read wheel height.
+  sphere (`ai.png`, its case now black round the sphere; the sphere a fine,
+  smooth mesh in place of the old 16 x 16 facets; the slip indicator's tube
+  redrawn on the ball's path, the ball smooth) are redrawn at 2048 px in
+  their old layout, the tapes' calibration untouched; the radar altimeters read wheel height.
 - **Fixes** to bugs of the original aircraft: the cockpit collective lever
   moved with the passenger door instead of the collective
   (`sticks/collective.xml`), the warning panel's thresholds were set for
