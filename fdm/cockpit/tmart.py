@@ -49,6 +49,36 @@ class Art:
         return im.resize(size, Image.LANCZOS) if size else im
 
 
+class Vec:
+    """The figure's vector art, rendered per box (see vector)."""
+    def __init__(s, pdf):
+        s.pdf = pdf
+
+    def vector(s, x0, x1, y0, y1, sheet, W, H):
+        return vector(s.pdf, x0, x1, y0, y1, sheet, W, H)
+
+
+def vector(pdf, x0, x1, y0, y1, sheet, W, H):
+    """A box (sheet pt) rendered straight from the PDF's vector art to exactly W x H pixels, at the resolution that
+    takes (no resampling of a raster: as sharp as the drawing), the callout arrows erased."""
+    dpi = W / (x1 - x0) * 72
+    k = dpi / 72
+    px, py = int(round(x0 * k)), int(round(y0 * k))
+    tmp = tempfile.mkdtemp()
+    page = PAGES[sheet - 1]
+    subprocess.run(['pdftoppm', '-q', '-gray', '-r', '%.3f' % dpi, '-f', str(page), '-l', str(page), '-x', str(px), '-y', str(py),
+                    '-W', str(W), '-H', str(H), '-png', pdf, os.path.join(tmp, 'v')], check=True)
+    im = Image.open(os.path.join(tmp, sorted(os.listdir(tmp))[0])).convert('L')
+    d = ImageDraw.Draw(im)
+    for s, poly in ARROWHEADS:
+        if s == sheet:
+            d.polygon([(x * k - px, y * k - py) for x, y in poly], fill=255, outline=255, width=max(1, int(k / 2)))
+    for s, a, b in SHAFTS:
+        if s == sheet:
+            d.line([(a[0] * k - px, a[1] * k - py), (b[0] * k - px, b[1] * k - py)], fill=255, width=max(2, int(2 * k)))
+    return im.resize((W, H)) if im.size != (W, H) else im
+
+
 def light(im, ground, line):
     """Black-on-white art -> lines of grey `line` on grey `ground`."""
     a = np.asarray(im.convert('L'), float)

@@ -10,7 +10,7 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
-    <object-name>knobs</object-name>
+    <object-name>knob-radalt-norm</object-name>
   </animation>
 
   <animation>
@@ -25,6 +25,70 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>knob-radalt-norm</object-name>
+    <property>/controls/lighting/radalt-norm</property>
+    <interpolation>
+      <entry><ind> 0.1 </ind><dep> -135 </dep></entry>
+      <entry><ind> 1 </ind><dep> 135 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0015 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>knob-radalt-norm</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/radalt-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/radalt-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/radalt-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/radalt-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>knob-radalt-norm</tooltip-id>
+        <label>RAD ALT DIMMING</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

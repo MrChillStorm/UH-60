@@ -163,4 +163,81 @@
     </axis>
   </animation>
 
+
+
+
+
+
+  <!-- CIS: written by fdm/cockpit/avionics.py -->
+  <model>
+    <path>cis.xml</path>
+  </model>
+
+  <animation>
+    <type>translate</type>
+    <object-name>nav-pitch-steering-ba</object-name>
+    <property>/instrumentation/uh60/cis/roll-cmd</property>
+    <factor> 0.025 </factor>
+    <min> -0.025 </min>
+    <max> 0.025 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>nav-pitch-steering-ba</object-name>
+    <condition>
+      <property>/instrumentation/uh60/cis/roll-vis</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>nav-yaw-steering-bar</object-name>
+    <property>/instrumentation/uh60/cis/pitch-cmd</property>
+    <factor> 0.025 </factor>
+    <min> -0.025 </min>
+    <max> 0.025 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>nav-yaw-steering-bar</object-name>
+    <condition>
+      <property>/instrumentation/uh60/cis/pitch-vis</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>ils-flag</object-name>
+    <property>/instrumentation/uh60/cis/coll-cmd</property>
+    <factor> 0.02 </factor>
+    <min> -0.02 </min>
+    <max> 0.02 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>ils-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/cis/coll-vis</property>
+    </condition>
+  </animation>
+  <!-- /CIS -->
+
 </PropertyList>

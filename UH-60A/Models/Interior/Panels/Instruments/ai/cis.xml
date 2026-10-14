@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- pilot's VSI: what the old attitude indicator lacked (TM 1-1520-237-10 figure 3-30); written by fdm/cockpit/avionics.py -->
+<PropertyList>
+
+  <path>cis.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>gs-scale-r</object-name>
+    <object-name>gs-ptr</object-name>
+    <object-name>dev-scale</object-name>
+    <object-name>dev-ptr</object-name>
+    <object-name>att-flag</object-name>
+    <object-name>cmd-flag</object-name>
+    <object-name>nav-flag</object-name>
+    <object-name>gs-flag</object-name>
+    <object-name>ga-off</object-name>
+    <object-name>ga-on</object-name>
+    <object-name>dh-off</object-name>
+    <object-name>dh-on</object-name>
+    <object-name>mb-off</object-name>
+    <object-name>mb-on</object-name>
+    <object-name>turn</object-name>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>gs-scale-r</object-name>
+    <object-name>gs-ptr</object-name>
+    <object-name>dev-scale</object-name>
+    <object-name>dev-ptr</object-name>
+    <object-name>turn</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>gs-ptr</object-name>
+    <property>/instrumentation/uh60/vsi[0]/gs-norm</property>
+    <factor> 0.02 </factor>
+    <min> -0.02 </min>
+    <max> 0.02 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 0 </y>
+      <z> 1 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>dev-ptr</object-name>
+    <property>/instrumentation/uh60/vsi[0]/dev-norm</property>
+    <factor> 0.016 </factor>
+    <min> -0.016 </min>
+    <max> 0.016 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>turn</object-name>
+    <property>/instrumentation/uh60/vsi[0]/turn-widths</property>
+    <factor> 0.0016 </factor>
+    <min> -0.0048 </min>
+    <max> 0.0048 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>att-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/att-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>cmd-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/cmd-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>nav-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/nav-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>gs-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/gs-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>ga-on</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/ga</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>ga-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>dh-on</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/dh</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>dh-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>mb-on</object-name>
+    <condition>
+      <property>/instrumentation/uh60/vsi[0]/mb</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>mb-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+</PropertyList>

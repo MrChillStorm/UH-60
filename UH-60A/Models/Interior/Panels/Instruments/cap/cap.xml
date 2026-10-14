@@ -412,7 +412,7 @@
     <object-name>lit-ircm-inop</object-name>
     <condition>
       <property>/controls/electric/battery-switch</property>
-      <property>/sim/model/uh60/cap-test</property>
+      <or><property>/sim/model/uh60/cap/ircm-inop</property><property>/sim/model/uh60/cap-test</property></or>
     </condition>
   </animation>
 
@@ -619,7 +619,7 @@
     <object-name>lit-mr-deice-fail</object-name>
     <condition>
       <property>/controls/electric/battery-switch</property>
-      <property>/sim/model/uh60/cap-test</property>
+      <or><property>/sim/model/uh60/cap/mr-deice-fail</property><property>/sim/model/uh60/cap-test</property></or>
     </condition>
   </animation>
 
@@ -637,7 +637,7 @@
     <object-name>lit-tr-deice-fail</object-name>
     <condition>
       <property>/controls/electric/battery-switch</property>
-      <property>/sim/model/uh60/cap-test</property>
+      <or><property>/sim/model/uh60/cap/tr-deice-fail</property><property>/sim/model/uh60/cap-test</property></or>
     </condition>
   </animation>
 
@@ -646,7 +646,7 @@
     <object-name>lit-ice</object-name>
     <condition>
       <property>/controls/electric/battery-switch</property>
-      <property>/sim/model/uh60/cap-test</property>
+      <or><property>/sim/model/uh60/cap/ice</property><property>/sim/model/uh60/cap-test</property></or>
     </condition>
   </animation>
 
@@ -933,6 +933,7 @@
     <object-name>lit-ext-pwr</object-name>
     <object-name>lit-blank-2</object-name>
     <emission>
+      <factor-prop>/controls/lighting/caut-advsy-norm</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>

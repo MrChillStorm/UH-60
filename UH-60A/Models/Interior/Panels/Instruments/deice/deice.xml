@@ -2,7 +2,7 @@
 
 <!-- written by fdm/cockpit/instruments.py -->
 
-<!-- ice rate meter, blade deice control and test panels, IRCM control panel (not simulated) -->
+<!-- ice rate meter, blade deice control and test panels, IRCM control panel (Nasal/avionics.nas) -->
 <PropertyList>
 
   <path>deice.ac</path>
@@ -10,11 +10,19 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
+    <object-name>lwc-needle</object-name>
     <object-name>glass</object-name>
-    <object-name>buttons</object-name>
-    <object-name>toggles</object-name>
-    <object-name>lamps</object-name>
-    <object-name>knobs</object-name>
+    <object-name>btn-lwc-test</object-name>
+    <object-name>sw-power</object-name>
+    <object-name>lamp-test</object-name>
+    <object-name>lamp-test-on</object-name>
+    <object-name>sw-mode</object-name>
+    <object-name>sw-test-select</object-name>
+    <object-name>lamp-pwr-main</object-name>
+    <object-name>lamp-pwr-main-on</object-name>
+    <object-name>lamp-pwr-tail</object-name>
+    <object-name>lamp-pwr-tail-on</object-name>
+    <object-name>sw-ircm</object-name>
   </animation>
 
   <effect>
@@ -25,7 +33,8 @@
   <animation>
     <type>material</type>
     <object-name>panel</object-name>
-    <object-name>buttons</object-name>
+    <object-name>lwc-needle</object-name>
+    <object-name>btn-lwc-test</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
     </condition>
@@ -35,6 +44,354 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>lwc-needle</object-name>
+    <property>/controls/anti-ice/blade-deice/meter-lwc</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -85 </dep></entry>
+      <entry><ind> 0.25 </ind><dep> -71 </dep></entry>
+      <entry><ind> 0.5 </ind><dep> -53 </dep></entry>
+      <entry><ind> 1 </ind><dep> -3 </dep></entry>
+      <entry><ind> 1.5 </ind><dep> 52 </dep></entry>
+      <entry><ind> 2 </ind><dep> 80 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0030 </x-m>
+      <y-m> -0.0004 </y-m>
+      <z-m> 0.0942 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-lwc-test</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.ice_meter_test()</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-lwc-test</tooltip-id>
+        <label>Ice rate meter: PRESS TO TEST</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-power</object-name>
+    <property>/controls/anti-ice/blade-deice/power</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 35 </dep></entry>
+      <entry><ind> 2 </ind><dep> -35 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0030 </x-m>
+      <y-m> -0.0352 </y-m>
+      <z-m> 0.0013 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> -1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-power</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.deice_step(1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.deice_step(-1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-power</tooltip-id>
+        <label>Blade deice POWER: ON / OFF / TEST (left click up, right click down)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lamp-test-on</object-name>
+    <condition>
+      <property>/controls/anti-ice/blade-deice/test-in-progress</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lamp-test-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-mode</object-name>
+    <property>/controls/anti-ice/blade-deice/mode</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -28 </dep></entry>
+      <entry><ind> 1 </ind><dep> 31 </dep></entry>
+      <entry><ind> 2 </ind><dep> 77 </dep></entry>
+      <entry><ind> 3 </ind><dep> 120 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0030 </x-m>
+      <y-m> 0.0357 </y-m>
+      <z-m> 0.0020 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-mode</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/anti-ice/blade-deice/mode", 1, 0, 3)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/anti-ice/blade-deice/mode", -1, 0, 3)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-mode</tooltip-id>
+        <label>Blade deice MODE: AUTO / MANUAL T, L, M</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-test-select</object-name>
+    <property>/controls/anti-ice/blade-deice/test-select</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -50 </dep></entry>
+      <entry><ind> 1 </ind><dep> -71 </dep></entry>
+      <entry><ind> 2 </ind><dep> -91 </dep></entry>
+      <entry><ind> 3 </ind><dep> -108 </dep></entry>
+      <entry><ind> 4 </ind><dep> -126 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0030 </x-m>
+      <y-m> -0.0272 </y-m>
+      <z-m> -0.0575 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-test-select</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/anti-ice/blade-deice/test-select", -1, 0, 4)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/anti-ice/blade-deice/test-select", 1, 0, 4)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-test-select</tooltip-id>
+        <label>BLADE DE-ICE TEST: NORM / SYNC 1 / SYNC 2 / OAT / EOT</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lamp-pwr-main-on</object-name>
+    <condition>
+      <property>/controls/anti-ice/blade-deice/pwr-main</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lamp-pwr-main-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>lamp-pwr-main</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>setprop("/controls/anti-ice/blade-deice/press-pwr", 1);</script>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/controls/anti-ice/blade-deice/press-pwr", 0);</script>
+        </binding>
+      </mod-up>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>lamp-pwr-main</tooltip-id>
+        <label>PWR monitor light: press to test</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lamp-pwr-tail-on</object-name>
+    <condition>
+      <property>/controls/anti-ice/blade-deice/pwr-tail</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lamp-pwr-tail-on</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>lamp-pwr-tail</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>setprop("/controls/anti-ice/blade-deice/press-pwr", 1);</script>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/controls/anti-ice/blade-deice/press-pwr", 0);</script>
+        </binding>
+      </mod-up>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>lamp-pwr-tail</tooltip-id>
+        <label>PWR monitor light: press to test</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-ircm</object-name>
+    <property>/controls/ircm/on</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -35 </dep></entry>
+      <entry><ind> 1 </ind><dep> 35 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0030 </x-m>
+      <y-m> 0.0415 </y-m>
+      <z-m> -0.1097 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> -1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-ircm</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/ircm/on", 1, 0, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/ircm/on", -1, 0, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-ircm</tooltip-id>
+        <label>IRCM: ON / OFF (left click on, right click off)</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

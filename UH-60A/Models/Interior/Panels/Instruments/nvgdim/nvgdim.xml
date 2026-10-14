@@ -2,7 +2,7 @@
 
 <!-- written by fdm/cockpit/instruments.py -->
 
-<!-- NVG dimming controls -->
+<!-- NVG dimming controls: master warning and caution/advisory light intensity -->
 <PropertyList>
 
   <path>nvgdim.ac</path>
@@ -10,7 +10,8 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
-    <object-name>knobs</object-name>
+    <object-name>knob-ma-wrn-norm</object-name>
+    <object-name>knob-caut-advsy-norm</object-name>
   </animation>
 
   <animation>
@@ -25,6 +26,134 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>knob-ma-wrn-norm</object-name>
+    <property>/controls/lighting/ma-wrn-norm</property>
+    <interpolation>
+      <entry><ind> 0.1 </ind><dep> -135 </dep></entry>
+      <entry><ind> 1 </ind><dep> 135 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0015 </x-m>
+      <y-m> -0.0120 </y-m>
+      <z-m> -0.0007 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>knob-ma-wrn-norm</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/ma-wrn-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/ma-wrn-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/ma-wrn-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/ma-wrn-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>knob-ma-wrn-norm</tooltip-id>
+        <label>MA WRN dimming</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>knob-caut-advsy-norm</object-name>
+    <property>/controls/lighting/caut-advsy-norm</property>
+    <interpolation>
+      <entry><ind> 0.1 </ind><dep> -135 </dep></entry>
+      <entry><ind> 1 </ind><dep> 135 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0015 </x-m>
+      <y-m> 0.0114 </y-m>
+      <z-m> -0.0004 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>knob-caut-advsy-norm</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/caut-advsy-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/caut-advsy-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/caut-advsy-norm", 0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/lighting/caut-advsy-norm", -0.1, 0.1, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>knob-caut-advsy-norm</tooltip-id>
+        <label>CAUT/ADVSY dimming</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

@@ -1,65 +1,95 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!-- Master warning panel. The lights follow the UH-60A's (TM 1-1520-237-10, 2.81 and table 2-3) with the
-     flight model's values: the legends of this panel stand for ENG OUT, LOW ROTOR RPM, MASTER CAUTION and the
-     state of the automatic flight control system. All need dc power (battery switch) and all light in the lamp test
-     of the caution/advisory panel. Written by fdm/cockpit/cap.py. -->
+<!-- Master warning panel, TM 1-1520-237-10 2.81 and figure 2-23, with the flight model's values. The lights need dc
+     power (battery switch) and all light in the caution/advisory panel's lamp test. Written by fdm/cockpit/cap.py. -->
 
 <PropertyList>
 
   <path>caution.ac</path>
 
   <animation>
-    <object-name>fond</object-name>
-    <object-name>caution1</object-name>
-    <object-name>caution2</object-name>
-    <object-name>caution3</object-name>
-    <object-name>caution4</object-name>
-  </animation>
-
-  <animation>
     <type>noshadow</type>
-    <object-name>fond</object-name>
-    <object-name>caution1</object-name>
-    <object-name>caution2</object-name>
-    <object-name>caution3</object-name>
-    <object-name>caution4</object-name>
+    <object-name>panel</object-name>
+    <object-name>capsules</object-name>
+    <object-name>lit-eng-out-1</object-name>
+    <object-name>lit-eng-out-2</object-name>
+    <object-name>lit-fire</object-name>
+    <object-name>btn-master</object-name>
+    <object-name>lit-master</object-name>
+    <object-name>lit-low-rpm</object-name>
   </animation>
 
   <animation>
     <type>material</type>
-    <object-name>caution1</object-name>
-    <object-name>caution2</object-name>
-    <object-name>caution3</object-name>
-    <object-name>caution4</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-    </condition>
+    <object-name>lit-eng-out-1</object-name>
+    <object-name>lit-eng-out-2</object-name>
+    <object-name>lit-fire</object-name>
+    <object-name>lit-master</object-name>
+    <object-name>lit-low-rpm</object-name>
     <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red>   0.50 </red>
-      <green> 0.40 </green>
-      <blue>  0.30 </blue>
+      <factor-prop>/controls/lighting/ma-wrn-norm</factor-prop>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
     </emission>
   </animation>
 
-  <!-- EMERG ENGINE = #1 / #2 ENG OUT: gas generator speed Ng below 55 % -->
+  <!-- #1 ENG OUT: gas generator speed Ng below 55 % -->
   <animation>
     <type>select</type>
-    <object-name>caution1</object-name>
+    <object-name>lit-eng-out-1</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
       <or>
         <property>sim/model/uh60/cap-test</property>
-        <or><less-than><property>engines/engine[0]/n1-pct</property><value>55</value></less-than><less-than><property>engines/engine[1]/n1-pct</property><value>55</value></less-than></or>
+        <less-than><property>engines/engine[0]/n1-pct</property><value>55</value></less-than>
       </or>
     </condition>
   </animation>
 
-  <!-- EMERG ROTOR = LOW ROTOR RPM: rotor speed below 96 %, flashing -->
+  <!-- #2 ENG OUT: gas generator speed Ng below 55 % -->
   <animation>
     <type>select</type>
-    <object-name>caution2</object-name>
+    <object-name>lit-eng-out-2</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+      <or>
+        <property>sim/model/uh60/cap-test</property>
+        <less-than><property>engines/engine[1]/n1-pct</property><value>55</value></less-than>
+      </or>
+    </condition>
+  </animation>
+
+  <!-- FIRE: no fire is simulated; the lamp test only -->
+  <animation>
+    <type>select</type>
+    <object-name>lit-fire</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+      <or>
+        <property>sim/model/uh60/cap-test</property>
+        <property>sim/model/uh60/cap-test</property>
+      </or>
+    </condition>
+  </animation>
+
+  <!-- MASTER CAUTION: an amber capsule of the caution/advisory panel has lit (Nasal/caution.nas) -->
+  <animation>
+    <type>select</type>
+    <object-name>lit-master</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+      <or>
+        <property>sim/model/uh60/cap-test</property>
+        <property>sim/model/uh60/master-caution</property>
+      </or>
+    </condition>
+  </animation>
+
+  <!-- LOW ROTOR RPM: rotor speed below 96 %, flashing -->
+  <animation>
+    <type>select</type>
+    <object-name>lit-low-rpm</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
       <property>sim/model/uh60/warning-flash</property>
@@ -70,22 +100,10 @@
     </condition>
   </animation>
 
-  <!-- MASTER CAUTION: an amber capsule of the caution/advisory panel has lit (Nasal/caution.nas) -->
-  <animation>
-    <type>select</type>
-    <object-name>caution3</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-      <or>
-        <property>sim/model/uh60/cap-test</property>
-        <property>sim/model/uh60/master-caution</property>
-      </or>
-    </condition>
-  </animation>
-
   <animation>
     <type>pick</type>
-    <object-name>caution3</object-name>
+    <object-name>btn-master</object-name>
+    <object-name>lit-master</object-name>
     <action>
       <button>0</button>
       <repeatable>false</repeatable>
@@ -101,19 +119,6 @@
         <label>Master caution: press to reset</label>
       </binding>
     </hovered>
-  </animation>
-
-  <!-- AFCS READY: both SAS channels, the FPS, the pitch bias actuator and the stabilator's automatic mode on -->
-  <animation>
-    <type>select</type>
-    <object-name>caution4</object-name>
-    <condition>
-      <property>controls/electric/battery-switch</property>
-      <or>
-        <property>sim/model/uh60/cap-test</property>
-        <and><greater-than><property>fdm/jsbsim/ctl/sas1</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/sas2</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/fps</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/ctl/pba</property><value>0.5</value></greater-than><greater-than><property>fdm/jsbsim/stab/auto</property><value>0.5</value></greater-than></and>
-      </or>
-    </condition>
   </animation>
 
 </PropertyList>

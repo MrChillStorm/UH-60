@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- copilot's horizontal situation indicator, TM 1-1520-237-10 figure 3-31 (written by fdm/cockpit/avionics.py); data from Nasal/avionics.nas -->
+<PropertyList>
+
+  <path>hsi60.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>card</object-name>
+    <object-name>lubber</object-name>
+    <object-name>hdg-bug</object-name>
+    <object-name>brg1</object-name>
+    <object-name>brg2</object-name>
+    <object-name>course</object-name>
+    <object-name>to</object-name>
+    <object-name>from</object-name>
+    <object-name>dev-bar</object-name>
+    <object-name>nav-flag</object-name>
+    <object-name>hdg-flag</object-name>
+    <object-name>km-shutter</object-name>
+    <object-name>hdg-knob</object-name>
+    <object-name>crs-knob</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>card</object-name>
+    <object-name>lubber</object-name>
+    <object-name>hdg-bug</object-name>
+    <object-name>brg1</object-name>
+    <object-name>brg2</object-name>
+    <object-name>course</object-name>
+    <object-name>to</object-name>
+    <object-name>from</object-name>
+    <object-name>dev-bar</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>translate</type>
+    <object-name>dev-bar</object-name>
+    <property>/instrumentation/uh60/hsi[1]/dev-norm</property>
+    <factor> 0.016 </factor>
+    <min> -0.016 </min>
+    <max> 0.016 </max>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>course</object-name>
+    <object-name>to</object-name>
+    <object-name>from</object-name>
+    <object-name>nav-flag</object-name>
+    <object-name>dev-bar</object-name>
+    <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+    <factor> 1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>hdg-bug</object-name>
+    <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+    <factor> 1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>card</object-name>
+    <object-name>hdg-bug</object-name>
+    <object-name>course</object-name>
+    <object-name>to</object-name>
+    <object-name>from</object-name>
+    <object-name>nav-flag</object-name>
+    <object-name>dev-bar</object-name>
+    <property>/orientation/heading-magnetic-deg</property>
+    <factor> -1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>brg1</object-name>
+    <property>/instrumentation/uh60/hsi[1]/brg1-rel</property>
+    <factor> 1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>brg2</object-name>
+    <property>/instrumentation/uh60/hsi[1]/brg2-rel</property>
+    <factor> 1 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>to</object-name>
+    <condition>
+      <property>/instrumentation/uh60/hsi[1]/to</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>from</object-name>
+    <condition>
+      <property>/instrumentation/uh60/hsi[1]/from</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>nav-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/hsi[1]/nav-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>hdg-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/hsi[1]/hdg-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>km-shutter</object-name>
+    <condition>
+      <not><property>/instrumentation/uh60/hsi[1]/km-vis</property></not>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>hdg-knob</object-name>
+    <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+    <factor> 5 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> -0.0540 </y-m>
+      <z-m> -0.0373 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>crs-knob</object-name>
+    <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+    <factor> 5 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0500 </y-m>
+      <z-m> -0.0373 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>hdg-knob</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>-1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>-10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>-1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+        <step>-10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>hdg-knob</tooltip-id>
+        <label>Heading select: %03d (wheel or click; shift: 10)</label>
+        <property>/instrumentation/uh60/hsi[1]/heading-bug-deg</property>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>crs-knob</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>-1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>-10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>-1</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+        <step>-10</step>
+        <min>0</min>
+        <max>360</max>
+        <wrap>true</wrap>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>crs-knob</tooltip-id>
+        <label>Course: %03d (wheel or click; shift: 10)</label>
+        <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+      </binding>
+    </hovered>
+  </animation>
+
+  <text>
+    <name>course-digits</name>
+    <type type="string">number-value</type>
+    <property>/instrumentation/uh60/hsi[1]/course-deg</property>
+    <format type="string">%03.0f</format>
+    <truncate type="bool">false</truncate>
+    <font>Helvetica-Bold.txf</font>
+    <character-size type="double">0.0075</character-size>
+    <character-aspect-ratio type="double">0.8</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.02</max-height>
+    <max-width>0.03</max-width>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m> 0.0187 </x-m>
+      <y-m> 0.0530 </y-m>
+      <z-m> 0.0407 </z-m>
+    </offsets>
+  </text>
+
+  <text>
+    <name>km-digits</name>
+    <type type="string">number-value</type>
+    <property>/instrumentation/uh60/hsi[1]/km</property>
+    <format type="string">%04.0f</format>
+    <truncate type="bool">false</truncate>
+    <font>Helvetica-Bold.txf</font>
+    <character-size type="double">0.0075</character-size>
+    <character-aspect-ratio type="double">0.8</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.02</max-height>
+    <max-width>0.026</max-width>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m> 0.0184 </x-m>
+      <y-m> -0.0480 </y-m>
+      <z-m> 0.0427 </z-m>
+    </offsets>
+  </text>
+
+  <animation>
+    <type>material</type>
+    <object-name>course-digits</object-name>
+    <object-name>km-digits</object-name>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red> 0.9 </red>
+      <green> 0.9 </green>
+      <blue> 0.9 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>course-digits</object-name>
+    <object-name>km-digits</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+  </animation>
+
+</PropertyList>

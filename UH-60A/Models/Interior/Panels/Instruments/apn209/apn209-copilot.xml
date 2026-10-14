@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- radar altimeter AN/APN-209, TM 1-1520-237-10 3.29 and figure 3-34; Nasal/avionics.nas; written by fdm/cockpit/gauges.py -->
+<PropertyList>
+
+  <path>apn209.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>dial</object-name>
+    <object-name>label0</object-name>
+    <object-name>label1</object-name>
+    <object-name>label2</object-name>
+    <object-name>label3</object-name>
+    <object-name>mask</object-name>
+    <object-name>off-flag</object-name>
+    <object-name>pointer</object-name>
+    <object-name>lo-bug</object-name>
+    <object-name>hi-bug</object-name>
+    <object-name>lo-light-off</object-name>
+    <object-name>lo-light</object-name>
+    <object-name>hi-light-off</object-name>
+    <object-name>hi-light</object-name>
+    <object-name>lo-knob</object-name>
+    <object-name>hi-knob</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>dial</object-name>
+    <object-name>label0</object-name>
+    <object-name>label1</object-name>
+    <object-name>label2</object-name>
+    <object-name>label3</object-name>
+    <object-name>off-flag</object-name>
+    <object-name>pointer</object-name>
+    <object-name>lo-bug</object-name>
+    <object-name>hi-bug</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>pointer</object-name>
+    <property>/instrumentation/uh60/radalt[1]/pointer-ft</property>
+    <interpolation>
+      <entry><ind> -50 </ind><dep> -180 </dep></entry>
+      <entry><ind> 0 </ind><dep> -180 </dep></entry>
+      <entry><ind> 200 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1500 </ind><dep> 90 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>pointer</object-name>
+    <condition>
+      <property>/instrumentation/uh60/radalt[1]/pointer-vis</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>lo-bug</object-name>
+    <property>/instrumentation/uh60/radalt[1]/lo-ft</property>
+    <interpolation>
+      <entry><ind> -50 </ind><dep> -180 </dep></entry>
+      <entry><ind> 0 </ind><dep> -180 </dep></entry>
+      <entry><ind> 200 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1500 </ind><dep> 90 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>hi-bug</object-name>
+    <property>/instrumentation/uh60/radalt[1]/hi-ft</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -180 </dep></entry>
+      <entry><ind> 200 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1500 </ind><dep> 90 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>off-flag</object-name>
+    <condition>
+      <property>/instrumentation/uh60/radalt[1]/off-flag</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lo-light</object-name>
+    <condition>
+      <property>/instrumentation/uh60/radalt[1]/lo-light</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>hi-light</object-name>
+    <condition>
+      <property>/instrumentation/uh60/radalt[1]/hi-light</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lo-light</object-name>
+    <object-name>hi-light</object-name>
+    <emission>
+      <factor-prop>/controls/lighting/radalt-norm</factor-prop>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <text>
+    <name>digits</name>
+    <type type="string">number-value</type>
+    <property>/instrumentation/uh60/radalt[1]/digits</property>
+    <format type="string">%4.0f</format>
+    <truncate type="bool">false</truncate>
+    <font>DSEG/DSEG7/Classic/DSEG7Classic-Bold.ttf</font>
+    <character-size type="double">0.0068</character-size>
+    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.03</max-height>
+    <max-width>0.028</max-width>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m> 0.0086 </x-m>
+      <y-m> 0.0010 </y-m>
+      <z-m> -0.0102 </z-m>
+    </offsets>
+  </text>
+
+  <animation>
+    <type>select</type>
+    <object-name>digits</object-name>
+    <condition>
+      <property>/instrumentation/uh60/radalt[1]/digits-vis</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>digits</object-name>
+    <emission>
+      <factor-prop>/controls/lighting/radalt-norm</factor-prop>
+      <red> 1 </red>
+      <green> 0.45 </green>
+      <blue> 0.1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>lo-knob</object-name>
+    <property>/instrumentation/uh60/radalt[1]/lo-ft</property>
+    <factor> 0.5 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> -0.0310 </y-m>
+      <z-m> -0.0280 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>hi-knob</object-name>
+    <property>/instrumentation/uh60/radalt[1]/hi-ft</property>
+    <factor> 0.5 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0330 </y-m>
+      <z-m> -0.0280 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>lo-knob</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "lo", 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "lo", -1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "lo", 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "lo", -1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>lo-knob</tooltip-id>
+        <label>LO SET: low altitude bug (counterclockwise past 0: OFF)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>hi-knob</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "hi", 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "hi", -1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "hi", 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.radalt_bug(1, "hi", -1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>hi-knob</tooltip-id>
+        <label>HI SET: high altitude bug (middle click: PUSH TO TEST)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>hi-knob</object-name>
+    <action>
+      <button>1</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>setprop("/instrumentation/uh60/radalt[1]/test", 1);</script>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/radalt[1]/test", 0);</script>
+        </binding>
+      </mod-up>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>hi-knob</tooltip-id>
+        <label>HI SET: PUSH TO TEST</label>
+      </binding>
+    </hovered>
+  </animation>
+
+</PropertyList>

@@ -268,25 +268,31 @@ def stab():
 
 class Panel:
     """A raised panel with the TM figure's art on its face, and 3-D parts on it (positions in figure pt from the
-    bezel's centre, y down, as measured on the figure)."""
-    def __init__(s, name, art, num, side, depth, texw=1024, box=None):
+    bezel's centre, y down, as measured on the figure). Parts can be separate objects (to animate or click), lit
+    legends are drawn below the art in the texture."""
+    def __init__(s, name, art, num, side, depth, texw=None, box=None, room=0, px_mm=14):
+        """The model's origin is the TM item's centre; `box` (sheet pt) the panel's outline if not the item's. The
+        face is rendered from the figure's vector art at px_mm pixels per mm (texw: its width in pixels)."""
         it = item(num, side)
         s.name, s.sheet = name, it[3]
+        s.cx, s.cy = (it[4] + it[5]) / 2, (it[6] + it[7]) / 2
         s.x0, s.x1, s.y0, s.y1 = box or it[4:8]
-        s.cx, s.cy = (s.x0 + s.x1) / 2, (s.y0 + s.y1) / 2
         s.w, s.h = (s.x1 - s.x0) * PT, (s.y1 - s.y0) * PT
+        s.bx, s.bz = ((s.x0 + s.x1) / 2 - s.cx) * PT, -((s.y0 + s.y1) / 2 - s.cy) * PT
         s.depth = depth
-        pw = texw; ph = int(round(texw * s.h / s.w))
-        H = 1 << max(6, math.ceil(math.log2(ph + 20)))
-        s.t = Tex(texw, H, (GROUND,) * 3)
-        im = tmart.light(art.crop(s.x0, s.x1, s.y0, s.y1, s.sheet, (pw, ph)), GROUND, LETTER)
+        pw = texw or min(2048, int(round(s.w * 1000 * px_mm))); ph = int(round(pw * s.h / s.w))
+        W = 1 << max(6, math.ceil(math.log2(pw)))
+        H = 1 << max(6, math.ceil(math.log2(ph + 20 + room)))
+        s.t = Tex(W, H, (GROUND,) * 3)
+        im = tmart.light(art.vector(s.x0, s.x1, s.y0, s.y1, s.sheet, pw, ph), GROUND, LETTER)
         s.t.im.paste(im.convert('RGB'), (0, 0))
-        s.face_uv = s.t.area(0, 0, pw, ph, -s.w / 2, s.w / 2, -s.h / 2, s.h / 2)
+        s.face_uv = s.t.area(0, 0, pw, ph, s.bx - s.w / 2, s.bx + s.w / 2, s.bz - s.h / 2, s.bz + s.h / 2)
+        s.free = [0, ph + 4, 0]                                  # next free x, y and row height in the texture
         s.paint = s.t.swatch((30, 30, 30)); s.knob_side = s.t.swatch((20, 20, 20)); s.knob_top = s.t.swatch((48, 48, 48))
-        s.metal = s.t.swatch((170, 170, 172)); s.white = s.t.swatch((230, 230, 230))
+        s.metal = s.t.swatch((170, 170, 172)); s.white = s.t.swatch((230, 230, 230)); s.dark = s.t.swatch((8, 8, 8))
         s.body = A.Obj('panel', name + '.png'); s.parts = {}
-        A.prism(s.body, A.rrect(s.w, s.h, 0.002), 0, depth, s.face_uv, s.paint)
-        s.lit = ['panel']
+        A.prism(s.body, A.rrect(s.w, s.h, min(0.002, s.h / 3), s.bx, s.bz), 0, depth, s.face_uv, s.paint)
+        s.lit = ['panel']; s.xml = ''
 
     def at(s, x, y):
         return x * PT, -y * PT
@@ -296,8 +302,15 @@ class Panel:
             s.parts[name] = A.Obj(name, s.name + '.png')
         return s.parts[name]
 
+    def alloc(s, w, h):
+        x, y, rh = s.free
+        if x + w > s.t.im.width:
+            x, y, rh = 0, y + rh + 4, 0
+        s.free = [x + w + 4, y, max(rh, h)]
+        return x, y, x + w, y + h
+
     def knob(s, x, y, dia, height=0.008, name='knobs', pointer=True):
-        """A round knob (dia in mm) with a white index line."""
+        """A round knob (dia in mm) with a white index line pointing up."""
         cy, cz = s.at(x, y); o = s.obj(name); r = dia * MM / 2
         A.cylinder(o, r, cy, cz, s.depth, s.depth + height, s.knob_top, s.knob_side)
         if pointer:
@@ -305,11 +318,11 @@ class Panel:
                   s.white, s.white)
         return cy, cz
 
-    def toggle(s, x, y, name='toggles', up=True):
-        """A toggle switch: nut and lever, the lever up (or down)."""
+    def toggle(s, x, y, name='toggles', up=True, straight=False):
+        """A toggle switch: nut and lever, the lever up, down or straight out (to be animated)."""
         cy, cz = s.at(x, y); o = s.obj(name)
         A.cylinder(o, 0.0035, cy, cz, s.depth, s.depth + 0.003, s.metal, s.metal, n=6)
-        tilt = 0.006 if up else -0.006
+        tilt = 0 if straight else (0.006 if up else -0.006)
         lo, hi = s.depth + 0.003, s.depth + 0.014
         A.beam(o, (lo, cy, cz), (hi, cy, cz + tilt), 0.0022, s.metal)
         return cy, cz
@@ -320,66 +333,205 @@ class Panel:
         A.prism(o, A.rrect(bw * PT, bh * PT, 0.0008, cy, cz), s.depth, s.depth + height, s.face_uv, s.knob_side)
         if name not in s.lit:
             s.lit.append(name)
+        return cy, cz
 
-    def lamp(s, x, y, dia, rgb, name='lamps'):
+    def lamp(s, x, y, dia, rgb, name='lamps', lit=None, cond=None):
+        """A lamp; with `lit`, a lit top shown on `cond`."""
         cy, cz = s.at(x, y); o = s.obj(name)
         A.cylinder(o, dia * MM / 2, cy, cz, s.depth, s.depth + 0.003, s.t.swatch(rgb), s.knob_side)
+        if lit:
+            on = s.obj(name + '-on')
+            A.flat(on, A.circle(dia * MM / 2 * 0.95, cy, cz, 20), s.depth + 0.0031, s.t.swatch(lit))
+            s.xml += select_xml([name + '-on'], cond) + emission_xml([name + '-on'])
+        return cy, cz
+
+    def legend(s, name, y0, y1, z0, z1, d, lines, rgb, cond):
+        """A lit legend (panel metres), shown on `cond`."""
+        pw = int(160 * (y1 - y0) / 0.008); ph = max(24, int(pw * (z1 - z0) / (y1 - y0)))
+        x0, py0, x1, py1 = s.alloc(pw, ph)
+        dr = s.t.d; dr.rectangle([x0, py0, x1, py1], fill=(10, 10, 10))
+        f = font(ph * (0.42 if len(lines) > 1 else 0.55))
+        for k, line in enumerate(lines):
+            yy = py0 + ph * ((k + 1) / (len(lines) + 1) if len(lines) > 1 else 0.5)
+            dr.text(((x0 + x1) / 2, yy), line, font=f, fill=rgb, anchor='mm')
+        A.flat(s.obj(name), [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], d, s.t.area(x0, py0, x1, py1, y0, y1, z0, z1))
+        s.xml += select_xml([name], cond) + emission_xml([name])
 
     def glass(s, x, y, dia):
         cy, cz = s.at(x, y); o = s.parts.setdefault('glass', A.Obj('glass', None, A.GLASS))
         A.flat(o, A.circle(dia * PT / 2, cy, cz, 40), s.depth + 0.0015, A.const(0, 0))
 
-    def write(s, comment, extra=''):
+    def write(s, comment, extra='', variants=None):
+        """variants: [(xml name, {text: replacement})] for instances that differ only in their properties."""
         objs = [s.body] + list(s.parts.values())
         glass = ['glass'] if 'glass' in s.parts else []
-        xml = common_xml([o.name for o in objs], lit=s.lit, glass=glass, extra=extra)
-        write_instrument(s.name, objs, xml.replace('<PropertyList>', '<!-- %s -->\n<PropertyList>' % comment, 1))
+        xml = common_xml([o.name for o in objs], lit=s.lit, glass=glass, extra=s.xml + extra)
+        xml = xml.replace('<PropertyList>', '<!-- %s -->\n<PropertyList>' % comment, 1)
+        write_instrument(s.name, objs, xml)
+        for fname, subs in variants or ():
+            x = open(os.path.join(INSTR, s.name, s.name + '.xml')).read()
+            for a, b in subs.items():
+                x = x.replace(a, b)
+            open(os.path.join(INSTR, s.name, fname), 'w').write(x)
         s.t.save(os.path.join(INSTR, s.name, s.name + '.png'))
 
 
+def select_xml(objs, cond):
+    return ('\n  <animation>\n    <type>select</type>\n%s    <condition>\n      %s\n    </condition>\n  </animation>\n'
+            % (''.join('    <object-name>%s</object-name>\n' % o for o in objs), cond))
+
+
+def emission_xml(objs, factor=None):
+    f = '      <factor-prop>%s</factor-prop>\n' % factor if factor else ''
+    return ('\n  <animation>\n    <type>material</type>\n%s    <emission>\n%s'
+            '      <red> 1 </red>\n      <green> 1 </green>\n      <blue> 1 </blue>\n    </emission>\n  </animation>\n'
+            % (''.join('    <object-name>%s</object-name>\n' % o for o in objs), f))
+
+
+def pick_xml(obj, bindings, tooltip, release=None):
+    """bindings: [(mouse button, nasal script)]; release: script on button up."""
+    act = ''
+    for button, script in bindings:
+        act += ('    <action>\n      <button>%d</button>\n      <repeatable>false</repeatable>\n      <binding>\n'
+                '        <command>nasal</command>\n        <script>%s</script>\n      </binding>\n' % (button, script))
+        if release:
+            act += ('      <mod-up>\n        <binding>\n          <command>nasal</command>\n          <script>%s</script>\n'
+                    '        </binding>\n      </mod-up>\n' % release)
+        act += '    </action>\n'
+    return ('\n  <animation>\n    <type>pick</type>\n    <object-name>%s</object-name>\n%s    <hovered>\n      <binding>\n'
+            '        <command>set-tooltip</command>\n        <tooltip-id>%s</tooltip-id>\n        <label>%s</label>\n'
+            '      </binding>\n    </hovered>\n  </animation>\n' % (obj, act, obj, tooltip))
+
+
+def rot_table_xml(obj, prop, table, centre, axis=(-1, 0, 0)):
+    return ('\n  <animation>\n    <type>rotate</type>\n    <object-name>%s</object-name>\n    <property>%s</property>\n'
+            '    <interpolation>\n%s    </interpolation>\n    <center>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n'
+            '      <z-m> %.4f </z-m>\n    </center>\n    <axis>\n      <x> %g </x>\n      <y> %g </y>\n      <z> %g </z>\n'
+            '    </axis>\n  </animation>\n' % ((obj, prop, ''.join('      <entry><ind> %g </ind><dep> %g </dep></entry>\n' % e
+                                                                for e in table)) + tuple(centre) + tuple(axis)))
+
+
+PWR = '<property>/controls/electric/battery-switch</property>'
+LEGEND = (200, 255, 200)                                       # NVG-green panel legends
+
+
 def panels(art):
-    p = Panel('modesel', art, 11, 'pilot', 0.005)
-    for x in (-17.9, -6.4, 5.8, 17.6):
-        for y in (-5.9, 6.8):
-            p.button(x, y, 8.4, 8.2)
-    p.write('VSI/HSI mode selector (the course and steering modes are not simulated)')
+    UH = '/instrumentation/uh60/'
+    # VSI/HSI mode selector (TM 3.25.4): top row the navigation source, bottom row split legends
+    p = Panel('modesel', art, 11, 'pilot', 0.005, room=400)
+    bw, bh = 8.4, 8.2
+    top = (('dplr', ['DPLR']), ('vor-ils', ['VOR', 'ILS']), ('back-crs', ['BACK', 'CRS']), ('fm-home', ['FM', 'HOME']))
+    bottom = (('turn-altr', 'NORM', 'ALTR'), ('crs-hdg', 'PLT', 'CPLT'), ('vgyro-altr', 'NORM', 'ALTR'), ('brg2-vor', 'ADF', 'VOR'))
+    for x, (key, lines) in zip((-17.9, -6.4, 5.8, 17.6), top):
+        cy, cz = p.button(x, -5.9, bw, bh, name='btn-' + key)
+        w2, h2 = bw * PT * 0.42, bh * PT * 0.42
+        p.legend('lit-' + key, cy - w2, cy + w2, cz - h2, cz + h2, p.depth + 0.0032, lines, LEGEND,
+                 '%s<property>%smodesel[0]/%s</property>' % (PWR, UH, key))
+        p.xml += pick_xml('btn-' + key, [(0, 'avionics.modesel(0, "%s")' % key)], 'Mode select: ' + ' '.join(lines))
+    for x, (key, a, b) in zip((-17.9, -6.4, 5.8, 17.6), bottom):
+        cy, cz = p.button(x, 6.8, bw, bh, name='btn-' + key)
+        w2, h2 = bw * PT * 0.42, bh * PT * 0.21
+        state = '%scrs-hdg-cplt' % UH if key == 'crs-hdg' else '%smodesel[0]/%s' % (UH, key)
+        p.legend('lit-%s-a' % key, cy - w2, cy + w2, cz, cz + 2 * h2, p.depth + 0.0032, [a], LEGEND,
+                 '%s<not><property>%s</property></not>' % (PWR, state))
+        p.legend('lit-%s-b' % key, cy - w2, cy + w2, cz - 2 * h2, cz, p.depth + 0.0032, [b], LEGEND,
+                 '%s<property>%s</property>' % (PWR, state))
+        p.xml += pick_xml('btn-' + key, [(0, 'avionics.modesel(0, "%s")' % key)], 'Mode select: %s / %s' % (a, b))
+    p.write('VSI/HSI mode selector, pilot\'s (Nasal/avionics.nas)', variants=[('modesel-copilot.xml', {
+        'modesel[0]': 'modesel[1]', 'avionics.modesel(0,': 'avionics.modesel(1,',
+        'VSI/HSI mode selector, pilot\'s': 'VSI/HSI mode selector, copilot\'s'})])
 
-    p = Panel('cismode', art, 10, 'pilot', 0.005)
-    for x in (-14.4, -0.2, 14.1):
-        p.button(x, -0.5, 8.9, 8.7)
-    p.write('CIS mode selector (the command instrument system is not simulated)')
+    # CIS mode selector: HDG, NAV, ALT, each with its ON legend
+    p = Panel('cismode', art, 10, 'pilot', 0.005, room=200)
+    for x, key in zip((-14.4, -0.2, 14.1), ('hdg', 'nav', 'alt')):
+        cy, cz = p.button(x, -0.5, 8.9, 8.7, name='btn-' + key)
+        w2, h2 = 8.9 * PT * 0.42, 8.7 * PT * 0.21
+        p.legend('lit-' + key, cy - w2, cy + w2, cz - 2 * h2, cz, p.depth + 0.0032, ['ON'], LEGEND,
+                 '%s<property>%scis/%s-on</property>' % (PWR, UH, key))
+        p.xml += pick_xml('btn-' + key, [(0, 'avionics.press("%s")' % key)], 'CIS mode: ' + key.upper())
+    p.write('CIS mode selector (Nasal/avionics.nas)')
 
+    # auxiliary fuel management panel: no external tanks are fitted, its displays stay blank; the switches move
     p = Panel('afms', art, 21, 'centre', 0.005)
-    for x, y in ((-19.1, 10.4), (-5.3, 10.4), (7.0, 9.8)):
-        p.toggle(x, y)
-    p.knob(21.0, 10.3, 9)
-    p.write('auxiliary fuel management panel (no external tanks are simulated)')
+    AF = '/controls/fuel/afms/'
+    for x, y, key, label in ((-19.1, 10.4, 'xfer-mode', 'XFER MODE: AUTO / OFF / MAN'),
+                             (-5.3, 10.4, 'man-xfer', 'MAN XFER: LEFT / BOTH / RIGHT'),
+                             (7.0, 9.8, 'xfer-from', 'XFER FROM: INBD / OUTBD')):
+        cy, cz = p.toggle(x, y, name='sw-' + key, straight=True)
+        p.xml += rot_table_xml('sw-' + key, AF + key, [(-1, -35), (0, 0), (1, 35)], (p.depth, cy, cz), (0, -1, 0))
+        lo = 0 if key == 'xfer-from' else -1
+        p.xml += pick_xml('sw-' + key, [(0, 'avionics.step("%s%s", 1, %d, 1)' % (AF, key, lo)),
+                                        (2, 'avionics.step("%s%s", -1, %d, 1)' % (AF, key, lo))],
+                          label + ' (left click up, right click down; no tanks fitted)')
+    cy, cz = p.knob(21.0, 10.3, 9, name='sw-press')
+    p.xml += rot_table_xml('sw-press', AF + 'press', [(0, -45), (1, 0), (2, 45), (3, 90)], (p.depth, cy, cz))
+    p.xml += pick_xml('sw-press', [(0, 'avionics.step("%spress", 1, 0, 3)' % AF), (2, 'avionics.step("%spress", -1, 0, 3)' % AF)],
+                      'PRESS: ALL / OUTBD / INBD / OFF (no tanks fitted)')
+    for x in (-19.0, -6.5, 6.5, 19.0):                         # QTY displays, blank
+        cy, cz = p.at(x, -6.9)
+        A.box(p.obj('displays'), cy - 4.6 * PT, cy + 4.6 * PT, cz - 2.1 * PT, cz + 2.1 * PT, p.depth, p.depth + 0.0004, p.dark, p.dark)
+    p.write('auxiliary fuel management panel: no external tanks are fitted, its displays stay blank')
 
     p = Panel('rwr', art, 20, 'centre', 0.006)
     p.knob(20.2, -17.6, 9); p.lamp(-21.5, -18.1, 5, (70, 20, 15)); p.glass(0, 0, 34.0)
     p.write('radar warning indicator (no threats are simulated)')
 
+    # ice rate meter, blade deice control and test panels, IRCM (TM 2.54, 4.8; Nasal/avionics.nas)
+    D = '/controls/anti-ice/blade-deice/'
     p = Panel('deice', art, 0, 'centre', 0.003)
-    p.glass(-0.2, -52.7, 29.6)                                 # ice rate meter
-    p.button(-29.6, -52.8, 8.3, 12.0)                          # PRESS TO TEST
-    p.toggle(-19.7, -0.7)                                      # blade deice POWER
-    p.lamp(0.9, -0.6, 10, (60, 55, 20))                        # TEST IN PROGRESS
-    p.knob(20.0, -1.1, 14)                                     # MODE
-    p.knob(-15.2, 32.2, 14)                                    # BLADE DE-ICE TEST selector
-    p.lamp(9.8, 32.3, 10, (25, 50, 25)); p.lamp(26.3, 32.3, 10, (25, 50, 25))     # PWR MAIN RTR, TAIL RTR
-    p.toggle(23.2, 61.4, up=False)                             # IRCM ON/OFF
-    p.write('ice rate meter, blade deice control and test panels, IRCM control panel (not simulated)')
+    mcy, mcz = p.at(-0.2, -52.7)
+    o = p.obj('lwc-needle')
+    A.flat(o, [(mcy - 0.0007, mcz - 0.003), (mcy + 0.0007, mcz - 0.003), (mcy + 0.0004, mcz + 0.020), (mcy - 0.0004, mcz + 0.020)],
+           p.depth + 0.0008, p.white)
+    A.cylinder(o, 0.0018, mcy, mcz, p.depth + 0.0008, p.depth + 0.0012, p.knob_top, p.knob_top)
+    p.xml += rot_table_xml('lwc-needle', D + 'meter-lwc', [(0, -85), (0.25, -71), (0.5, -53), (1.0, -3), (1.5, 52), (2.0, 80)],
+                           (p.depth, mcy, mcz))
+    p.lit.append('lwc-needle')
+    p.glass(-0.2, -52.7, 29.6)
+    p.button(-29.6, -52.8, 8.3, 12.0, name='btn-lwc-test')
+    p.xml += pick_xml('btn-lwc-test', [(0, 'avionics.ice_meter_test()')], 'Ice rate meter: PRESS TO TEST')
+    cy, cz = p.toggle(-19.7, -0.7, name='sw-power', straight=True)
+    p.xml += rot_table_xml('sw-power', D + 'power', [(0, 0), (1, 35), (2, -35)], (p.depth, cy, cz), (0, -1, 0))
+    p.xml += pick_xml('sw-power', [(0, 'avionics.deice_step(1)'), (2, 'avionics.deice_step(-1)')],
+                      'Blade deice POWER: ON / OFF / TEST (left click up, right click down)')
+    p.lamp(0.9, -0.6, 10, (25, 45, 25), name='lamp-test', lit=(60, 255, 80),
+           cond='<property>%stest-in-progress</property>' % D)
+    cy, cz = p.knob(20.0, -1.1, 14, name='sw-mode')
+    p.xml += rot_table_xml('sw-mode', D + 'mode', [(0, -28), (1, 31), (2, 77), (3, 120)], (p.depth, cy, cz))
+    p.xml += pick_xml('sw-mode', [(0, 'avionics.step("%smode", 1, 0, 3)' % D), (2, 'avionics.step("%smode", -1, 0, 3)' % D)],
+                      'Blade deice MODE: AUTO / MANUAL T, L, M')
+    cy, cz = p.knob(-15.2, 32.2, 14, name='sw-test-select')
+    p.xml += rot_table_xml('sw-test-select', D + 'test-select', [(0, -50), (1, -71), (2, -91), (3, -108), (4, -126)],
+                           (p.depth, cy, cz))
+    p.xml += pick_xml('sw-test-select', [(0, 'avionics.step("%stest-select", -1, 0, 4)' % D),
+                                         (2, 'avionics.step("%stest-select", 1, 0, 4)' % D)],
+                      'BLADE DE-ICE TEST: NORM / SYNC 1 / SYNC 2 / OAT / EOT')
+    for x, key in ((9.8, 'pwr-main'), (26.3, 'pwr-tail')):
+        p.lamp(x, 32.3, 10, (50, 40, 15), name='lamp-' + key, lit=AMBER_LAMP, cond='<property>%s%s</property>' % (D, key))
+        p.xml += pick_xml('lamp-' + key, [(0, 'setprop("%spress-pwr", 1);' % D)], 'PWR monitor light: press to test',
+                          release='setprop("%spress-pwr", 0);' % D)
+    cy, cz = p.toggle(23.2, 61.4, name='sw-ircm', straight=True)
+    p.xml += rot_table_xml('sw-ircm', '/controls/ircm/on', [(0, -35), (1, 35)], (p.depth, cy, cz), (0, -1, 0))
+    p.xml += pick_xml('sw-ircm', [(0, 'avionics.step("/controls/ircm/on", 1, 0, 1)'), (2, 'avionics.step("/controls/ircm/on", -1, 0, 1)')],
+                      'IRCM: ON / OFF (left click on, right click off)')
+    p.write('ice rate meter, blade deice control and test panels, IRCM control panel (Nasal/avionics.nas)')
 
-    p = Panel('nvgdim', art, 26, 'copilot', 0.0015, texw=512)
-    p.knob(-6.7, 0.4, 7, 0.007); p.knob(6.4, 0.2, 7, 0.007)
-    p.write('NVG dimming controls')
-
-    p = Panel('radaltdim', art, 27, 'copilot', 0.0015, texw=256)
-    p.knob(0, 0, 7, 0.007)
+    # dimming controls: master warning and caution/advisory lights (NVG panel), radar altimeter display
+    L = '/controls/lighting/'
+    def dimmer(p, x, y, prop, label):
+        cy, cz = p.knob(x, y, 7, 0.007, name='knob-' + prop)
+        p.xml += rot_table_xml('knob-' + prop, L + prop, [(0.1, -135), (1, 135)], (p.depth, cy, cz))
+        up, dn = 'avionics.step("%s%s", 0.1, 0.1, 1)' % (L, prop), 'avionics.step("%s%s", -0.1, 0.1, 1)' % (L, prop)
+        p.xml += pick_xml('knob-' + prop, [(0, up), (2, dn), (3, up), (4, dn)], label)
+    p = Panel('nvgdim', art, 26, 'copilot', 0.0015)
+    dimmer(p, -6.7, 0.4, 'ma-wrn-norm', 'MA WRN dimming'); dimmer(p, 6.4, 0.2, 'caut-advsy-norm', 'CAUT/ADVSY dimming')
+    p.write('NVG dimming controls: master warning and caution/advisory light intensity')
+    p = Panel('radaltdim', art, 27, 'copilot', 0.0015)
+    dimmer(p, 0, 0, 'radalt-norm', 'RAD ALT DIMMING')
     p.write('radar altimeter dimming control')
 
-    # engine ignition: a key switch, OFF up and ON to the right
-    p = Panel('ignition', art, 22, 'centre', 0.004, texw=256)
+    # engine ignition: a key switch, OFF up and ON to the right, on a plate with its OFF, ON and ENGINE IGNITION labels
+    p = Panel('ignition', art, 22, 'centre', 0.004, box=(474.0, 512.0, 218.0, 262.0))
     o = p.obj('key')
     A.box(o, -0.0035, 0.0035, -0.012, 0.012, p.depth, p.depth + 0.010, p.knob_top, p.knob_side)
     A.box(o, -0.0007, 0.0007, 0.004, 0.0115, p.depth + 0.010, p.depth + 0.0103, p.white, p.white)
@@ -393,9 +545,20 @@ def panels(art):
     p.write('engine ignition switch: /controls/engines/ignition (the engines light off only with it ON)',
             rotate_xml('key', '/controls/engines/ignition', 90) + pick)
 
+    # placards, decals on the face plate (figure 2-9 items 8, 12, 23, 25)
+    for name, num, side, comment in (('stabplac', 8, 'pilot', 'stabilator position placard'),
+                                     ('radiocall', 12, 'pilot', 'radio call placard'),
+                                     ('securepl', 25, 'centre', 'secure warning placard'),
+                                     ('radiosel', 23, 'centre', 'radio select placard')):
+        p = Panel(name, art, num, side, 0.0006, px_mm=20)
+        p.write(comment)
+
+
+AMBER_LAMP = (255, 176, 0)
+
 
 if __name__ == '__main__':
-    art = tmart.Art(sys.argv[1], 600)
+    art = tmart.Vec(sys.argv[1])
     vsi(); clock(); stab(); panels(art)
     import cap
     cap.build(art)

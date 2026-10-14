@@ -162,14 +162,6 @@
         <property>controls/switches/starterkey-insert</property>
       </binding>
       <binding>
-        <command>property-toggle</command>
-        <property>controls/engines/engine[0]/fuel-pump</property>
-      </binding>
-      <binding>
-        <command>property-toggle</command>
-        <property>controls/engines/engine[1]/fuel-pump</property>
-      </binding>
-      <binding>
         <condition>
           <property>controls/electric/battery-switch</property>
         </condition>

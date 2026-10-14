@@ -41,119 +41,101 @@
       <x-m>  0.0390 </x-m>
       <y-m>  0.6150 </y-m>
       <z-m> -0.0192 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/ai/ai.xml</path>
+    <path>Instruments/ai/ai-copilot.xml</path>
     <offsets>
       <x-m>  0.0391 </x-m>
       <y-m> -0.6163 </y-m>
       <z-m> -0.0208 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <!-- HORIZONTAL SITUATION INDICATOR (6) -->
   <model>
-    <path>Instruments/hsi/hsi.xml</path>
+    <path>Instruments/hsi60/hsi60.xml</path>
     <offsets>
-      <x-m>  0.0398 </x-m>
+      <x-m>  0.0402 </x-m>
       <y-m>  0.6153 </y-m>
-      <z-m> -0.1748 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <z-m> -0.1765 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
-    <overlay>
-      <animation n="100">
-        <type>scale</type>
-        <property>constants/zero</property>
-        <x-offset> 1.200 </x-offset>
-        <y-offset> 1.200 </y-offset>
-        <z-offset> 1.200 </z-offset>
-      </animation>
-    </overlay>
   </model>
 
   <model>
-    <path>Instruments/hsi/hsi-copilot.xml</path>
+    <path>Instruments/hsi60/hsi60-copilot.xml</path>
     <offsets>
-      <x-m>  0.0399 </x-m>
+      <x-m>  0.0403 </x-m>
       <y-m> -0.6154 </y-m>
-      <z-m> -0.1745 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <z-m> -0.1762 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
-    <overlay>
-      <animation n="100">
-        <type>scale</type>
-        <property>constants/zero</property>
-        <x-offset> 1.200 </x-offset>
-        <y-offset> 1.200 </y-offset>
-        <z-offset> 1.200 </z-offset>
-      </animation>
-    </overlay>
   </model>
 
   <!-- AIRSPEED INDICATOR (7) -->
   <model>
-    <path>Instruments/asi/asi.xml</path>
+    <path>Instruments/asi60/asi60.xml</path>
     <offsets>
-      <x-m>  0.0468 </x-m>
+      <x-m>  0.0436 </x-m>
       <y-m>  0.4736 </y-m>
       <z-m>  0.0182 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/asi/asi.xml</path>
+    <path>Instruments/asi60/asi60.xml</path>
     <offsets>
-      <x-m>  0.0467 </x-m>
+      <x-m>  0.0435 </x-m>
       <y-m> -0.7572 </y-m>
       <z-m>  0.0044 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <!-- BAROMETRIC ALTIMETER (2) -->
   <model>
-    <path>Instruments/alt/alt.xml</path>
+    <path>Instruments/alt60/alt60.xml</path>
     <offsets>
-      <x-m>  0.0442 </x-m>
+      <x-m>  0.0417 </x-m>
       <y-m>  0.7531 </y-m>
       <z-m> -0.0898 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/alt/alt.xml</path>
+    <path>Instruments/alt60/alt60.xml</path>
     <offsets>
-      <x-m>  0.0443 </x-m>
+      <x-m>  0.0418 </x-m>
       <y-m> -0.4781 </y-m>
       <z-m> -0.0902 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
-  <!-- RADAR ALTIMETER (1) -->
+  <!-- RADAR ALTIMETER AN/APN-209 (1) -->
   <model>
-    <path>Instruments/RadarAlt/RadarAlt.xml</path>
+    <path>Instruments/apn209/apn209.xml</path>
     <offsets>
-      <x-m>  0.0443 </x-m>
+      <x-m>  0.0434 </x-m>
       <y-m>  0.7532 </y-m>
-      <z-m>  0.0090 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <z-m>  0.0120 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/RadarAlt/RadarAlt.xml</path>
+    <path>Instruments/apn209/apn209-copilot.xml</path>
     <offsets>
-      <x-m>  0.0444 </x-m>
+      <x-m>  0.0435 </x-m>
       <y-m> -0.4776 </y-m>
-      <z-m>  0.0081 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <z-m>  0.0111 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -164,7 +146,7 @@
       <x-m>  0.0429 </x-m>
       <y-m>  0.3665 </y-m>
       <z-m> -0.0401 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
     <overlay>
       <animation n="100">
@@ -183,7 +165,7 @@
       <x-m>  0.0429 </x-m>
       <y-m> -0.3711 </y-m>
       <z-m> -0.0421 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
     <overlay>
       <animation n="100">
@@ -200,39 +182,21 @@
   <model>
     <path>Instruments/caution/caution.xml</path>
     <offsets>
-      <x-m>  0.0481 </x-m>
+      <x-m>  0.0444 </x-m>
       <y-m>  0.6144 </y-m>
       <z-m>  0.0684 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
-    <overlay>
-      <animation n="100">
-        <type>scale</type>
-        <property>constants/zero</property>
-        <x-offset> 0.890 </x-offset>
-        <y-offset> 0.890 </y-offset>
-        <z-offset> 0.890 </z-offset>
-      </animation>
-    </overlay>
   </model>
 
   <model>
     <path>Instruments/caution/caution.xml</path>
     <offsets>
-      <x-m>  0.0482 </x-m>
+      <x-m>  0.0445 </x-m>
       <y-m> -0.6167 </y-m>
       <z-m>  0.0670 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
-    <overlay>
-      <animation n="100">
-        <type>scale</type>
-        <property>constants/zero</property>
-        <x-offset> 0.890 </x-offset>
-        <y-offset> 0.890 </y-offset>
-        <z-offset> 0.890 </z-offset>
-      </animation>
-    </overlay>
   </model>
 
   <!-- CENTRAL DISPLAY UNIT (19) -->
@@ -242,28 +206,28 @@
       <x-m>  0.0399 </x-m>
       <y-m> -0.0106 </y-m>
       <z-m>  0.0016 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <!-- VERTICAL SPEED INDICATOR (3) -->
   <model>
-    <path>Instruments/vsi/vsi.xml</path>
+    <path>Instruments/vsi60/vsi60.xml</path>
     <offsets>
-      <x-m>  0.0431 </x-m>
+      <x-m>  0.0399 </x-m>
       <y-m>  0.7529 </y-m>
       <z-m> -0.1899 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/vsi/vsi.xml</path>
+    <path>Instruments/vsi60/vsi60.xml</path>
     <offsets>
-      <x-m>  0.0433 </x-m>
+      <x-m>  0.0401 </x-m>
       <y-m> -0.4783 </y-m>
       <z-m> -0.1892 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -274,7 +238,7 @@
       <x-m>  0.0401 </x-m>
       <y-m>  0.3640 </y-m>
       <z-m> -0.1798 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -284,7 +248,7 @@
       <x-m>  0.0402 </x-m>
       <y-m> -0.3764 </y-m>
       <z-m> -0.1798 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -295,7 +259,7 @@
       <x-m>  0.0422 </x-m>
       <y-m>  0.4608 </y-m>
       <z-m> -0.0583 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -305,7 +269,7 @@
       <x-m>  0.0419 </x-m>
       <y-m> -0.7689 </y-m>
       <z-m> -0.0850 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -316,17 +280,17 @@
       <x-m>  0.0400 </x-m>
       <y-m>  0.4781 </y-m>
       <z-m> -0.1879 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
   <model>
-    <path>Instruments/modesel/modesel.xml</path>
+    <path>Instruments/modesel/modesel-copilot.xml</path>
     <offsets>
       <x-m>  0.0403 </x-m>
       <y-m> -0.7550 </y-m>
       <z-m> -0.1757 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -337,7 +301,7 @@
       <x-m>  0.0413 </x-m>
       <y-m>  0.4785 </y-m>
       <z-m> -0.1136 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -348,7 +312,7 @@
       <x-m>  0.0445 </x-m>
       <y-m>  0.4090 </y-m>
       <z-m>  0.0690 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -358,7 +322,7 @@
       <x-m>  0.0445 </x-m>
       <y-m> -0.4076 </y-m>
       <z-m>  0.0663 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -369,7 +333,7 @@
       <x-m>  0.0445 </x-m>
       <y-m> -0.3467 </y-m>
       <z-m>  0.0675 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -380,7 +344,7 @@
       <x-m>  0.0423 </x-m>
       <y-m> -0.2201 </y-m>
       <z-m> -0.0596 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -391,7 +355,7 @@
       <x-m>  0.0413 </x-m>
       <y-m> -0.0733 </y-m>
       <z-m> -0.1157 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -402,7 +366,7 @@
       <x-m>  0.0399 </x-m>
       <y-m> -0.0761 </y-m>
       <z-m> -0.1929 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -413,7 +377,7 @@
       <x-m>  0.0410 </x-m>
       <y-m>  0.0485 </y-m>
       <z-m> -0.1311 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 
@@ -424,7 +388,71 @@
       <x-m>  0.0421 </x-m>
       <y-m>  0.2078 </y-m>
       <z-m> -0.0673 </z-m>
-      <pitch-deg> -1 </pitch-deg>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- STABILATOR POSITION PLACARD (8) -->
+  <model>
+    <path>Instruments/stabplac/stabplac.xml</path>
+    <offsets>
+      <x-m>  0.0422 </x-m>
+      <y-m>  0.5138 </y-m>
+      <z-m> -0.0588 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/stabplac/stabplac.xml</path>
+    <offsets>
+      <x-m>  0.0418 </x-m>
+      <y-m> -0.7150 </y-m>
+      <z-m> -0.0903 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- RADIO CALL PLACARD (12) -->
+  <model>
+    <path>Instruments/radiocall/radiocall.xml</path>
+    <offsets>
+      <x-m>  0.0445 </x-m>
+      <y-m>  0.3635 </y-m>
+      <z-m>  0.0688 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <model>
+    <path>Instruments/radiocall/radiocall.xml</path>
+    <offsets>
+      <x-m>  0.0444 </x-m>
+      <y-m> -0.4717 </y-m>
+      <z-m>  0.0623 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- SECURE WARNING PLACARD (25) -->
+  <model>
+    <path>Instruments/securepl/securepl.xml</path>
+    <offsets>
+      <x-m>  0.0388 </x-m>
+      <y-m> -0.2101 </y-m>
+      <z-m> -0.2570 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
+    </offsets>
+  </model>
+
+  <!-- RADIO SELECT PLACARD (23) -->
+  <model>
+    <path>Instruments/radiosel/radiosel.xml</path>
+    <offsets>
+      <x-m>  0.0388 </x-m>
+      <y-m> -0.0773 </y-m>
+      <z-m> -0.2569 </z-m>
+      <pitch-deg> 0.997 </pitch-deg>
     </offsets>
   </model>
 

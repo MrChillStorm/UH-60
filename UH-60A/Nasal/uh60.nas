@@ -41,9 +41,11 @@ var sequencer = func {
   } elsif (phase == 4 and ng(1) > 20) {
     setprop(eng(1, "mixture"), 0.5);
     phase = 5;
-  } elsif (phase == 5 and ng(1) > 62) {               # run up
-    interpolate(eng(0, "mixture"), 1, 8);
+  } elsif (phase == 5 and ng(1) > 62) {               # run up; FUEL PUMP switch OFF (TM checklist: the prime/boost
+    interpolate(eng(0, "mixture"), 1, 8);             # pump runs by itself while a starter turns)
     interpolate(eng(1, "mixture"), 1, 8);
+    setprop(eng(0, "fuel-pump"), 0);
+    setprop(eng(1, "fuel-pump"), 0);
     turbine_timer.start();
     phase = 0;
   } elsif (phase == 10) {                             # stop: idle for a cool-down, then off, then the brake

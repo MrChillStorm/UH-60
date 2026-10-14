@@ -2,7 +2,7 @@
 
 <!-- written by fdm/cockpit/instruments.py -->
 
-<!-- VSI/HSI mode selector (the course and steering modes are not simulated) -->
+<!-- VSI/HSI mode selector, pilot's (Nasal/avionics.nas) -->
 <PropertyList>
 
   <path>modesel.ac</path>
@@ -10,13 +10,39 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
-    <object-name>buttons</object-name>
+    <object-name>btn-dplr</object-name>
+    <object-name>lit-dplr</object-name>
+    <object-name>btn-vor-ils</object-name>
+    <object-name>lit-vor-ils</object-name>
+    <object-name>btn-back-crs</object-name>
+    <object-name>lit-back-crs</object-name>
+    <object-name>btn-fm-home</object-name>
+    <object-name>lit-fm-home</object-name>
+    <object-name>btn-turn-altr</object-name>
+    <object-name>lit-turn-altr-a</object-name>
+    <object-name>lit-turn-altr-b</object-name>
+    <object-name>btn-crs-hdg</object-name>
+    <object-name>lit-crs-hdg-a</object-name>
+    <object-name>lit-crs-hdg-b</object-name>
+    <object-name>btn-vgyro-altr</object-name>
+    <object-name>lit-vgyro-altr-a</object-name>
+    <object-name>lit-vgyro-altr-b</object-name>
+    <object-name>btn-brg2-vor</object-name>
+    <object-name>lit-brg2-vor-a</object-name>
+    <object-name>lit-brg2-vor-b</object-name>
   </animation>
 
   <animation>
     <type>material</type>
     <object-name>panel</object-name>
-    <object-name>buttons</object-name>
+    <object-name>btn-dplr</object-name>
+    <object-name>btn-vor-ils</object-name>
+    <object-name>btn-back-crs</object-name>
+    <object-name>btn-fm-home</object-name>
+    <object-name>btn-turn-altr</object-name>
+    <object-name>btn-crs-hdg</object-name>
+    <object-name>btn-vgyro-altr</object-name>
+    <object-name>btn-brg2-vor</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
     </condition>
@@ -26,6 +52,382 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-dplr</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/dplr</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-dplr</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-dplr</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "dplr")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-dplr</tooltip-id>
+        <label>Mode select: DPLR</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-vor-ils</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/vor-ils</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-vor-ils</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-vor-ils</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "vor-ils")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-vor-ils</tooltip-id>
+        <label>Mode select: VOR ILS</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-back-crs</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/back-crs</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-back-crs</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-back-crs</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "back-crs")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-back-crs</tooltip-id>
+        <label>Mode select: BACK CRS</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-fm-home</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/fm-home</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-fm-home</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-fm-home</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "fm-home")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-fm-home</tooltip-id>
+        <label>Mode select: FM HOME</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-turn-altr-a</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><not><property>/instrumentation/uh60/modesel[0]/turn-altr</property></not>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-turn-altr-a</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-turn-altr-b</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/turn-altr</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-turn-altr-b</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-turn-altr</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "turn-altr")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-turn-altr</tooltip-id>
+        <label>Mode select: NORM / ALTR</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-crs-hdg-a</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><not><property>/instrumentation/uh60/crs-hdg-cplt</property></not>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-crs-hdg-a</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-crs-hdg-b</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/crs-hdg-cplt</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-crs-hdg-b</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-crs-hdg</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "crs-hdg")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-crs-hdg</tooltip-id>
+        <label>Mode select: PLT / CPLT</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-vgyro-altr-a</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><not><property>/instrumentation/uh60/modesel[0]/vgyro-altr</property></not>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-vgyro-altr-a</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-vgyro-altr-b</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/vgyro-altr</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-vgyro-altr-b</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-vgyro-altr</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "vgyro-altr")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-vgyro-altr</tooltip-id>
+        <label>Mode select: NORM / ALTR</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-brg2-vor-a</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><not><property>/instrumentation/uh60/modesel[0]/brg2-vor</property></not>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-brg2-vor-a</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-brg2-vor-b</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/modesel[0]/brg2-vor</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-brg2-vor-b</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-brg2-vor</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.modesel(0, "brg2-vor")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-brg2-vor</tooltip-id>
+        <label>Mode select: ADF / VOR</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

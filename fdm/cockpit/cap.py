@@ -61,15 +61,16 @@ COND = {
     'boost-servo': lt(NR, 50),
     'xmsn-oil-temp': gt('/sim/model/uh60/xmsn-oil-temp-degc', 120),
     'xmsn-oil-press': lt('/sim/model/uh60/xmsn-oil-press-psi', 14),
-    'stabilator': off('/fdm/jsbsim/stab/auto'),
-    'sas-off': '<or><and>%s%s</and>%s</or>' % (off('/fdm/jsbsim/ctl/sas1'), off('/fdm/jsbsim/ctl/sas2'), lt(NR, 50)),
-    'flt-path-stab': off('/fdm/jsbsim/ctl/fps'),
     'prime-boost': '<or><property>/controls/engines/engine[0]/fuel-pump</property>'
                    '<property>/controls/engines/engine[1]/fuel-pump</property></or>',
     'ldg-lt': '<property>/controls/lighting/landing-lights</property>',
     'parking-brake': '<property>/controls/gear/brake-parking</property>',
 }
 FLASH = {'fuel-low-1', 'fuel-low-2'}
+# flags Nasal sets: avionics.nas the ice detector's test, the blade deice test panel's failures, the IRCM's cooldown;
+# caution.nas the AFCS's (a property rule would create JSBSim's switches before JSBSim starts, and JSBSim then leaves
+# them off instead of at their default, on)
+NASAL = {'ice', 'mr-deice-fail', 'tr-deice-fail', 'ircm-inop', 'stabilator', 'sas-off', 'flt-path-stab'}
 
 # figure 2-24 (UH), rows top down, columns left to right: (id, legend lines); rows 1-16 amber, 17-21 green;
 # None: the BRT/DIM-TEST switch or no capsule
@@ -141,7 +142,7 @@ def build(art):
     depth = 0.006
     t = I.Tex(2048, 2048, (I.GROUND,) * 3)
     pw = 1024; ph = int(round(pw * h / w))
-    t.im.paste(tmart.light(art.crop(bx0, bx1, by0, by1, 1, (pw, ph)), I.GROUND, I.LETTER).convert('RGB'), (0, 0))
+    t.im.paste(tmart.light(art.vector(bx0, bx1, by0, by1, 1, pw, ph), I.GROUND, I.LETTER).convert('RGB'), (0, 0))
     face_uv = t.area(0, 0, pw, ph, -w / 2, w / 2, -h / 2, h / 2)
     paint, side_uv, metal = t.swatch((30, 30, 30)), t.swatch((16, 16, 16)), t.swatch((170, 170, 172))
     body = A.Obj('panel', 'cap.png'); A.prism(body, A.rrect(w, h, 0.002), 0, depth, face_uv, paint)
@@ -174,7 +175,7 @@ def build(art):
     objs = [body, caps, sw] + lit
     xml = ''
     for o, (cid, amber) in zip(lit, legends):
-        cond = '<property>%s%s</property>' % (P, cid) if cid in COND else ''
+        cond = '<property>%s%s</property>' % (P, cid) if cid in COND or cid in NASAL else ''
         cond = '<or>%s<property>/sim/model/uh60/cap-test</property></or>' % cond if cond else \
                '<property>/sim/model/uh60/cap-test</property>'
         if cid in FLASH:
@@ -183,7 +184,8 @@ def build(art):
                 '      <property>/controls/electric/battery-switch</property>\n      %s\n    </condition>\n  </animation>\n'
                 % (o.name, cond))
     xml += ('\n  <animation>\n    <type>material</type>\n' + ''.join('    <object-name>%s</object-name>\n' % o.name for o in lit) +
-            '    <emission>\n      <red> 1 </red>\n      <green> 1 </green>\n      <blue> 1 </blue>\n    </emission>\n  </animation>\n')
+            '    <emission>\n      <factor-prop>/controls/lighting/caut-advsy-norm</factor-prop>\n      <red> 1 </red>\n'
+            '      <green> 1 </green>\n      <blue> 1 </blue>\n    </emission>\n  </animation>\n')
     xml += ('\n  <animation>\n    <type>rotate</type>\n    <object-name>test-switch</object-name>\n'
             '    <property>/sim/model/uh60/cap-test</property>\n    <factor> 30 </factor>\n'
             '    <center>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </center>\n'
@@ -201,7 +203,7 @@ def build(art):
                        'Systems/uh60a-cap.xml (fdm/cockpit/cap.py) -->\n<PropertyList>', 1))
     t.save(os.path.join(I.INSTR, 'cap', 'cap.png'))
     write_rules(legends)
-    write_nasal([cid for cid, amber in legends if amber and cid in COND])
+    write_nasal([cid for cid, amber in legends if amber and (cid in COND or cid in NASAL)])
     write_master_warning()
 
 
@@ -222,14 +224,26 @@ def write_rules(legends):
 def write_nasal(cautions):
     s = '''# MASTER CAUTION (TM 1-1520-237-10 2.81): lights whenever an amber capsule of the caution/advisory panel goes on
 # and stays on until pressed, so that a second caution lights it again. The capsules' flags come from
-# Systems/uh60a-cap.xml. Written by fdm/cockpit/cap.py.
+# Systems/uh60a-cap.xml, the AFCS's from here. Written by fdm/cockpit/cap.py.
 
 var CAUTIONS = [%s];
 var lit = {};
 var master = props.globals.getNode("/sim/model/uh60/master-caution", 1);
 master.setBoolValue(0);
 
+# STABILATOR, SAS OFF (both SAS off, or no hydraulics below half rotor speed) and FLT PATH STAB. getprop, unlike a
+# property rule or a listener, doesn't create JSBSim's switches before JSBSim has set them on.
+var off = func(p) { var v = getprop(p); return v != nil and v < 0.5; };
+var afcs = func {
+    var C = "/sim/model/uh60/cap/";
+    setprop(C ~ "stabilator", off("/fdm/jsbsim/stab/auto"));
+    setprop(C ~ "sas-off", (off("/fdm/jsbsim/ctl/sas1") and off("/fdm/jsbsim/ctl/sas2"))
+                           or (getprop("/rotors/main/rpm-pct") or 0) < 50);
+    setprop(C ~ "flt-path-stab", off("/fdm/jsbsim/ctl/fps"));
+};
+
 var update = func {
+    afcs();
     foreach (var c; CAUTIONS) {
         if (getprop("/sim/model/uh60/cap/" ~ c)) {
             if (!contains(lit, c)) {
@@ -250,9 +264,41 @@ timer.start();
     open(os.path.join(I.NASAL, 'caution.nas'), 'w').write(s)
 
 
+# master warning panel, figure 2-23 (sheet 1 pt): capsules' left edges, rows' tops, capsule size; the legends
+MW_COLS, MW_ROWS, MW_W, MW_H = (154.7, 175.3, 195.9), (86.8, 94.3), 19.5, 5.85
+MW = [('eng-out-1', ['#1 ENG', 'OUT']), (None, []), ('eng-out-2', ['#2 ENG', 'OUT']),
+      ('fire', ['FIRE']), ('master', ['MASTER CAUTION', 'PRESS TO RESET']), ('low-rpm', ['LOW ROTOR', 'RPM'])]
+
+
 def write_master_warning():
-    """The master warning panel (TM 2.81, table 2-3): ENG OUT, LOW ROTOR RPM, MASTER CAUTION (Nasal/caution.nas,
-    pressed to reset) and the old panel's AFCS light; all on in the lamp test, LOW ROTOR RPM flashing."""
+    """The master warning panel (TM 2.81, figure 2-23): #1 and #2 ENG OUT, FIRE, MASTER CAUTION (Nasal/caution.nas,
+    pressed to reset) and LOW ROTOR RPM, amber; all on in the lamp test, LOW ROTOR RPM flashing; dimmed by the NVG
+    panel's MA WRN control."""
+    it = I.item(4, 'copilot')                      # sheet 1, where the capsules were measured
+    bx0, bx1, by0, by1 = it[4:8]
+    cx, cy = (bx0 + bx1) / 2, (by0 + by1) / 2
+    w, h = (bx1 - bx0) * I.PT, (by1 - by0) * I.PT
+    t = I.Tex(2048, 1024, (20, 20, 20))
+    dark, side = t.swatch((24, 24, 24)), t.swatch((14, 14, 14))
+    body = A.Obj('panel', 'caution.png'); A.prism(body, A.rrect(w, h, 0.0015), 0, 0.004, dark, side)
+    caps = A.Obj('capsules', 'caution.png'); objs = [body, caps]; lit = []
+    for k, (cid, lines) in enumerate(MW):
+        r, c = divmod(k, 3)
+        ux, uy = 16 + 672 * c, 16 + 464 * r
+        legend(t.d, (ux, uy, ux + 640, uy + 208), lines, (60, 52, 40))
+        legend(t.d, (ux, uy + 224, ux + 640, uy + 432), lines, AMBER)
+        y0 = (MW_COLS[c] - cx) * I.PT; y1 = y0 + MW_W * I.PT
+        z1 = -(MW_ROWS[r] - cy) * I.PT; z0 = z1 - MW_H * I.PT
+        o = A.Obj('btn-master', 'caution.png') if cid == 'master' else caps
+        A.prism(o, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], 0.004, 0.0055, t.area(ux, uy, ux + 640, uy + 208, y0, y1, z0, z1), side)
+        if o is not caps:
+            objs.append(o)
+        if cid:
+            l = A.Obj('lit-' + cid, 'caution.png')
+            A.flat(l, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], 0.0057, t.area(ux, uy + 224, ux + 640, uy + 432, y0, y1, z0, z1))
+            objs.append(l); lit.append(l.name)
+    A.write(os.path.join(I.INSTR, 'caution', 'caution.ac'), objs)
+    t.save(os.path.join(I.INSTR, 'caution', 'caution.png'))
     test = '<property>sim/model/uh60/cap-test</property>'
     def light(obj, comment, cond, flash=False):
         return """
@@ -269,21 +315,15 @@ def write_master_warning():
     </condition>
   </animation>
 """ % (comment, obj, '\n      <property>sim/model/uh60/warning-flash</property>' if flash else '', test, cond)
-    names = ''.join('    <object-name>%s</object-name>\n' % o for o in ('fond', 'caution1', 'caution2', 'caution3', 'caution4'))
-    lights = ''.join('    <object-name>caution%d</object-name>\n' % k for k in range(1, 5))
-    s = """<?xml version="1.0" encoding="ISO-8859-1"?>
+    names = ''.join('    <object-name>%s</object-name>\n' % o.name for o in objs)
+    x = """<?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!-- Master warning panel. The lights follow the UH-60A's (TM 1-1520-237-10, 2.81 and table 2-3) with the
-     flight model's values: the legends of this panel stand for ENG OUT, LOW ROTOR RPM, MASTER CAUTION and the
-     state of the automatic flight control system. All need dc power (battery switch) and all light in the lamp test
-     of the caution/advisory panel. Written by fdm/cockpit/cap.py. -->
+<!-- Master warning panel, TM 1-1520-237-10 2.81 and figure 2-23, with the flight model's values. The lights need dc
+     power (battery switch) and all light in the caution/advisory panel's lamp test. Written by fdm/cockpit/cap.py. -->
 
 <PropertyList>
 
   <path>caution.ac</path>
-
-  <animation>
-%s  </animation>
 
   <animation>
     <type>noshadow</type>
@@ -291,28 +331,27 @@ def write_master_warning():
 
   <animation>
     <type>material</type>
-%s    <condition>
-      <property>controls/electric/battery-switch</property>
-    </condition>
-    <emission>
-      <factor-prop>controls/lighting/instruments-norm</factor-prop>
-      <red>   0.50 </red>
-      <green> 0.40 </green>
-      <blue>  0.30 </blue>
+%s    <emission>
+      <factor-prop>/controls/lighting/ma-wrn-norm</factor-prop>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
     </emission>
   </animation>
-""" % (names, names, lights)
-    s += light('caution1', 'EMERG ENGINE = #1 / #2 ENG OUT: gas generator speed Ng below 55 %',
-               '<or><less-than><property>engines/engine[0]/n1-pct</property><value>55</value></less-than>'
-               '<less-than><property>engines/engine[1]/n1-pct</property><value>55</value></less-than></or>')
-    s += light('caution2', 'EMERG ROTOR = LOW ROTOR RPM: rotor speed below 96 %, flashing',
-               '<less-than><property>rotors/main/rpm-pct</property><value>96</value></less-than>', flash=True)
-    s += light('caution3', 'MASTER CAUTION: an amber capsule of the caution/advisory panel has lit (Nasal/caution.nas)',
+""" % (names, ''.join('    <object-name>%s</object-name>\n' % o for o in lit))
+    for n in (0, 1):
+        x += light('lit-eng-out-%d' % (n + 1), '#%d ENG OUT: gas generator speed Ng below 55 %%' % (n + 1),
+                   '<less-than><property>engines/engine[%d]/n1-pct</property><value>55</value></less-than>' % n)
+    x += light('lit-fire', 'FIRE: no fire is simulated; the lamp test only', test)
+    x += light('lit-master', 'MASTER CAUTION: an amber capsule of the caution/advisory panel has lit (Nasal/caution.nas)',
                '<property>sim/model/uh60/master-caution</property>')
-    s += """
+    x += light('lit-low-rpm', 'LOW ROTOR RPM: rotor speed below 96 %, flashing',
+               '<less-than><property>rotors/main/rpm-pct</property><value>96</value></less-than>', flash=True)
+    x += """
   <animation>
     <type>pick</type>
-    <object-name>caution3</object-name>
+    <object-name>btn-master</object-name>
+    <object-name>lit-master</object-name>
     <action>
       <button>0</button>
       <repeatable>false</repeatable>
@@ -329,9 +368,7 @@ def write_master_warning():
       </binding>
     </hovered>
   </animation>
+
+</PropertyList>
 """
-    s += light('caution4', 'AFCS READY: both SAS channels, the FPS, the pitch bias actuator and the stabilator\'s automatic mode on',
-               '<and>' + ''.join('<greater-than><property>fdm/jsbsim/%s</property><value>0.5</value></greater-than>' % p
-                                 for p in ('ctl/sas1', 'ctl/sas2', 'ctl/fps', 'ctl/pba', 'stab/auto')) + '</and>')
-    s += '\n</PropertyList>\n'
-    open(os.path.join(I.INSTR, 'caution', 'caution.xml'), 'w', encoding='latin-1').write(s)
+    open(os.path.join(I.INSTR, 'caution', 'caution.xml'), 'w', encoding='latin-1').write(x)

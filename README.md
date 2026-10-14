@@ -64,7 +64,8 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
 - **Start.** On the ground the aircraft starts cold and dark (in the air it
   starts running). Aircraft menu → AutoStart/AutoStop, or the `}` key, runs
   the start: battery and generators on, one engine after the other, then
-  both to FLY; again, it shuts down. To start by hand, the power control
+  both to FLY and the FUEL PUMP switch OFF (the prime/boost pump runs by
+  itself while a starter turns); again, it shuts down. To start by hand, the power control
   levers are the mixture axis or keys (0 OFF, 0.5 IDLE, 1 FLY) and the
   starter is `s` for the selected engine. An engine lights off at about
   20 % Ng, the starter drops out at 52–65 % and it idles at 63–69 %. There
@@ -80,9 +81,33 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
   the SAS, a hover takes your full attention, as in the real aircraft.
   FlightGear can't move your stick, so the FPS moves the stick's trim point
   instead.
-- **Warning lights.** The master warning panel has ENG OUT (Ng below 55 %),
-  LOW ROTOR RPM (below 96 %, flashing), MASTER CAUTION and a green light
-  when the whole AFCS is on. The caution/advisory panel lights the capsules
+- **Navigation and the command instrument system** as the operator's
+  manual describes them. Each pilot's mode selector picks what that pilot's
+  VSI and HSI show: Doppler/GPS (FlightGear's GPS, its active waypoint as the
+  destination), VOR/ILS (NAV 1), back course or FM homing, the No. 2
+  bearing pointer's ADF or VOR, and which pilot's HSI course and heading
+  set the receiver and the CIS. The CIS mode selector's HDG, NAV and ALT
+  give the VSIs' roll and pitch command bars and collective pointer:
+  heading, VOR and ILS intercept and tracking with glide slope capture,
+  back course, Doppler/GPS steering, altitude hold and level-off at the
+  radar altimeter's LO bug. The HSIs have both bearing pointers and the
+  Doppler/GPS distance in km; HDG and CRS knobs take the mouse wheel or
+  clicks (shift for 10).
+- **Radar altimeters** (AN/APN-209, one per pilot). The LO SET knob turns
+  the set on (fully back past 0 is OFF) and sets the L bug; the HI SET knob
+  sets the H bug, and holding it in (middle click) tests the set: 1000 ft,
+  HI light on, no flag. The OFF flag stays in view for about two minutes of
+  warm-up after power comes on, and above 1500 ft the pointer hides behind
+  the dial's mask. The LO and HI lights come on below the L bug and above
+  the H bug.
+- **Panel switches.** Blade deice POWER, MODE and test selector run the
+  manual's test cycle and its failure tests on the caution panel; the ice
+  rate meter's PRESS TO TEST, the IRCM's cooldown, the NVG panel's warning
+  and caution light dimmers and the radar altimeter dimmer work. Left
+  click moves a switch up or a knob on, right click back.
+- **Warning lights.** The master warning panel (#1 and #2 ENG OUT below
+  55 % Ng, FIRE, MASTER CAUTION, LOW ROTOR RPM below 96 % flashing) follows
+  the manual's layout. The caution/advisory panel lights the capsules
   the simulation can drive, as the operator's manual describes them: fuel
   low and fuel pressure, engine oil, starters, generators and converters
   (off line below 93.75 % rotor speed on the ground), hydraulic pumps and
@@ -134,9 +159,12 @@ Sikorsky's simulation as NASA ran it.
   retreating blade stalls early instead), rotor damage and overstress,
   hydraulic and most electrical failures. The transmission oil gauges are
   cosmetic.
-- **Cockpit:** the mode selectors, the auxiliary fuel management panel, the
-  radar warning indicator, the ice rate meter and the blade deice and IRCM
-  panels are there but drive nothing. The caution capsules for failures the
+- **Cockpit:** no icing, external tanks, radar threats or fire are
+  simulated, so the ice rate meter reads zero but in its test, the
+  auxiliary fuel panel's displays stay blank, the radar warning indicator
+  shows nothing and FIRE lights only in the lamp test. FM homing has no
+  FlightGear receiver (its NAV flag stays in view), and there is no
+  go-around switch on the cyclic. The caution capsules for failures the
   simulation doesn't have stay dark, and the hydraulic ones are lit below
   half rotor speed, an estimate.
 
@@ -144,8 +172,9 @@ Sikorsky's simulation as NASA ran it.
 
 The [`fdm`](fdm) folder holds everything that produced the flight model and
 the report. It needs Python 3 with `jsbsim` 1.3.2, `numpy` and `matplotlib`
-(`scipy` for `heyson.py`), and [tectonic](https://tectonic-typesetting.github.io)
-or another XeLaTeX for the PDF.
+(`scipy` for `heyson.py` and the cockpit), and [tectonic](https://tectonic-typesetting.github.io)
+or another XeLaTeX for the PDF. The cockpit scripts need Pillow and
+poppler's `pdftoppm`.
 
 ```bash
 cd fdm
@@ -174,11 +203,16 @@ python3 genap.py
 - `cockpit/panel_layout.py` measures the instrument panel from the
   operator's manual's figure (`cockpit/panel-layout.md` and `.png`), and
   `cockpit/panel_face.py` builds the cockpit panel from it: the face plate,
-  its texture and the instruments' places. `cockpit/instruments.py` (with
-  `cap.py`) builds the instruments the old panel lacked. Both draw their
-  textures from the manual's PDF:
-  `python3 instruments.py TM-1-1520-237-10.pdf`, then
-  `python3 panel_face.py TM-1-1520-237-10.pdf`.
+  the instruments' places and the glareshield, raised out of the pilots'
+  line of sight. `cockpit/instruments.py` (with `cap.py`) builds the
+  panels and placards the old panel lacked, their faces drawn from the
+  manual's PDF; `cockpit/avionics.py` the HSIs and the VSIs' additions;
+  `cockpit/gauges.py` the round flight instruments (airspeed, altimeter,
+  vertical speed and the AN/APN-209 radar altimeter), and it redraws the
+  attitude sphere and the two display units' faces at a higher resolution
+  in their old layout. In this order: `python3 instruments.py
+  TM-1-1520-237-10.pdf`, `python3 avionics.py`, `python3 gauges.py`,
+  `python3 panel_face.py`, then `python3 panel_layout.py` for the table.
 
 The NASA and Army reports are not included; the report lists them as sources.
 
@@ -201,31 +235,49 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   `Dialogs/uh60-menu.xml` and `Nasal/dialogs.nas`.
 - **Instrument panel** laid out as in the operator's manual (figure 2-9):
   the instruments moved to their places and sized (`Panels/panel.xml`), a
-  new face plate with its cut-outs (`panel2` in `Panels/panel.ac`) and its
-  texture `Panels/panel-face.png` with the manual's placards. The torque
+  new face plate with its cut-outs (`panel2` in `Panels/panel.ac`), plainly
+  painted (`Panels/panel-face.png`), with the manual's placards as decals
+  (`stabplac`, `radiocall`, `securepl`, `radiosel`). The torque
   dials, glass displays and moving maps, which a UH-60A doesn't have, are
   removed, and their Nasal (`map.nas`, `radar.nas`, `terrain-map.nas`,
   `zkv1000.nas`) is no longer loaded. `fdm/cockpit/panel_face.py` writes
   all of it.
-- **New instruments** (`Panels/Instruments/`): vertical speed indicators
-  (`vsi`, the airspeed indicator's case with the manual's dial), clocks
-  (`clock`), stabilator position indicators (`stab`), the caution/advisory
+- **New instruments** (`Panels/Instruments/`): the round flight
+  instruments, drawn new so their faces are sharp: airspeed indicators
+  (`asi60`), counter-pointer altimeters (`alt60`, with the 1000 ft and
+  IN. HG counters and a baro knob), vertical speed indicators (`vsi60`) and
+  AN/APN-209 radar altimeters (`apn209`, in place of the old set,
+  `RadarAlt`); clocks (`clock`), stabilator position indicators (`stab`), the caution/advisory
   panel (`cap`, with `Systems/uh60a-cap.xml` and `Nasal/caution.nas`), the
   engine ignition switch (`ignition`), and the mode selectors, auxiliary
   fuel management panel, radar warning indicator, deice and IRCM panels and
   dimming controls (`modesel`, `cismode`, `afms`, `rwr`, `deice`, `nvgdim`,
-  `radaltdim`), their faces from the manual's figure.
-  `fdm/cockpit/instruments.py` and `cap.py` write them.
+  `radaltdim`), their faces from the manual's figure; the HSIs, rebuilt
+  (`hsi60`), the VSIs' command bars, deviation pointers, flags and lights
+  (`ai`, `ai/cis`) and the master warning panel (`caution`).
+  `fdm/cockpit/instruments.py`, `cap.py`, `avionics.py` and `gauges.py`
+  write them;
+  `Nasal/avionics.nas` runs the mode selectors, the CIS and the panel
+  systems.
 - **Cockpit instruments** calibrated to the new flight model: the pilot
   display unit (`prop-rpm`: % RPM of both engines and the rotor, % torque;
   its green band in `prop-rpm.png` lengthened to fill the whole scale), the
   central display unit (`combimeter`: Ng, oil, TGT and transmission per
-  engine), the radar altimeter (`RadarAlt`, wheel height) and the master
-  warning panel (`caution`, MASTER CAUTION from the caution/advisory panel).
+  engine) and the master warning panel (`caution`, MASTER CAUTION from the
+  caution/advisory panel). The display units' faces and the VSI's attitude
+  sphere (`ai.png`) are redrawn at 2048 px in their old layout, the tapes'
+  calibration untouched; the radar altimeters read wheel height.
 - **Fixes** to bugs of the original aircraft: the cockpit collective lever
   moved with the passenger door instead of the collective
-  (`sticks/collective.xml`), and the warning panel's thresholds were set for
-  the old flight model (master caution always on).
+  (`sticks/collective.xml`), the warning panel's thresholds were set for
+  the old flight model (master caution always on), the autostart left the
+  prime/boost pump on (PRIME BOOST PUMP ON lit; `Dialogs/uh60-menu.xml`,
+  `Systems/uh60-keyboard.xml`, `Nasal/uh60.nas`), the instruments were
+  tilted 2° against the face plate, and the glareshield sat low over the
+  manual's panel: the master warning panels' top row reached under it and
+  its drooping front lip hid the panel's top 1–2 cm from the pilots
+  (`panel1` in `Panels/panel.ac`: its outboard ends raised 16.5 mm with the
+  plate's top edge, its lip up to 23 mm).
 - **Crew station** on the aircraft's butt lines (GenHel's cockpit
   geometry): the seats, pilots, cyclics and pedals on the seat centrelines
   at BL 24, the collectives at BL 11 (pilot) and BL 37 (copilot); they were

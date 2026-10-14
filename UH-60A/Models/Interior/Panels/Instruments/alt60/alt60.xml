@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- written by fdm/cockpit/instruments.py -->
+
+<!-- barometric altimeter (counter-pointer), TM 1-1520-237-10 figure 2-9; written by fdm/cockpit/gauges.py -->
+<PropertyList>
+
+  <path>alt60.ac</path>
+
+  <animation>
+    <type>noshadow</type>
+    <object-name>case</object-name>
+    <object-name>dial</object-name>
+    <object-name>flag10k</object-name>
+    <object-name>needle</object-name>
+    <object-name>knob</object-name>
+    <object-name>glass</object-name>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <object-name>glass</object-name>
+  </effect>
+
+  <animation>
+    <type>material</type>
+    <object-name>dial</object-name>
+    <object-name>flag10k</object-name>
+    <object-name>needle</object-name>
+    <condition>
+      <property>controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red>   0.50 </red>
+      <green> 0.40 </green>
+      <blue>  0.30 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>needle</object-name>
+    <property>instrumentation/altimeter/indicated-altitude-ft</property>
+    <factor> 0.36 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> 0.0000 </y-m>
+      <z-m> 0.0000 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>flag10k</object-name>
+    <condition>
+      <less-than><property>instrumentation/altimeter/indicated-altitude-ft</property><value>10000</value></less-than>
+    </condition>
+  </animation>
+
+  <text>
+    <name>thousands</name>
+    <type type="string">number-value</type>
+    <property>instrumentation/altimeter/indicated-altitude-ft</property>
+    <scale type="double">0.001</scale>
+    <format type="string">%2.0f</format>
+    <truncate type="bool">true</truncate>
+    <font>LiberationFonts/LiberationSans-Bold.ttf</font>
+    <character-size type="double">0.0062</character-size>
+    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.03</max-height>
+    <max-width>0.03</max-width>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m> 0.0086 </x-m>
+      <y-m> -0.0100 </y-m>
+      <z-m> 0.0007 </z-m>
+    </offsets>
+  </text>
+
+  <text>
+    <name>inhg</name>
+    <type type="string">number-value</type>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <scale type="double">100</scale>
+    <format type="string">%4.0f</format>
+    <truncate type="bool">false</truncate>
+    <font>LiberationFonts/LiberationSans-Bold.ttf</font>
+    <character-size type="double">0.005</character-size>
+    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
+    <axis-alignment>yz-plane</axis-alignment>
+    <max-height>0.03</max-height>
+    <max-width>0.03</max-width>
+    <alignment>center-center</alignment>
+    <offsets>
+      <x-m> 0.0086 </x-m>
+      <y-m> 0.0090 </y-m>
+      <z-m> -0.0109 </z-m>
+    </offsets>
+  </text>
+
+  <animation>
+    <type>material</type>
+    <object-name>thousands</object-name>
+    <object-name>inhg</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property>
+    </condition>
+    <emission>
+      <factor-prop>controls/lighting/instruments-norm</factor-prop>
+      <red> 0.9 </red>
+      <green> 0.9 </green>
+      <blue> 0.9 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>knob</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>0.01</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>0</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>0.1</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>-0.01</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>-0.1</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>0.01</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>3</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>0.1</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><not><property>devices/status/keyboard/shift</property></not></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>-0.01</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <action>
+      <button>4</button>
+      <repeatable>true</repeatable>
+      <binding>
+        <condition><property>devices/status/keyboard/shift</property></condition>
+        <command>property-adjust</command>
+        <property>instrumentation/altimeter/setting-inhg</property>
+        <step>-0.1</step>
+        <min>28.10</min>
+        <max>31.00</max>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>alt-baro</tooltip-id>
+        <label>Baro setting: %.2f inHg</label>
+        <property>instrumentation/altimeter/setting-inhg</property>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>knob</object-name>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <factor> 400 </factor>
+    <center>
+      <x-m> 0.0000 </x-m>
+      <y-m> -0.0325 </y-m>
+      <z-m> -0.0325 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+</PropertyList>

@@ -2,7 +2,7 @@
 
 <!-- written by fdm/cockpit/instruments.py -->
 
-<!-- auxiliary fuel management panel (no external tanks are simulated) -->
+<!-- auxiliary fuel management panel: no external tanks are fitted, its displays stay blank -->
 <PropertyList>
 
   <path>afms.ac</path>
@@ -10,8 +10,11 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
-    <object-name>toggles</object-name>
-    <object-name>knobs</object-name>
+    <object-name>sw-xfer-mode</object-name>
+    <object-name>sw-man-xfer</object-name>
+    <object-name>sw-xfer-from</object-name>
+    <object-name>sw-press</object-name>
+    <object-name>displays</object-name>
   </animation>
 
   <animation>
@@ -26,6 +29,203 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-xfer-mode</object-name>
+    <property>/controls/fuel/afms/xfer-mode</property>
+    <interpolation>
+      <entry><ind> -1 </ind><dep> -35 </dep></entry>
+      <entry><ind> 0 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 35 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0050 </x-m>
+      <y-m> -0.0341 </y-m>
+      <z-m> -0.0186 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> -1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-xfer-mode</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/xfer-mode", 1, -1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/xfer-mode", -1, -1, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-xfer-mode</tooltip-id>
+        <label>XFER MODE: AUTO / OFF / MAN (left click up, right click down; no tanks fitted)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-man-xfer</object-name>
+    <property>/controls/fuel/afms/man-xfer</property>
+    <interpolation>
+      <entry><ind> -1 </ind><dep> -35 </dep></entry>
+      <entry><ind> 0 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 35 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0050 </x-m>
+      <y-m> -0.0095 </y-m>
+      <z-m> -0.0186 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> -1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-man-xfer</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/man-xfer", 1, -1, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/man-xfer", -1, -1, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-man-xfer</tooltip-id>
+        <label>MAN XFER: LEFT / BOTH / RIGHT (left click up, right click down; no tanks fitted)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-xfer-from</object-name>
+    <property>/controls/fuel/afms/xfer-from</property>
+    <interpolation>
+      <entry><ind> -1 </ind><dep> -35 </dep></entry>
+      <entry><ind> 0 </ind><dep> 0 </dep></entry>
+      <entry><ind> 1 </ind><dep> 35 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0050 </x-m>
+      <y-m> 0.0125 </y-m>
+      <z-m> -0.0175 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> -1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-xfer-from</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/xfer-from", 1, 0, 1)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/xfer-from", -1, 0, 1)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-xfer-from</tooltip-id>
+        <label>XFER FROM: INBD / OUTBD (left click up, right click down; no tanks fitted)</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>sw-press</object-name>
+    <property>/controls/fuel/afms/press</property>
+    <interpolation>
+      <entry><ind> 0 </ind><dep> -45 </dep></entry>
+      <entry><ind> 1 </ind><dep> 0 </dep></entry>
+      <entry><ind> 2 </ind><dep> 45 </dep></entry>
+      <entry><ind> 3 </ind><dep> 90 </dep></entry>
+    </interpolation>
+    <center>
+      <x-m> 0.0050 </x-m>
+      <y-m> 0.0375 </y-m>
+      <z-m> -0.0184 </z-m>
+    </center>
+    <axis>
+      <x> -1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>sw-press</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/press", 1, 0, 3)</script>
+      </binding>
+    </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.step("/controls/fuel/afms/press", -1, 0, 3)</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>sw-press</tooltip-id>
+        <label>PRESS: ALL / OUTBD / INBD / OFF (no tanks fitted)</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

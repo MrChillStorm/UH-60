@@ -174,30 +174,6 @@
   </logic>
 
   <logic>
-    <name>stabilator</name>
-    <input>
-      <and><less-than><property>/fdm/jsbsim/stab/auto</property><value>0.5</value></less-than></and>
-    </input>
-    <output>/sim/model/uh60/cap/stabilator</output>
-  </logic>
-
-  <logic>
-    <name>sas-off</name>
-    <input>
-      <and><or><and><less-than><property>/fdm/jsbsim/ctl/sas1</property><value>0.5</value></less-than><less-than><property>/fdm/jsbsim/ctl/sas2</property><value>0.5</value></less-than></and><less-than><property>/rotors/main/rpm-pct</property><value>50</value></less-than></or></and>
-    </input>
-    <output>/sim/model/uh60/cap/sas-off</output>
-  </logic>
-
-  <logic>
-    <name>flt-path-stab</name>
-    <input>
-      <and><less-than><property>/fdm/jsbsim/ctl/fps</property><value>0.5</value></less-than></and>
-    </input>
-    <output>/sim/model/uh60/cap/flt-path-stab</output>
-  </logic>
-
-  <logic>
     <name>xmsn-oil-press</name>
     <input>
       <and><less-than><property>/sim/model/uh60/xmsn-oil-press-psi</property><value>14</value></less-than></and>

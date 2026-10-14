@@ -2,7 +2,7 @@
 
 <!-- written by fdm/cockpit/instruments.py -->
 
-<!-- CIS mode selector (the command instrument system is not simulated) -->
+<!-- CIS mode selector (Nasal/avionics.nas) -->
 <PropertyList>
 
   <path>cismode.ac</path>
@@ -10,13 +10,20 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
-    <object-name>buttons</object-name>
+    <object-name>btn-hdg</object-name>
+    <object-name>lit-hdg</object-name>
+    <object-name>btn-nav</object-name>
+    <object-name>lit-nav</object-name>
+    <object-name>btn-alt</object-name>
+    <object-name>lit-alt</object-name>
   </animation>
 
   <animation>
     <type>material</type>
     <object-name>panel</object-name>
-    <object-name>buttons</object-name>
+    <object-name>btn-hdg</object-name>
+    <object-name>btn-nav</object-name>
+    <object-name>btn-alt</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
     </condition>
@@ -26,6 +33,120 @@
       <green> 0.40 </green>
       <blue>  0.30 </blue>
     </emission>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-hdg</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/cis/hdg-on</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-hdg</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-hdg</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.press("hdg")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-hdg</tooltip-id>
+        <label>CIS mode: HDG</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-nav</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/cis/nav-on</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-nav</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-nav</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.press("nav")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-nav</tooltip-id>
+        <label>CIS mode: NAV</label>
+      </binding>
+    </hovered>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>lit-alt</object-name>
+    <condition>
+      <property>/controls/electric/battery-switch</property><property>/instrumentation/uh60/cis/alt-on</property>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>lit-alt</object-name>
+    <emission>
+      <red> 1 </red>
+      <green> 1 </green>
+      <blue> 1 </blue>
+    </emission>
+  </animation>
+
+  <animation>
+    <type>pick</type>
+    <object-name>btn-alt</object-name>
+    <action>
+      <button>0</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.press("alt")</script>
+      </binding>
+    </action>
+    <hovered>
+      <binding>
+        <command>set-tooltip</command>
+        <tooltip-id>btn-alt</tooltip-id>
+        <label>CIS mode: ALT</label>
+      </binding>
+    </hovered>
   </animation>
 
 </PropertyList>

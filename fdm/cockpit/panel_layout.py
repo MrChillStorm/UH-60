@@ -81,7 +81,7 @@ OUTLINE = [(X_CL, 62.2), (326.9, 62.2), (106.1, 78.8), (83.5, 86.5), (68.2, 103.
            (72.7, 245.9), (93.1, 265.7), (274.9, 265.7), (X_CL, 289.0)]
 
 # the model's instruments that stand for figure items (panel.xml file -> legend number)
-MODEL_FOR = {'ai': 5, 'hsi': 6, 'hsi-copilot': 6, 'alt': 2, 'asi': 7, 'RadarAlt': 1, 'prop-rpm': 13,
+MODEL_FOR = {'ai': 5, 'hsi': 6, 'hsi60': 6, 'alt': 2, 'asi': 7, 'RadarAlt': 1, 'asi60': 7, 'alt60': 2, 'apn209': 1, 'vsi60': 3, 'prop-rpm': 13,
              'combimeter': 19, 'caution': 4, 'vsi': 3, 'clock': 14, 'stab': 9, 'cap': 24, 'modesel': 11, 'cismode': 10,
              'afms': 21, 'ignition': 22, 'rwr': 20, 'deice': 0, 'nvgdim': 26, 'radaltdim': 27}
 
@@ -179,14 +179,14 @@ def table(its, model):
     rows = ['| No. | Item | Side | Size, in | Size, mm | Centre y, m | Centre z, m | Model: y, z; size, mm |',
             '|---|---|---|---|---|---|---|---|']
     for it in sorted(its, key=lambda it: it['y']):
-        now = [m for m in model if MODEL_FOR.get(m['name']) == it['num'] and
+        now = [m for m in model if MODEL_FOR.get(m['name'].replace('-copilot', '')) == it['num'] and
                (it['side'] == 'centre' or np.sign(m['y']) == np.sign(it['y']))]
         now = '; '.join('%s %+.3f, %+.3f; %.0f x %.0f' % (m['name'], m['y'], m['z'], m['w'] * 1e3, m['h'] * 1e3)
                         for m in now) or '-'
         rows.append('| %s | %s | %s | %.2f x %.2f | %.0f x %.0f | %+.3f | %+.3f | %s |' % (
             it['num'] or '', it['name'], it['side'], inch(it['w']), inch(it['h']), it['w'] * 1e3, it['h'] * 1e3,
             it['y'], it['z'], now))
-    rest = [m for m in model if m['name'] not in MODEL_FOR]
+    rest = [m for m in model if m['name'].replace('-copilot', '') not in MODEL_FOR]
     if rest:
         rows += ['', 'In the model but not in a UH-60A panel: ' +
                  ', '.join('%s (%+.3f, %+.3f)' % (m['name'], m['y'], m['z']) for m in rest) + '.']
