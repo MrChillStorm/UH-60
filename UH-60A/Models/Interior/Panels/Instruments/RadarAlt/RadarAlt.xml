@@ -49,7 +49,8 @@
   <animation>
     <type>rotate</type>
     <object-name>needle</object-name>
-    <property>/position/altitude-agl-ft</property>
+    <!-- height of the wheels (flight model): the aircraft's reference point stands about 6 ft up -->
+    <property>/sim/model/uh60/radar-alt-ft</property>
     <interpolation>
       <entry><ind> -9999 </ind><dep>    0 </dep></entry>
       <entry><ind>     0 </ind><dep>    0 </dep></entry>

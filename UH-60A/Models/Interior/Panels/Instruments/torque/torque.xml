@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!-- dual torque indicator: left needle No. 1 engine, right needle No. 2; the inner scale reads torque / 100 % -->
 <PropertyList>
 
   <path>torque.ac</path>
@@ -47,11 +48,17 @@
   <animation>
     <type>rotate</type>
     <object-name>Lneedle</object-name>
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/torque-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> -205 </dep></entry>
-      <entry><ind> 220 </ind><dep>  -90 </dep></entry>
-      <entry><ind> 440 </ind><dep>   25 </dep></entry>
+      <entry><ind>  40 </ind><dep> -148 </dep></entry>
+      <entry><ind>  50 </ind><dep> -128 </dep></entry>
+      <entry><ind>  60 </ind><dep> -104 </dep></entry>
+      <entry><ind>  70 </ind><dep>  -81 </dep></entry>
+      <entry><ind>  80 </ind><dep>  -50 </dep></entry>
+      <entry><ind>  90 </ind><dep>  -25 </dep></entry>
+      <entry><ind> 100 </ind><dep>    2 </dep></entry>
+      <entry><ind> 120 </ind><dep>   52 </dep></entry>
     </interpolation>
     <axis>
       <x> -1 </x>
@@ -63,11 +70,17 @@
   <animation>
     <type>rotate</type>
     <object-name>Rneedle</object-name>
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/torque-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> -205 </dep></entry>
-      <entry><ind> 220 </ind><dep>  -90 </dep></entry>
-      <entry><ind> 440 </ind><dep>   25 </dep></entry>
+      <entry><ind>  40 </ind><dep> -148 </dep></entry>
+      <entry><ind>  50 </ind><dep> -128 </dep></entry>
+      <entry><ind>  60 </ind><dep> -104 </dep></entry>
+      <entry><ind>  70 </ind><dep>  -81 </dep></entry>
+      <entry><ind>  80 </ind><dep>  -50 </dep></entry>
+      <entry><ind>  90 </ind><dep>  -25 </dep></entry>
+      <entry><ind> 100 </ind><dep>    2 </dep></entry>
+      <entry><ind> 120 </ind><dep>   52 </dep></entry>
     </interpolation>
     <axis>
       <x> -1 </x>

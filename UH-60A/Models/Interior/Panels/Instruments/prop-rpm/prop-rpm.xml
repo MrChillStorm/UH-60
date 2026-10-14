@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!-- pilot display unit: % RPM 1 / R / 2 (power turbine speeds Np and the rotor) and % TRQ of each engine,
+     calibrated to the printed scale marks -->
 <PropertyList>
 
   <path>prop-rpm.ac</path>
@@ -56,18 +58,18 @@
   <animation>
     <type>textranslate</type>
     <object-name>rpm1</object-name>
-    <property>rotors/main/rpm</property>
+    <property>engines/engine[0]/n2-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind> 250 </ind><dep> 0.050 </dep></entry>
-      <entry><ind> 350 </ind><dep> 0.140 </dep></entry>
-      <entry><ind> 450 </ind><dep> 0.225 </dep></entry>
-      <entry><ind> 475 </ind><dep> 0.310 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.400 </dep></entry>
-      <entry><ind> 525 </ind><dep> 0.490 </dep></entry>
-      <entry><ind> 550 </ind><dep> 0.580 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.670 </dep></entry>
-      <entry><ind> 650 </ind><dep> 0.740 </dep></entry>
+      <entry><ind>  50 </ind><dep> 0.050 </dep></entry>
+      <entry><ind>  70 </ind><dep> 0.140 </dep></entry>
+      <entry><ind>  90 </ind><dep> 0.225 </dep></entry>
+      <entry><ind>  95 </ind><dep> 0.310 </dep></entry>
+      <entry><ind> 100 </ind><dep> 0.400 </dep></entry>
+      <entry><ind> 105 </ind><dep> 0.490 </dep></entry>
+      <entry><ind> 110 </ind><dep> 0.580 </dep></entry>
+      <entry><ind> 120 </ind><dep> 0.670 </dep></entry>
+      <entry><ind> 130 </ind><dep> 0.740 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -79,18 +81,18 @@
   <animation>
     <type>textranslate</type>
     <object-name>rpm2</object-name>
-    <property>rotors/main/rpm</property>
+    <property>engines/engine[1]/n2-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind> 250 </ind><dep> 0.050 </dep></entry>
-      <entry><ind> 350 </ind><dep> 0.140 </dep></entry>
-      <entry><ind> 450 </ind><dep> 0.225 </dep></entry>
-      <entry><ind> 475 </ind><dep> 0.310 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.400 </dep></entry>
-      <entry><ind> 525 </ind><dep> 0.490 </dep></entry>
-      <entry><ind> 550 </ind><dep> 0.580 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.670 </dep></entry>
-      <entry><ind> 650 </ind><dep> 0.740 </dep></entry>
+      <entry><ind>  50 </ind><dep> 0.050 </dep></entry>
+      <entry><ind>  70 </ind><dep> 0.140 </dep></entry>
+      <entry><ind>  90 </ind><dep> 0.225 </dep></entry>
+      <entry><ind>  95 </ind><dep> 0.310 </dep></entry>
+      <entry><ind> 100 </ind><dep> 0.400 </dep></entry>
+      <entry><ind> 105 </ind><dep> 0.490 </dep></entry>
+      <entry><ind> 110 </ind><dep> 0.580 </dep></entry>
+      <entry><ind> 120 </ind><dep> 0.670 </dep></entry>
+      <entry><ind> 130 </ind><dep> 0.740 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -102,18 +104,18 @@
   <animation>
     <type>textranslate</type>
     <object-name>rpmR</object-name>
-    <property>rotors/main/rpm</property>
+    <property>rotors/main/rpm-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind> 250 </ind><dep> 0.050 </dep></entry>
-      <entry><ind> 350 </ind><dep> 0.140 </dep></entry>
-      <entry><ind> 450 </ind><dep> 0.225 </dep></entry>
-      <entry><ind> 475 </ind><dep> 0.310 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.400 </dep></entry>
-      <entry><ind> 525 </ind><dep> 0.490 </dep></entry>
-      <entry><ind> 550 </ind><dep> 0.580 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.670 </dep></entry>
-      <entry><ind> 650 </ind><dep> 0.740 </dep></entry>
+      <entry><ind>  50 </ind><dep> 0.050 </dep></entry>
+      <entry><ind>  70 </ind><dep> 0.140 </dep></entry>
+      <entry><ind>  90 </ind><dep> 0.225 </dep></entry>
+      <entry><ind>  95 </ind><dep> 0.310 </dep></entry>
+      <entry><ind> 100 </ind><dep> 0.400 </dep></entry>
+      <entry><ind> 105 </ind><dep> 0.490 </dep></entry>
+      <entry><ind> 110 </ind><dep> 0.580 </dep></entry>
+      <entry><ind> 120 </ind><dep> 0.670 </dep></entry>
+      <entry><ind> 130 </ind><dep> 0.740 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -125,17 +127,37 @@
   <animation>
     <type>textranslate</type>
     <object-name>trq1</object-name>
-    <object-name>trq2</object-name>
-    <property>rotors/gear/total-torque</property>
+    <property>engines/engine[0]/torque-pct</property>
     <interpolation>
-      <entry><ind>       0 </ind><dep> 0.000 </dep></entry>
-      <entry><ind>  250000 </ind><dep> 0.040 </dep></entry>
-      <entry><ind>  400000 </ind><dep> 0.075 </dep></entry>
-      <entry><ind>  600000 </ind><dep> 0.109 </dep></entry>
-      <entry><ind>  800000 </ind><dep> 0.143 </dep></entry>
-      <entry><ind> 1000000 </ind><dep> 0.178 </dep></entry>
-      <entry><ind> 1200000 </ind><dep> 0.217 </dep></entry>
-      <entry><ind> 1400000 </ind><dep> 0.240 </dep></entry>
+      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>  20 </ind><dep> 0.040 </dep></entry>
+      <entry><ind>  40 </ind><dep> 0.075 </dep></entry>
+      <entry><ind>  60 </ind><dep> 0.109 </dep></entry>
+      <entry><ind>  80 </ind><dep> 0.143 </dep></entry>
+      <entry><ind> 100 </ind><dep> 0.178 </dep></entry>
+      <entry><ind> 120 </ind><dep> 0.217 </dep></entry>
+      <entry><ind> 140 </ind><dep> 0.240 </dep></entry>
+    </interpolation>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>trq2</object-name>
+    <property>engines/engine[1]/torque-pct</property>
+    <interpolation>
+      <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>  20 </ind><dep> 0.040 </dep></entry>
+      <entry><ind>  40 </ind><dep> 0.075 </dep></entry>
+      <entry><ind>  60 </ind><dep> 0.109 </dep></entry>
+      <entry><ind>  80 </ind><dep> 0.143 </dep></entry>
+      <entry><ind> 100 </ind><dep> 0.178 </dep></entry>
+      <entry><ind> 120 </ind><dep> 0.217 </dep></entry>
+      <entry><ind> 140 </ind><dep> 0.240 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -148,9 +170,9 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit10L</object-name>
-    <property>rotors/gear/total-torque</property>
-    <factor>0.000001</factor>
-    <step>100000</step>
+    <property>engines/engine[0]/torque-pct</property>
+    <factor>0.01</factor>
+    <step>10</step>
     <min>0</min>
     <bias></bias>
     <axis>
@@ -163,9 +185,9 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit1L</object-name>
-    <property>rotors/gear/total-torque</property>
-    <factor>0.00001</factor>
-    <step>10000</step>
+    <property>engines/engine[0]/torque-pct</property>
+    <factor>0.1</factor>
+    <step>1</step>
     <min>0</min>
     <axis>
       <x> 1 </x>
@@ -177,9 +199,9 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit10R</object-name>
-    <property>rotors/gear/total-torque</property>
-    <factor>0.000001</factor>
-    <step>100000</step>
+    <property>engines/engine[1]/torque-pct</property>
+    <factor>0.01</factor>
+    <step>10</step>
     <min>0</min>
     <axis>
       <x> 1 </x>
@@ -191,9 +213,9 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit1R</object-name>
-    <property>rotors/gear/total-torque</property>
-    <factor>0.00001</factor>
-    <step>10000</step>
+    <property>engines/engine[1]/torque-pct</property>
+    <factor>0.1</factor>
+    <step>1</step>
     <min>0</min>
     <axis>
       <x> 1 </x>

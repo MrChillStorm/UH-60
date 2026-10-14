@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!-- central display unit: fuel per tank, transmission oil, engine oil, TGT and Ng per engine, digital Ng, TGT
+     and total fuel; the tapes are calibrated to the printed scale marks -->
 <PropertyList>
 
   <path>combimeter.ac</path>
@@ -159,17 +161,16 @@
   <animation>
     <type>textranslate</type>
     <object-name>XTEMP</object-name>
-    <!-- <property>engines/engine[1]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>sim/model/uh60/xmsn-oil-temp-degc</property>
     <interpolation>
-      <entry><ind>  0 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 20 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 40 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 50 </ind><dep> 0.170 </dep></entry>
-      <entry><ind> 60 </ind><dep> 0.200 </dep></entry>
-      <entry><ind> 70 </ind><dep> 0.245 </dep></entry>
-      <entry><ind> 80 </ind><dep> 0.270 </dep></entry>
-      <entry><ind> 90 </ind><dep> 0.290 </dep></entry>
+      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
+      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
+      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
+      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
+      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
+      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
+      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -182,18 +183,16 @@
   <animation>
     <type>textranslate</type>
     <object-name>XPSI</object-name>
-    <property>rotors/main/rpm</property>
-    <interpolation>}
-      <entry><ind>   0 </ind><dep> 0.00 </dep></entry>
-      <entry><ind> 250 </ind><dep> 0.05 </dep></entry>
-      <entry><ind> 350 </ind><dep> 0.10 </dep></entry>
-      <entry><ind> 450 </ind><dep> 0.15 </dep></entry>
-      <entry><ind> 475 </ind><dep> 0.20 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.30 </dep></entry>
-      <entry><ind> 525 </ind><dep> 0.40 </dep></entry>
-      <entry><ind> 550 </ind><dep> 0.50 </dep></entry>
-      <entry><ind> 600 </ind><dep> 0.60 </dep></entry>
-      <entry><ind> 650 </ind><dep> 0.58 </dep></entry>
+    <property>sim/model/uh60/xmsn-oil-press-psi</property>
+    <interpolation>
+      <entry><ind>    0 </ind><dep> 0.005 </dep></entry>
+      <entry><ind>   30 </ind><dep> 0.071 </dep></entry>
+      <entry><ind>   40 </ind><dep> 0.129 </dep></entry>
+      <entry><ind>   50 </ind><dep> 0.191 </dep></entry>
+      <entry><ind>   60 </ind><dep> 0.254 </dep></entry>
+      <entry><ind>   70 </ind><dep> 0.316 </dep></entry>
+      <entry><ind>  110 </ind><dep> 0.421 </dep></entry>
+      <entry><ind>  150 </ind><dep> 0.474 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -206,17 +205,16 @@
   <animation>
     <type>textranslate</type>
     <object-name>TEMP1</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/oil-temperature-degc</property>
     <interpolation>
-      <entry><ind>  0 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 20 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 40 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 50 </ind><dep> 0.170 </dep></entry>
-      <entry><ind> 60 </ind><dep> 0.200 </dep></entry>
-      <entry><ind> 70 </ind><dep> 0.250 </dep></entry>
-      <entry><ind> 80 </ind><dep> 0.290 </dep></entry>
-      <entry><ind> 90 </ind><dep> 0.330 </dep></entry>
+      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
+      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
+      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
+      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
+      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
+      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
+      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -228,17 +226,16 @@
   <animation>
     <type>textranslate</type>
     <object-name>TEMP2</object-name>
-    <!-- <property>engines/engine[1]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/oil-temperature-degc</property>
     <interpolation>
-      <entry><ind>  0 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 20 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 40 </ind><dep> 0.130 </dep></entry>
-      <entry><ind> 50 </ind><dep> 0.170 </dep></entry>
-      <entry><ind> 60 </ind><dep> 0.200 </dep></entry>
-      <entry><ind> 70 </ind><dep> 0.250 </dep></entry>
-      <entry><ind> 80 </ind><dep> 0.290 </dep></entry>
-      <entry><ind> 90 </ind><dep> 0.330 </dep></entry>
+      <entry><ind>  -60 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>  -40 </ind><dep> 0.026 </dep></entry>
+      <entry><ind>    0 </ind><dep> 0.092 </dep></entry>
+      <entry><ind>   40 </ind><dep> 0.170 </dep></entry>
+      <entry><ind>   80 </ind><dep> 0.259 </dep></entry>
+      <entry><ind>  100 </ind><dep> 0.343 </dep></entry>
+      <entry><ind>  120 </ind><dep> 0.412 </dep></entry>
+      <entry><ind>  140 </ind><dep> 0.473 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -251,15 +248,40 @@
   <animation>
     <type>textranslate</type>
     <object-name>PSI1</object-name>
+    <property>engines/engine[0]/oil-pressure-psi</property>
+    <interpolation>
+      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>   10 </ind><dep> 0.006 </dep></entry>
+      <entry><ind>   30 </ind><dep> 0.084 </dep></entry>
+      <entry><ind>   50 </ind><dep> 0.174 </dep></entry>
+      <entry><ind>   70 </ind><dep> 0.250 </dep></entry>
+      <entry><ind>   90 </ind><dep> 0.316 </dep></entry>
+      <entry><ind>  100 </ind><dep> 0.352 </dep></entry>
+      <entry><ind>  120 </ind><dep> 0.394 </dep></entry>
+      <entry><ind>  170 </ind><dep> 0.461 </dep></entry>
+    </interpolation>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <!-- TGT -->
+  <animation>
+    <type>textranslate</type>
     <object-name>PSI2</object-name>
-    <property>rotors/main/rpm</property>
-    <interpolation>}
-      <entry><ind>   0 </ind><dep> 0.00 </dep></entry>
-      <entry><ind> 250 </ind><dep> 0.05 </dep></entry>
-      <entry><ind> 350 </ind><dep> 0.10 </dep></entry>
-      <entry><ind> 450 </ind><dep> 0.15 </dep></entry>
-      <entry><ind> 475 </ind><dep> 0.20 </dep></entry>
-      <entry><ind> 500 </ind><dep> 0.30 </dep></entry>
+    <property>engines/engine[1]/oil-pressure-psi</property>
+    <interpolation>
+      <entry><ind>    0 </ind><dep> 0.000 </dep></entry>
+      <entry><ind>   10 </ind><dep> 0.006 </dep></entry>
+      <entry><ind>   30 </ind><dep> 0.084 </dep></entry>
+      <entry><ind>   50 </ind><dep> 0.174 </dep></entry>
+      <entry><ind>   70 </ind><dep> 0.250 </dep></entry>
+      <entry><ind>   90 </ind><dep> 0.316 </dep></entry>
+      <entry><ind>  100 </ind><dep> 0.352 </dep></entry>
+      <entry><ind>  120 </ind><dep> 0.394 </dep></entry>
+      <entry><ind>  170 </ind><dep> 0.461 </dep></entry>
     </interpolation>
     <axis>
       <x> 1 </x>
@@ -315,8 +337,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>NG1</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/n1-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
       <entry><ind>  40 </ind><dep> 0.100 </dep></entry>
@@ -336,8 +357,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>NG2</object-name>
-    <!-- <property>engines/engine[1]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/n1-pct</property>
     <interpolation>
       <entry><ind>   0 </ind><dep> 0.000 </dep></entry>
       <entry><ind>  40 </ind><dep> 0.100 </dep></entry>
@@ -358,8 +378,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a4</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/n1-pct</property>
     <factor>0.01</factor>
     <step>10</step>
     <min>0</min>
@@ -374,8 +393,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a3</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/n1-pct</property>
     <factor>0.1</factor>
     <step>1</step>
     <min>0</min>
@@ -389,8 +407,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a00</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[0]/n1-pct</property>
     <factor>1</factor>
     <step>0.1</step>
     <min>0</min>
@@ -404,8 +421,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a2</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/n1-pct</property>
     <factor>0.01</factor>
     <step>10</step>
     <min>0</min>
@@ -419,8 +435,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a1</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/n1-pct</property>
     <factor>0.1</factor>
     <step>1</step>
     <min>0</min>
@@ -434,8 +449,7 @@
   <animation>
     <type>textranslate</type>
     <object-name>digit-a0</object-name>
-    <!-- <property>engines/engine[0]/n2-pct</property> -->
-    <property>sim/model/uh60/torque-pct</property>
+    <property>engines/engine[1]/n1-pct</property>
     <factor>1</factor>
     <step>0.1</step>
     <min>0</min>

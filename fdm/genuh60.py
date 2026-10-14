@@ -868,6 +868,14 @@ class Model:
         o.fn('out/torque-sound', M(S(v(0.75), M(v(0.25), MIN(v(1), MAX(v(0), Q(Qmr, v(40000)))))), MIN(v(1), MAX(v(0), D(M(v(0.02), p('out/rotor-rpm')), v(1))))),
              out='/rotors/gear[0]/torque-sound-filtered')
         o.channel('engines')
+
+        def warm(name, target, tau, out):
+            """a temperature approaching target with time constant tau, starting there at an initial condition"""
+            o.declare(name + '-state', 0.0)
+            st = p(name + '-state')
+            o.fn(name + '-next', IFTHEN(GT(p('ctl/init-fast'), v(0.5)), target, S(st, M(Q(p('simulation/dt'), v(tau)), D(target, st)))),
+                 out=name + '-state')
+            o.fn(name, st, out=out)
         for n in range(2):
             g, e = 'eng[%d]' % n, '/engines/engine[%d]' % n
             o.fn('out/%s/n1' % g, p(g + '/ng-pct'), out=e + '/n1-pct')
@@ -881,9 +889,19 @@ class Model:
             o.fn('out/%s/run' % g, p(g + '/lit'), out=[e + '/running', e + '/on'])
             # oil (cosmetic): pressure with Ng, temperature warming up over a few minutes
             o.fn('out/%s/oilp' % g, M(v(0.62), p(g + '/ng-pct')), out=e + '/oil-pressure-psi')
-            o.fn('out/%s/oilt-ss' % g, S(M(D(p('atmosphere/T-R'), v(491.67)), v(5 / 9)), M(v(0.9), p(g + '/ng-pct'))))
-            o.lag('out/%s/oilt' % g, 'out/%s/oilt-ss' % g, 120.0, out=e + '/oil-temperature-degc')
+            warm('out/%s/oilt' % g, S(M(D(p('atmosphere/T-R'), v(491.67)), v(5 / 9)), M(v(0.9), p(g + '/ng-pct'))), 120.0,
+                 [e + '/oil-temperature-degc', e + '/oil-temperature-degC'])
         o.fn('out/torque-pct', M(v(0.5), S(p('eng[0]/torque-pct'), p('eng[1]/torque-pct'))), out='/sim/model/uh60/torque-pct')
+        # main transmission oil (cosmetic, no UH-60 data): the pump turns with the rotor; the oil warms with the
+        # power through the gearbox over a few minutes
+        o.channel('transmission')
+        wn = MIN(v(1.05), MAX(v(0), Q(W, v(U.OMEGA))))
+        o.fn('out/xmsn-oilp', M(v(55), wn, wn), out='/sim/model/uh60/xmsn-oil-press-psi')
+        warm('out/xmsn-oilt', S(M(D(p('atmosphere/T-R'), v(491.67)), v(5 / 9)), M(v(35), wn), M(v(0.35), p('out/torque-pct'))), 300.0,
+             '/sim/model/uh60/xmsn-oil-temp-degc')
+        # radar altimeter: height of the main wheels (the antennas are on the belly), reading 0 on the ground
+        wl_wheels = U.yasim_to_station(4.136, 1.344, -2.317)[2]
+        o.fn('out/radar-alt', MAX(v(0), D(p('position/h-agl-ft'), Q(D(p('inertia/cg-z-in'), v(wl_wheels)), v(12)))), out='/sim/model/uh60/radar-alt-ft')
         ng = MAX(p('eng[0]/ng-pct'), p('eng[1]/ng-pct'))
         lit = MAX(p('eng[0]/lit'), p('eng[1]/lit'))
         o.fn('out/state', IFTHEN(LT(ng, v(3)), v(0), IFTHEN(M(lit, GT(ng, v(60))), v(5), v(1))), out='/sim/model/uh60/state')

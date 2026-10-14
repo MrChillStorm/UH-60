@@ -29,8 +29,8 @@
   <animation>
     <type>rotate</type>
     <object-name>CollectiveComplet</object-name>
-    <!-- <property>controls/engines/engine[0]/throttle</property> -->
-    <property>sim/multiplay/generic/float[10]</property>
+    <!-- the collective is the throttle axis, 1 = down (multiplay float[10] is the passenger door) -->
+    <property>controls/engines/engine[0]/throttle</property>
     <factor> -20 </factor>
     <axis>
       <x> 0 </x>

@@ -1517,4 +1517,30 @@
     <z-factor> 1 </z-factor>
   </animation>
 
+  <!-- the engine indication strip is a piston aircraft's (load, rpm, fuel flow, CHT): hidden in the UH-60A, whose
+       engine instruments are on the panel; /sim/model/uh60/show-mfd-eis brings it back -->
+  <animation>
+    <type>select</type>
+    <object-name>eis.background</object-name>
+    <object-name>eis.bar.0</object-name>
+    <object-name>eis.bar.1</object-name>
+    <object-name>eis.bar.2</object-name>
+    <object-name>eis.bar.3</object-name>
+    <object-name>eis.bar.4</object-name>
+    <object-name>eis.bar.5</object-name>
+    <object-name>eis.bar.6</object-name>
+    <object-name>eis.bar.7</object-name>
+    <object-name>cursor.leftLoad</object-name>
+    <object-name>cursor.leftRPM</object-name>
+    <object-name>cursor.rightLoad</object-name>
+    <object-name>cursor.rightRPM</object-name>
+    <object-name>infos.leftRPM</object-name>
+    <object-name>infos.rightRPM</object-name>
+    <object-name>infos.leftLoad</object-name>
+    <object-name>infos.rightLoad</object-name>
+    <condition>
+      <property>sim/model/uh60/show-mfd-eis</property>
+    </condition>
+  </animation>
+
 </PropertyList>

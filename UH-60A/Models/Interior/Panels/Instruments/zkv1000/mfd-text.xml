@@ -481,10 +481,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
@@ -520,10 +523,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
@@ -559,10 +565,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
@@ -597,10 +606,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
@@ -635,10 +647,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
@@ -673,10 +688,13 @@
       <h-base>1024</h-base>
 
       <condition>
-        <greater-than>
-          <property>instrumentation/zkv1000/mfd/power</property>
-          <value>0</value>
-        </greater-than>
+        <and>
+          <greater-than>
+            <property>instrumentation/zkv1000/mfd/power</property>
+            <value>0</value>
+          </greater-than>
+          <property>sim/model/uh60/show-mfd-eis</property>
+        </and>
       </condition>
 
       <layers>
