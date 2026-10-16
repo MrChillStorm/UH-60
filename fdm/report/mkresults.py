@@ -190,8 +190,8 @@ def ge(_=None):
     f['ic/terrain-elevation-ft'] = 0.0; f['ic/h-agl-ft'] = 5.9; f['ic/vt-kts'] = 0; f['ic/psi-true-deg'] = 0
     f.run_ic()
     H.controls(f, 0.0, 0, 0, 0)
-    s = AP.Sim(f, 3)
     dt = f['simulation/dt']
+    s = AP.Sim(f, max(1, int(round(1 / (40 * dt)))))      # the autopilot at 40 Hz, the rate its gains were tuned at
 
     def run(sec, rec=None):
         for i in range(int(sec / dt)):

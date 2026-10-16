@@ -15,9 +15,9 @@
     <alt_k type="double">0.2</alt_k>
     <coll_kp type="double">-0.02</coll_kp>
     <coll_ti type="double">2.0</coll_ti>
-    <u_kp type="double">-0.5</u_kp>
-    <u_ti type="double">7.0</u_ti>
-    <v_kp type="double">0.8</v_kp>
+    <u_kp type="double">-0.3</u_kp>
+    <u_ti type="double">14.0</u_ti>
+    <v_kp type="double">0.6</v_kp>
     <v_ti type="double">25.0</v_ti>
     <spd_kp type="double">-0.8</spd_kp>
     <spd_ti type="double">15.0</spd_ti>
@@ -25,7 +25,7 @@
     <hdg_ti type="double">10.0</hdg_ti>
     <th_kp type="double">-0.012</th_kp>
     <th_ti type="double">1.0</th_ti>
-    <th_tq type="double">0.3</th_tq>
+    <th_tq type="double">0.6</th_tq>
     <ph_kp type="double">0.008</ph_kp>
     <ph_ti type="double">1.0</ph_ti>
     <ph_tp type="double">0.15</ph_tp>

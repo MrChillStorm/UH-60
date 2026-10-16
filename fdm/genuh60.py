@@ -1111,9 +1111,10 @@ def fdm_file(aero_functions, axes, cg=None, weight=None):
     </contact>''' % (name, fs, bl, wl, k, c, steer, 'NONE' if steer else ('LEFT' if 'LEFT' in name else 'RIGHT')))
     # structure: the hull of the 3-D model's fuselage, so that a hard landing or a roll-over ends on the skin
     # instead of sinking through the ground on the wheels (which then compress without limit and blow up).
-    # Stiffness and damping are bounded by the explicit integration at 120 Hz: lying on its side, five contacts
-    # some 6 ft from the CG act on the small roll inertia (Ixx 5,460 slug ft2), and the damping term
-    # sum(c r^2)/Ixx x dt must stay well under 1 (12,000 lb/ft/s made it 3 and the roll diverged)
+    # Stiffness and damping are bounded by the explicit integration (set at 120 Hz; the 480 Hz the model runs at has
+    # four times the margin): lying on its side, five contacts some 6 ft from the CG act on the small roll inertia
+    # (Ixx 5,460 slug ft2), and the damping term sum(c r^2)/Ixx x dt must stay well under 1 (12,000 lb/ft/s made it
+    # 3 at 120 Hz and the roll diverged)
     for name, (x, y, z) in STRUCTURE:
         fs, bl, wl = m.yasim_to_station(x, y, z)
         gear.append('''    <contact type="STRUCTURE" name="%s">

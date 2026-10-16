@@ -185,14 +185,16 @@ GAINS = dict(
     alt_k=0.2,          # 1/s: (cruise)
     coll_kp=-0.02,      # throttle (1 = collective down) per ft/s of vertical speed error
     coll_ti=2.0,
-    u_kp=-0.5, u_ti=7.0,       # pitch deg per ft/s of forward ground velocity error
-    v_kp=0.8, v_ti=25.0,       # roll deg per ft/s of lateral ground velocity error
+    # (the hover velocity loops retuned for the model at 480 Hz, whose hover pitch-speed mode is less damped than at
+    # 120 Hz: the old u_kp -0.5, u_ti 7, th_tq 0.3, v_kp 0.8 set a 10 s pitch oscillation of 6 deg going)
+    u_kp=-0.3, u_ti=14.0,      # pitch deg per ft/s of forward ground velocity error
+    v_kp=0.6, v_ti=25.0,       # roll deg per ft/s of lateral ground velocity error
     spd_kp=-0.8, spd_ti=15.0,  # pitch deg per kt of airspeed error
     hdg_kp=1.5, hdg_ti=10.0,   # roll deg per deg of heading error at 100 kt (cruise)
     # The inner loops are soft in proportion and stiff in integral. In the hover the aircraft has a lightly damped
     # roll-yaw mode at 1.2 Hz (with the SAS on), and the longitudinal cyclic rolls it about as much as it pitches it
     # at 1-1.5 Hz (roll inertia is 1/8 of pitch inertia): stiffer pitch, roll or yaw loops set it going.
-    th_kp=-0.012, th_ti=1.0, th_tq=0.3,   # elevator (+ forward) per deg of pitch error; error = cmd - (theta + tq q)
+    th_kp=-0.012, th_ti=1.0, th_tq=0.6,   # elevator (+ forward) per deg of pitch error; error = cmd - (theta + tq q)
     ph_kp=0.008, ph_ti=1.0, ph_tp=0.15,   # aileron (+ right) per deg of roll error
     psi_k=0.5,                            # yaw rate deg/s per deg of heading error (hover)
     r_kp=0.015, r_ti=3.0, r_tau=0.3,      # rudder (+ right) per deg/s of yaw rate error (hover); yaw rate lag, s

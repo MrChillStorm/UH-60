@@ -133,8 +133,9 @@ A Python script writes the model from the transcribed tables (Table~\ref{tab:mod
 demand, so the function graph must be free of cycles; every quantity that depends on its own past, the blade flap and lag
 angles and rates, the wake states, the rotor speed, the tail rotor inflow, the blade's elastic twist and the engines' states,
 therefore lives in flight-control-system channels, which JSBSim runs once per frame in a fixed order and which can write
-properties back. These channels integrate the states explicitly at the simulation rate of 120\,Hz, which is
-12.9$^\circ$ of rotor azimuth per step; the wake states use a semi-implicit step. The blade loads of a frame use the states of
+properties back. These channels integrate the states explicitly at the simulation rate of 480\,Hz, which is
+3.2$^\circ$ of rotor azimuth per step; the wake states use a semi-implicit step. Trims and control responses at this rate
+are within 0.5\,\% of those at 960\,Hz, where 120\,Hz was off by up to 4\,\%, and one step costs about 0.1\,ms. The blade loads of a frame use the states of
 the previous frame. The same XML runs in FlightGear and in the offline harness used here.
 
 \begin{table}[t]
@@ -219,7 +220,7 @@ wheel; 17 structure contacts taken from the 3-D model's skin carry the aircraft 
 
 % =====================================================================================================================
 \section{Method}\label{sec:method}
-The evaluation drives JSBSim from Python with the same files as FlightGear, at 120\,Hz, with the wake noise off. A trim solves for
+The evaluation drives JSBSim from Python with the same files as FlightGear, at 480\,Hz, with the wake noise off. A trim solves for
 the four controls and the attitudes that zero the six accelerations averaged over two rotor revolutions, with the airframe
 held while the rotor and wake settle. Atmospheres reproduce each test's pressure and density altitude (JSBSim's temperature
 offset and the geometric altitude are iterated). The programme:

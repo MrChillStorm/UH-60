@@ -139,14 +139,14 @@ Sikorsky's simulation as NASA ran it.
 
 | | Reference | This model |
 |---|---|---|
-| Level-flight trim, 50–162 kt | USAAEFA (TM-88360 fig. B1) | longitudinal cyclic and collective within 7.1 % of travel, pitch within 1.9° |
-| Bank and lateral cyclic at zero sideslip, 60–140 kt | USAAEFA 79-24 | within 1.4° and 0.31 in |
+| Level-flight trim, 50–162 kt | USAAEFA (TM-88360 fig. B1) | longitudinal cyclic and collective within 7.0 % of travel, pitch within 1.9° |
+| Bank and lateral cyclic at zero sideslip, 60–140 kt | USAAEFA 79-24 | within 1.3° and 0.30 in |
 | Hover power out of ground effect, 13,000–19,000 lb | USAAEFA tethered hover | 0.965–0.995 of the test |
-| Ground effect, 5–40 ft wheel height | operator's manual | within 0.006 of the torque ratio |
+| Ground effect, 5–40 ft wheel height | operator's manual | within 0.010 of the torque ratio |
 | Rotor figure of merit | full-scale and model rotor tests | within 0.026 |
 | Main rotor power in cruise, 72–162 kt | USAAEFA 79-24 | within 3.6 % |
-| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.07 deg/s (GenHel 2.77), better than GenHel in 11 of 16 cases |
-| Pitch rate after a 1 in aft step at 100 kt | 24.1 deg/s | 17.4 (GenHel 19.3) |
+| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.14 deg/s (GenHel 2.77), better than GenHel in 12 of 16 cases |
+| Pitch rate after a 1 in aft step at 100 kt | 24.1 deg/s | 16.4 (GenHel 19.3) |
 
 ## Known gaps
 
@@ -161,7 +161,7 @@ Sikorsky's simulation as NASA ran it.
   descent as in the test; lateral cyclic moves the aircraft about 1.5 times
   as much per inch as the test suggests.
 - **Tail rotor** hover power is 5–11 % low.
-- **Trim at 162 kt:** the lateral cyclic is 10 % and the pedal 7 % away from
+- **Trim at 162 kt:** the lateral cyclic is 9 % and the pedal 7 % away from
   the test.
 - **Not modelled:** blade torsion and dynamic stall (heavy and fast, the
   retreating blade stalls early instead), rotor damage and overstress,
