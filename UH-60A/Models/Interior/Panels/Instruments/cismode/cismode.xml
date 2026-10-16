@@ -19,20 +19,6 @@
   </animation>
 
   <animation>
-    <type>material</type>
-    <object-name>panel</object-name>
-    <object-name>btn-hdg</object-name>
-    <object-name>btn-nav</object-name>
-    <object-name>btn-alt</object-name>
-    <emission>
-      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
-      <red>   0.10 </red>
-      <green> 1.00 </green>
-      <blue>  0.45 </blue>
-    </emission>
-  </animation>
-
-  <animation>
     <type>select</type>
     <object-name>lit-hdg</object-name>
     <condition>
@@ -44,11 +30,22 @@
     <type>material</type>
     <object-name>lit-hdg</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/switches</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lit-hdg</object-name>
+  </effect>
 
   <animation>
     <type>pick</type>
@@ -82,11 +79,22 @@
     <type>material</type>
     <object-name>lit-nav</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/switches</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lit-nav</object-name>
+  </effect>
 
   <animation>
     <type>pick</type>
@@ -120,11 +128,22 @@
     <type>material</type>
     <object-name>lit-alt</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/switches</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lit-alt</object-name>
+  </effect>
 
   <animation>
     <type>pick</type>

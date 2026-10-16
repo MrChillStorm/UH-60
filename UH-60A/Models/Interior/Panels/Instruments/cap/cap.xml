@@ -109,6 +109,16 @@
     </emission>
   </animation>
 
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
+      <lit-gain type="float"> 1.91 </lit-gain>
+    </parameters>
+    <object-name>panel</object-name>
+  </effect>
+
   <animation>
     <type>select</type>
     <object-name>lit-fuel-low-1</object-name>
@@ -932,18 +942,126 @@
     <object-name>lit-ext-pwr</object-name>
     <object-name>lit-blank-2</object-name>
     <emission>
-      <factor-prop>/controls/lighting/caut-advsy-norm</factor-prop>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
 
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lit-fuel-low-1</object-name>
+    <object-name>lit-gen-1</object-name>
+    <object-name>lit-gen-2</object-name>
+    <object-name>lit-fuel-low-2</object-name>
+    <object-name>lit-fuel-press-1</object-name>
+    <object-name>lit-gen-brg-1</object-name>
+    <object-name>lit-gen-brg-2</object-name>
+    <object-name>lit-fuel-press-2</object-name>
+    <object-name>lit-oil-press-1</object-name>
+    <object-name>lit-conv-1</object-name>
+    <object-name>lit-conv-2</object-name>
+    <object-name>lit-oil-press-2</object-name>
+    <object-name>lit-oil-temp-1</object-name>
+    <object-name>lit-ac-ess</object-name>
+    <object-name>lit-dc-ess</object-name>
+    <object-name>lit-oil-temp-2</object-name>
+    <object-name>lit-chip-1</object-name>
+    <object-name>lit-batt-low</object-name>
+    <object-name>lit-batt-fault</object-name>
+    <object-name>lit-chip-2</object-name>
+    <object-name>lit-fuel-fltr-1</object-name>
+    <object-name>lit-gust-lock</object-name>
+    <object-name>lit-pitch-bias</object-name>
+    <object-name>lit-fuel-fltr-2</object-name>
+    <object-name>lit-starter-1</object-name>
+    <object-name>lit-oil-fltr-1</object-name>
+    <object-name>lit-oil-fltr-2</object-name>
+    <object-name>lit-starter-2</object-name>
+    <object-name>lit-pri-servo-1</object-name>
+    <object-name>lit-hyd-pump-1</object-name>
+    <object-name>lit-hyd-pump-2</object-name>
+    <object-name>lit-pri-servo-2</object-name>
+    <object-name>lit-tr-quadrant</object-name>
+    <object-name>lit-ircm-inop</object-name>
+    <object-name>lit-aux-fuel</object-name>
+    <object-name>lit-tr-servo-1</object-name>
+    <object-name>lit-xmsn-oil-temp</object-name>
+    <object-name>lit-int-xmsn-temp</object-name>
+    <object-name>lit-tail-xmsn-temp</object-name>
+    <object-name>lit-apu-oil-temp</object-name>
+    <object-name>lit-boost-servo</object-name>
+    <object-name>lit-stabilator</object-name>
+    <object-name>lit-sas-off</object-name>
+    <object-name>lit-trim-fail</object-name>
+    <object-name>lit-pitot-l</object-name>
+    <object-name>lit-flt-path-stab</object-name>
+    <object-name>lit-iff</object-name>
+    <object-name>lit-pitot-r</object-name>
+    <object-name>lit-chip-input-l</object-name>
+    <object-name>lit-chip-int</object-name>
+    <object-name>lit-chip-tail</object-name>
+    <object-name>lit-chip-input-r</object-name>
+    <object-name>lit-chip-access-l</object-name>
+    <object-name>lit-chip-main</object-name>
+    <object-name>lit-apu-fail</object-name>
+    <object-name>lit-chip-access-r</object-name>
+    <object-name>lit-mr-deice-fail</object-name>
+    <object-name>lit-mr-deice-fault</object-name>
+    <object-name>lit-tr-deice-fail</object-name>
+    <object-name>lit-ice</object-name>
+    <object-name>lit-xmsn-oil-press</object-name>
+    <object-name>lit-rsvr-1</object-name>
+    <object-name>lit-rsvr-2</object-name>
+    <object-name>lit-rsvr-backup</object-name>
+    <object-name>lit-eng-ai-1</object-name>
+    <object-name>lit-inlet-ai-1</object-name>
+    <object-name>lit-inlet-ai-2</object-name>
+    <object-name>lit-eng-ai-2</object-name>
+    <object-name>lit-apu-on</object-name>
+    <object-name>lit-apu-gen</object-name>
+    <object-name>lit-prime-boost</object-name>
+    <object-name>lit-backup-pump</object-name>
+    <object-name>lit-apu-accum</object-name>
+    <object-name>lit-search-lt</object-name>
+    <object-name>lit-ldg-lt</object-name>
+    <object-name>lit-tr-servo-2</object-name>
+    <object-name>lit-cargo-hook</object-name>
+    <object-name>lit-hook-armed</object-name>
+    <object-name>lit-blank-1</object-name>
+    <object-name>lit-parking-brake</object-name>
+    <object-name>lit-ext-pwr</object-name>
+    <object-name>lit-blank-2</object-name>
+  </effect>
+
   <animation>
     <type>rotate</type>
     <object-name>test-switch</object-name>
     <property>/sim/model/uh60/cap-test</property>
     <factor> 30 </factor>
+    <center>
+      <x-m> 0.0020 </x-m>
+      <y-m> -0.0554 </y-m>
+      <z-m> -0.1096 </z-m>
+    </center>
+    <axis>
+      <x> 0 </x>
+      <y> 1 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>rotate</type>
+    <object-name>test-switch</object-name>
+    <property>/sim/model/uh60/cap-brt-dim</property>
+    <factor> -30 </factor>
     <center>
       <x-m> 0.0020 </x-m>
       <y-m> -0.0554 </y-m>
@@ -975,11 +1093,34 @@
         </binding>
       </mod-up>
     </action>
+    <action>
+      <button>2</button>
+      <repeatable>false</repeatable>
+      <binding>
+        <command>property-assign</command>
+        <property>/sim/model/uh60/cap-brt-dim</property>
+        <value>1</value>
+      </binding>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.brt_dim()</script>
+      </binding>
+      <mod-up>
+        <binding>
+          <command>property-assign</command>
+          <property>/sim/model/uh60/cap-brt-dim</property>
+          <value>0</value>
+        </binding>
+      </mod-up>
+    </action>
     <hovered>
       <binding>
         <command>set-tooltip</command>
         <tooltip-id>uh60-cap-test</tooltip-id>
-        <label>Caution/advisory lights: hold to test</label>
+        <label>Caution/advisory BRT/DIM-TEST: hold to test (left click); BRT/DIM (right click): %s</label>
+        <property>/sim/model/uh60/cap-dim</property>
+        <mapping>nasal</mapping>
+        <script>return arg[0] ? "DIM" : "BRT";</script>
       </binding>
     </hovered>
   </animation>

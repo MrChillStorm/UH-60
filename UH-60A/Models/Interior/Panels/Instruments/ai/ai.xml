@@ -213,6 +213,17 @@
       <property>/instrumentation/uh60/cis/coll-vis</property>
     </condition>
   </animation>
+  <animation>
+    <type>translate</type>
+    <object-name>vitre</object-name>
+    <property>constants/zero</property>
+    <offset-m> 0.0080 </offset-m>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
   <!-- /CIS -->
 
 </PropertyList>

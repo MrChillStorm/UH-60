@@ -53,6 +53,222 @@
     </emission>
   </animation>
 
+  <light>
+    <name>bezel-lamp-0</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> 0.0336 </y-m>
+      <z-m> 0.0136 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-1</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> 0.0142 </y-m>
+      <z-m> 0.0333 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-2</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> -0.0136 </y-m>
+      <z-m> 0.0336 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-3</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> -0.0335 </y-m>
+      <z-m> 0.0139 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-4</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> -0.0335 </y-m>
+      <z-m> -0.0139 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-5</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> -0.0139 </y-m>
+      <z-m> -0.0335 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-6</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> 0.0139 </y-m>
+      <z-m> -0.0335 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-7</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0159 </x-m>
+      <y-m> 0.0335 </y-m>
+      <z-m> -0.0139 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0112 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/radalt[1]</property>
+      <scale> 0.003603 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.078 </range-m>
+  </light>
+
   <animation>
     <type>rotate</type>
     <object-name>pointer</object-name>
@@ -155,12 +371,23 @@
     <object-name>lo-light</object-name>
     <object-name>hi-light</object-name>
     <emission>
-      <factor-prop>/controls/lighting/radalt-norm</factor-prop>
+      <factor-prop>/instrumentation/uh60/lights/radalt-lamps</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/radalt-lamps</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lo-light</object-name>
+    <object-name>hi-light</object-name>
+  </effect>
 
   <text>
     <name>digits</name>
@@ -194,7 +421,7 @@
     <type>material</type>
     <object-name>digits</object-name>
     <emission>
-      <factor-prop>/controls/lighting/radalt-norm</factor-prop>
+      <factor-prop>/instrumentation/uh60/lights/radalt-lamps</factor-prop>
       <red> 1 </red>
       <green> 0.45 </green>
       <blue> 0.1 </blue>

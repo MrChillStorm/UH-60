@@ -43,6 +43,222 @@
     </emission>
   </animation>
 
+  <light>
+    <name>bezel-lamp-0</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> 0.0584 </y-m>
+      <z-m> 0.0236 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-1</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> 0.0246 </y-m>
+      <z-m> 0.0580 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-2</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> -0.0236 </y-m>
+      <z-m> 0.0584 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-3</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> -0.0580 </y-m>
+      <z-m> 0.0246 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-4</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> -0.0584 </y-m>
+      <z-m> -0.0236 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-5</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> -0.0246 </y-m>
+      <z-m> -0.0580 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-6</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> 0.0241 </y-m>
+      <z-m> -0.0582 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-7</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0129 </x-m>
+      <y-m> 0.0582 </y-m>
+      <z-m> -0.0241 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0060 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.011513 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 69.3 </spot-cutoff>
+    <range-m> 0.141 </range-m>
+  </light>
+
   <animation>
     <type>translate</type>
     <object-name>gs-ptr</object-name>
@@ -129,11 +345,22 @@
     <type>material</type>
     <object-name>ga-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>ga-on</object-name>
+  </effect>
 
   <animation>
     <type>select</type>
@@ -147,11 +374,22 @@
     <type>material</type>
     <object-name>dh-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>dh-on</object-name>
+  </effect>
 
   <animation>
     <type>select</type>
@@ -165,10 +403,21 @@
     <type>material</type>
     <object-name>mb-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>mb-on</object-name>
+  </effect>
 
 </PropertyList>

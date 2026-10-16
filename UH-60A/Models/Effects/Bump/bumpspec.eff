@@ -35,6 +35,9 @@
       </images>
     </texture>
     <ambient-correction    type="float"> 0.1 </ambient-correction>
+    <!-- HDR pipeline: matte paint, as the livery sets it (model-combined's default 0.1 is a gloss coat) -->
+    <pbr-metallic          type="float"> 0.0 </pbr-metallic>
+    <pbr-roughness         type="float"><use>/sim/model/livery/roughness</use></pbr-roughness>
   </parameters>
 <!--WARNING: Do not edit below this line -->
   <!--

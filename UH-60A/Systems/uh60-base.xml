@@ -18,6 +18,7 @@
       <path                       archive="y">Aircraft/UH-60A/Models/uh60.xml</path>
       <livery>
         <file                     type="string"/>
+        <roughness                type="float"> 0.7 </roughness>   <!-- HDR: the paint's roughness, 0 gloss .. 1 matte -->
         <specular>
           <red                    type="float"> 0.03 </red>
           <green                  type="float"> 0.03 </green>

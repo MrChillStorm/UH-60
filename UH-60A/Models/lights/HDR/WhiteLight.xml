@@ -4,14 +4,23 @@
 
   <light>
     <name>navlightwhite</name>
-    <type>point</type>
+    <!-- HDR: a spot aimed out through its lens, so that it lights the night around it and not its own skin;
+         intensity in candela -->
+    <type>spot</type>
+    <direction>
+      <lookat-x-m> 1 </lookat-x-m>
+      <lookat-y-m> 0 </lookat-y-m>
+      <lookat-z-m> 0 </lookat-z-m>
+    </direction>
     <color>
       <r> 1 </r>
       <g> 1 </g>
       <b> 1 </b>
     </color>
-    <intensity> 15 </intensity>
-    <range-m> 25 </range-m>
+    <intensity> 20 </intensity>
+    <spot-exponent> 1 </spot-exponent>
+    <spot-cutoff> 70 </spot-cutoff>
+    <range-m> 20 </range-m>
   </light>
 
   <animation>

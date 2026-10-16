@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<!-- UH-60A instrument lights (TM 1-1520-237-10 2.70.3): the INSTR LT rheostats of the upper console; Nasal/avionics.nas
-     lights the instruments from them (NVG blue-green, with ac power) -->
+<!-- UH-60A cockpit lights (TM 1-1520-237-10 2.70.2-2.70.4): the INSTR LT, LIGHTED SWITCHES and GLARESHIELD LIGHTS
+     rheostats of the upper console and the cockpit floodlights' switch; Nasal/avionics.nas lights the cockpit from
+     them -->
 <PropertyList>
 
   <name>lights</name>
@@ -12,7 +13,7 @@
     <layout>hbox</layout>
     <empty><stretch>1</stretch></empty>
     <text>
-      <label>Instrument lights</label>
+      <label>Cockpit lights</label>
     </text>
     <empty><stretch>1</stretch></empty>
     <button>
@@ -97,6 +98,98 @@
       </binding>
     </slider>
     <text><row>2</row><col>3</col><label>BRT</label></text>
+
+    <text>
+      <row>3</row><col>0</col>
+      <halign>left</halign>
+      <label>LIGHTED SWITCHES</label>
+    </text>
+    <text><row>3</row><col>1</col><label>DIM</label></text>
+    <slider>
+      <row>3</row><col>2</col>
+      <name>switches</name>
+      <pref-width>160</pref-width>
+      <min>0</min>
+      <max>1</max>
+      <step>0.05</step>
+      <live>true</live>
+      <property>/controls/lighting/lighted-switches</property>
+      <binding>
+        <command>dialog-apply</command>
+        <object-name>switches</object-name>
+      </binding>
+    </slider>
+    <text><row>3</row><col>3</col><label>BRT</label></text>
+
+    <text>
+      <row>4</row><col>0</col>
+      <halign>left</halign>
+      <label>GLARESHIELD LIGHTS</label>
+    </text>
+    <text><row>4</row><col>1</col><label>OFF</label></text>
+    <slider>
+      <row>4</row><col>2</col>
+      <name>glareshield</name>
+      <pref-width>160</pref-width>
+      <min>0</min>
+      <max>1</max>
+      <step>0.05</step>
+      <live>true</live>
+      <property>/controls/lighting/glareshield</property>
+      <binding>
+        <command>dialog-apply</command>
+        <object-name>glareshield</object-name>
+      </binding>
+    </slider>
+    <text><row>4</row><col>3</col><label>BRT</label></text>
+  </group>
+
+  <group>
+    <layout>hbox</layout>
+    <text>
+      <label>COCKPIT FLOOD</label>
+    </text>
+    <button>
+      <legend>BLUE</legend>
+      <binding>
+        <command>property-assign</command>
+        <property>/controls/lighting/cockpit-flood</property>
+        <value>1</value>
+      </binding>
+    </button>
+    <button>
+      <legend>OFF</legend>
+      <binding>
+        <command>property-assign</command>
+        <property>/controls/lighting/cockpit-flood</property>
+        <value>0</value>
+      </binding>
+    </button>
+    <button>
+      <legend>WHITE</legend>
+      <binding>
+        <command>property-assign</command>
+        <property>/controls/lighting/cockpit-flood</property>
+        <value>-1</value>
+      </binding>
+    </button>
+  </group>
+
+  <group>
+    <layout>hbox</layout>
+    <button>
+      <legend>Caution/advisory BRT/DIM</legend>
+      <binding>
+        <command>nasal</command>
+        <script>avionics.brt_dim()</script>
+      </binding>
+    </button>
+    <text>
+      <label>MMMM</label>
+      <format>%s</format>
+      <property>/instrumentation/uh60/lights/cap-mode</property>
+      <live>true</live>
+    </text>
   </group>
 
   <hrule/>
@@ -108,6 +201,18 @@
   <text>
     <halign>left</halign>
     <label>RAD ALT DIMMING, MA WRN and CAUT/ADVSY dimmers are on the instrument panel.</label>
+  </text>
+  <text>
+    <halign>left</halign>
+    <label>BRT/DIM (also: right click the caution/advisory panel's BRT/DIM-TEST switch) needs PILOT FLT on.</label>
+  </text>
+  <text>
+    <halign>left</halign>
+    <label>Dim, the dimmers set the warning and caution lights and the lighted switches; bright, they're full.</label>
+  </text>
+  <text>
+    <halign>left</halign>
+    <label>The glareshield lights and cockpit floods show in the HDR renderer only.</label>
   </text>
 
 </PropertyList>

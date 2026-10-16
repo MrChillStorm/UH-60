@@ -74,29 +74,145 @@ def text(d, xy, s, f, fill, anchor='mm'):
 
 # Instrument lighting (TM 1-1520-237-10 2.70.3): NVG blue-green bezel lights on three circuits, the pilot's and the
 # copilot's flight instruments and the nonflight instruments, each on its INSTR LT rheostat; Nasal/avionics.nas sets
-# their levels (0 without ac power) in LIGHTS: plt-flt, cplt-flt, non-flt, and radalt[n] (RAD ALT DIMMING besides)
+# their levels (0 without ac power) in LIGHTS: plt-flt, cplt-flt, non-flt, and radalt[n] (RAD ALT DIMMING besides).
+# The HDR pipeline leaves out the material animation's emission: there, lighted bezels have lamps (bezel_light_xml),
+# and what lights itself emits through Effects/Lit (lit_xml), at a level in HDR (cd/m2, or a circuit's 0-1 level
+# times a gain), which Nasal/avionics.nas sets.
 LIGHTS = '/instrumentation/uh60/lights/'
+HDR = LIGHTS + 'hdr/'
 NVG_GREEN = (0.10, 1.00, 0.45)         # NVIS Green A (MIL-L-85762A: u' 0.088, v' 0.543), sRGB about (0, 255, 110)
+LIGHT_LUX = 6.0                        # HDR: the mean illuminance of an instrument's face at full BRT, lux
+
+
+def objects_xml(objs):
+    return ''.join('    <object-name>%s</object-name>\n' % o for o in objs)
 
 
 def light_xml(objs, light):
     """The NVG instrument lighting of `objs` on circuit `light` (a name in LIGHTS)."""
     return ('\n  <animation>\n    <type>material</type>\n%s    <emission>\n      <factor-prop>%s%s</factor-prop>\n'
             '      <red>   %.2f </red>\n      <green> %.2f </green>\n      <blue>  %.2f </blue>\n    </emission>\n'
-            '  </animation>\n' % (''.join('    <object-name>%s</object-name>\n' % o for o in objs), LIGHTS, light, *NVG_GREEN))
+            '  </animation>\n' % (objects_xml(objs), LIGHTS, light, *NVG_GREEN))
 
 
-def common_xml(objs, lit=(), glass=(), extra='', light='non-flt'):
+def lit_xml(objs, level, rgb=(1, 1, 1), gain=1.0):
+    """HDR pipeline: `objs` emit their texture x rgb x the property `level` x gain (cd/m2), through Effects/Lit."""
+    return ('\n  <effect>\n    <inherits-from>../../../../Effects/Lit/lit</inherits-from>\n    <parameters>\n'
+            '      <lit-color type="vec3d"> %.2f %.2f %.2f </lit-color>\n      <lit-level type="float"><use>%s</use></lit-level>\n'
+            '      <lit-gain type="float"> %.4g </lit-gain>\n    </parameters>\n%s  </effect>\n'
+            % (tuple(rgb) + (level, gain, objects_xml(objs))))
+
+
+def integral_xml(objs, light):
+    """An integrally lit panel's NVG lighting (its markings light themselves): the material animation, and in the HDR
+    pipeline the emission that matches a face lit by LIGHT_LUX."""
+    return light_xml(objs, light) + lit_xml(objs, LIGHTS + light, NVG_GREEN, LIGHT_LUX / math.pi)
+
+
+def bezel_lamps(face, half, round=False, glass=None, out=None):
+    """The lamps of a lighted bezel: spot lights round the face, a quarter of its half size (the smaller one, m) above
+    it but behind its glass (at depth `glass`: 1.5 mm, else the glass mirrors them) and 0.15 m out from its edge, 0.9 m apart (eight round a dial), each aimed inward across the face at the
+    nearest point of its centre line (a round face's centre) 0.1 m above it. Their exponent of 3 holds back the lamp's
+    light on the face near it, so the face is lit about evenly, a little brighter toward the edge as a lighted bezel
+    is (on a dial 1.7 times as bright at 0.9 R as at the centre); the cone takes in the face, and nothing
+    outside the bezel: lights cast no shadows in FlightGear. face: (d, y, z) of the face's centre; half: its half
+    width and height, or with `round` its radius twice; `out` (m) the lamps' distance out from the face's edge if the
+    case leaves less room than 0.15 m (lamps outside it light its walls). Returns [(position, aim point)], the exponent, cutoff (deg),
+    range (m), the intensity (cd) that gives the face a mean illuminance of 1 lux, and the face's evenness (its
+    illuminance's 98th percentile over its 2nd)."""
+    d, y, z = face; hw, hh = half
+    m = min(hw, hh)
+    h, off, up, gap, e = 0.25 * m, 0.15 * m, 0.10 * m, 0.9 * m, 3.0
+    if glass is not None:
+        h = min(h, glass - 0.0015 - d)
+    if out is not None:
+        off = out
+    if round:
+        R = max(hw, hh)
+        path = [((R + off) * math.cos(t), (R + off) * math.sin(t)) for t in np.linspace(0, 2 * math.pi, 721)[:-1]]
+    else:                                   # the face's outline grown by off, its corners rounded
+        path = []
+        for cy, cz, a0 in ((hw, hh, 0), (-hw, hh, 90), (-hw, -hh, 180), (hw, -hh, 270)):
+            for a in np.radians(np.arange(a0, a0 + 90, 1.0)):
+                path.append((cy + off * math.cos(a), cz + off * math.sin(a)))
+        dense = []
+        for (y0, z0), (y1, z1) in zip(path, path[1:] + path[:1]):
+            k = max(1, int(math.hypot(y1 - y0, z1 - z0) / 0.0002))
+            dense += [(y0 + (y1 - y0) * t / k, z0 + (z1 - z0) * t / k) for t in range(k)]
+        path = dense
+    P = np.array(path); seg = np.hypot(*(np.roll(P, -1, 0) - P).T); s = np.concatenate([[0], np.cumsum(seg)[:-1]])
+    n = max(4, int(math.floor(s[-1] / gap + 0.5)))
+    if round:
+        n = 8
+    lamps = []
+    for k in range(n):
+        q = P[np.searchsorted(s, (k + 0.5) * seg.sum() / n) - 1]
+        ay = float(np.clip(q[0], -(hw - m), hw - m)); az = float(np.clip(q[1], -(hh - m), hh - m))
+        lamps.append(((d + h, y + q[0], z + q[1]), (d + up, y + ay, z + az)))
+    g = np.linspace(-0.97, 0.97, 41); GY, GZ = np.meshgrid(g * hw, g * hh)
+    inside = (GY / hw) ** 2 + (GZ / hh) ** 2 <= 0.97 ** 2 if round else np.ones_like(GY, bool)
+    F = np.stack([np.full(inside.sum(), d), y + GY[inside], z + GZ[inside]], 1)
+    far = max(np.linalg.norm(F - np.array(p), axis=1).max() for p, a in lamps); rng = 1.16 * far
+    cut, E = 0.0, np.zeros(len(F))
+    for p, a in lamps:
+        v = F - np.array(p); dist = np.linalg.norm(v, axis=1); u = v / dist[:, None]
+        axis = np.array(a) - np.array(p); axis /= np.linalg.norm(axis)
+        cd = np.clip(u @ axis, 1e-6, 1)
+        cut = max(cut, math.degrees(math.acos(cd.min())))
+        win = np.clip(1 - (dist / rng) ** 4, 0, None) ** 2
+        E += cd ** e * (-u[:, 0]) * win / dist ** 2
+    q2, q98 = np.percentile(E, [2, 98])
+    return lamps, e, min(89.0, cut + 2), rng, 1 / E.mean(), q98 / q2
+
+
+def lamp_xml(name, p, a, light, cd, e, cut, rng):
+    """An NVG blue-green spot light at p aimed at a, on circuit `light` (in LIGHTS): cd its intensity at full BRT."""
+    return ('\n  <light>\n    <name>%s</name>\n    <type>spot</type>\n    <position>\n      <x-m> %.4f </x-m>\n'
+            '      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </position>\n    <direction>\n'
+            '      <lookat-x-m> %.4f </lookat-x-m>\n      <lookat-y-m> %.4f </lookat-y-m>\n      <lookat-z-m> %.4f </lookat-z-m>\n'
+            '    </direction>\n    <color>\n      <r> %.2f </r>\n      <g> %.2f </g>\n      <b> %.2f </b>\n    </color>\n'
+            '    <intensity>\n      <property>%s%s</property>\n      <scale> %.6f </scale>\n    </intensity>\n'
+            '    <spot-exponent> %g </spot-exponent>\n    <spot-cutoff> %.1f </spot-cutoff>\n    <range-m> %.3f </range-m>\n'
+            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + NVG_GREEN + (LIGHTS, light, cd, e, cut, rng)))
+
+
+def bezel_light_xml(light, face, half, round=False, glass=None, out=None, name='bezel-lamp'):
+    """HDR pipeline: the instrument's lighted bezel (bezel_lamps), NVG blue-green, on circuit `light` (in LIGHTS): its
+    face's mean illuminance LIGHT_LUX at full BRT."""
+    lamps, e, cut, rng, cd, even = bezel_lamps(face, half, round, glass, out)
+    print('    bezel lamps: %d, evenness %.1f' % (len(lamps), even))
+    return ''.join(lamp_xml('%s-%d' % (name, k), p, a, light, LIGHT_LUX * cd, e, cut, rng) for k, (p, a) in enumerate(lamps))
+
+
+def window_lamp_xml(light, centre, half, name):
+    """HDR pipeline: a lamp over a counter's window in a bezel (d, y, z its centre, half its half width and height):
+    4 mm in front of it and 3 mm over its top, aimed at its centre; the window's mean illuminance LIGHT_LUX."""
+    d, y, z = centre; hw, hh = half
+    p = np.array([d + 0.004, y, z + hh + 0.003])
+    g = np.linspace(-1, 1, 21); GY, GZ = np.meshgrid(y + g * hw, z + g * hh)
+    F = np.stack([np.full(GY.size, d), GY.ravel(), GZ.ravel()], 1)
+    v = F - p; dist = np.linalg.norm(v, axis=1); u = v / dist[:, None]
+    axis = np.array([d, y, z]) - p; axis /= np.linalg.norm(axis)
+    cut = math.degrees(math.acos(np.clip(u @ axis, -1, 1).min())) + 2
+    rng = 1.3 * dist.max()
+    E = (-u[:, 0]) * np.clip(1 - (dist / rng) ** 4, 0, None) ** 2 / dist ** 2
+    return lamp_xml(name, p, (d, y, z), light, LIGHT_LUX / E.mean(), 0, cut, rng)
+
+
+def common_xml(objs, lit=(), glass=(), extra='', light='non-flt', bezel=None, integral=False):
     """The animations every instrument has: no shadows, the glass effect, the instrument lighting on `lit` (circuit
-    `light`)."""
-    names = ''.join('    <object-name>%s</object-name>\n' % o for o in objs)
+    `light`): in the HDR pipeline its lighted bezel (bezel: (face centre, half size[, round[, glass[, out]]]), see
+    bezel_lamps), or
+    with `integral` the lit objects' own emission (integral_xml)."""
     out = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<!-- written by fdm/cockpit/instruments.py -->\n\n'
-    out += '<PropertyList>\n\n  <path>%%s</path>\n\n  <animation>\n    <type>noshadow</type>\n%s  </animation>\n' % names
+    out += '<PropertyList>\n\n  <path>%%s</path>\n\n  <animation>\n    <type>noshadow</type>\n%s  </animation>\n' % objects_xml(objs)
     for g in glass:
         out += ('\n  <effect>\n    <inherits-from>../../../../Effects/Glass/glass</inherits-from>\n'
                 '    <object-name>%s</object-name>\n  </effect>\n' % g)
     if lit:
-        out += light_xml(lit, light)
+        out += integral_xml(lit, light) if integral else light_xml(lit, light)
+    if bezel:
+        out += bezel_light_xml(light, *bezel)
     return out + extra + '\n</PropertyList>\n'
 
 
@@ -230,6 +346,7 @@ def clock():
     glass = A.Obj('glass', None, A.GLASS); A.flat(glass, A.circle(0.0215, n=40), 0.0130, A.const(0, 0))
     tsec = '/sim/time/local-day-seconds'
     xml = common_xml(['case', 'face', 'hour', 'minute', 'second', 'glass'], lit=['face', 'hour', 'minute', 'second'],
+                     bezel=((0.006, 0.0, 0.0), (r, r), True, 0.013),
                      glass=['glass'],
                      extra=rotate_xml('hour', tsec, 1 / 120) + rotate_xml('minute', tsec, 0.1) + rotate_xml('second', tsec, 6))
     write_instrument('clock', [body, face, hh, mh, sh, glass], xml.replace('<PropertyList>', '<!-- clock: local time -->\n<PropertyList>', 1))
@@ -268,6 +385,7 @@ def stab():
     A.cylinder(needle, 0.0022, py, pz, 0.0056, 0.0060, white, white)
     glass = A.Obj('glass', None, A.GLASS); A.flat(glass, window, 0.0115, A.const(0, 0))
     xml = common_xml(['case', 'face', 'needle', 'glass'], lit=['face', 'needle'], glass=['glass'],
+                     bezel=((0.005, 0.0, 0.0), (ww / 2, wh / 2), False, 0.0115),
                      extra=rotate_xml('needle', '/fdm/jsbsim/stab/pos-deg', 1, centre=(0, py, pz), lo=-12, hi=45))
     write_instrument('stab', [body, face, needle, glass],
                      xml.replace('<PropertyList>', '<!-- stabilator position indicator: /fdm/jsbsim/stab/pos-deg, trailing '
@@ -276,6 +394,10 @@ def stab():
 
 
 # ---------------------------------------------------------------- panels with the TM's face art
+
+LIGHT_PANELS = False    # the face-art panels stand in until they're modelled in 3-D: no instrument lights till then
+                        # (their lamps and lit legends work)
+
 
 class Panel:
     """A raised panel with the TM figure's art on its face, and 3-D parts on it (positions in figure pt from the
@@ -304,6 +426,8 @@ class Panel:
         s.body = A.Obj('panel', name + '.png'); s.parts = {}
         A.prism(s.body, A.rrect(s.w, s.h, min(0.002, s.h / 3), s.bx, s.bz), 0, depth, s.face_uv, s.paint)
         s.lit = ['panel']; s.xml = ''
+        s.lamps = 'caut-advsy'          # its lamps' and lit legends' dimming (in LIGHTS and HDR): the cockpit indicator
+                                        # lights dim with the caution/advisory panel (TM 2.81.2)
 
     def at(s, x, y):
         return x * PT, -y * PT
@@ -353,20 +477,23 @@ class Panel:
         if lit:
             on = s.obj(name + '-on')
             A.flat(on, A.circle(dia * MM / 2 * 0.95, cy, cz, 20), s.depth + 0.0031, s.t.swatch(lit))
-            s.xml += select_xml([name + '-on'], cond) + emission_xml([name + '-on'])
+            s.xml += select_xml([name + '-on'], cond) + s.lamp_xml([name + '-on'])
         return cy, cz
 
     def legend(s, name, y0, y1, z0, z1, d, lines, rgb, cond):
         """A lit legend (panel metres), shown on `cond`."""
         pw = int(160 * (y1 - y0) / 0.008); ph = max(24, int(pw * (z1 - z0) / (y1 - y0)))
         x0, py0, x1, py1 = s.alloc(pw, ph)
-        dr = s.t.d; dr.rectangle([x0, py0, x1, py1], fill=(10, 10, 10))
+        dr = s.t.d; dr.rectangle([x0, py0, x1, py1], fill=(0, 0, 0))           # black: in HDR the whole texture emits
         f = font(ph * (0.42 if len(lines) > 1 else 0.55))
         for k, line in enumerate(lines):
             yy = py0 + ph * ((k + 1) / (len(lines) + 1) if len(lines) > 1 else 0.5)
             dr.text(((x0 + x1) / 2, yy), line, font=f, fill=rgb, anchor='mm')
         A.flat(s.obj(name), [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], d, s.t.area(x0, py0, x1, py1, y0, y1, z0, z1))
-        s.xml += select_xml([name], cond) + emission_xml([name])
+        s.xml += select_xml([name], cond) + s.lamp_xml([name])
+
+    def lamp_xml(s, objs):
+        return emission_xml(objs, LIGHTS + s.lamps) + lit_xml(objs, HDR + s.lamps)
 
     def glass(s, x, y, dia):
         cy, cz = s.at(x, y); o = s.parts.setdefault('glass', A.Obj('glass', None, A.GLASS))
@@ -376,7 +503,9 @@ class Panel:
         """variants: [(xml name, {text: replacement})] for instances that differ only in their properties."""
         objs = [s.body] + list(s.parts.values())
         glass = ['glass'] if 'glass' in s.parts else []
-        xml = common_xml([o.name for o in objs], lit=s.lit, glass=glass, extra=s.xml + extra, light=light)
+        lit = s.lit if LIGHT_PANELS else []
+        xml = common_xml([o.name for o in objs], lit=lit, glass=glass, extra=s.xml + extra, light=light,
+                         bezel=((s.depth, s.bx, s.bz), (s.w / 2, s.h / 2)) if lit else None)
         xml = xml.replace('<PropertyList>', '<!-- %s -->\n<PropertyList>' % comment, 1)
         write_instrument(s.name, objs, xml)
         for fname, subs in variants or ():
@@ -430,6 +559,7 @@ def panels(art):
     UH = '/instrumentation/uh60/'
     # VSI/HSI mode selector (TM 3.25.4): top row the navigation source, bottom row split legends
     p = Panel('modesel', art, 11, 'pilot', 0.005, room=400)
+    p.lamps = 'switches'                            # TM 2.70.4: the LIGHTED SWITCHES dimmer
     bw, bh = 8.4, 8.2
     top = (('dplr', ['DPLR']), ('vor-ils', ['VOR', 'ILS']), ('back-crs', ['BACK', 'CRS']), ('fm-home', ['FM', 'HOME']))
     bottom = (('turn-altr', 'NORM', 'ALTR'), ('crs-hdg', 'PLT', 'CPLT'), ('vgyro-altr', 'NORM', 'ALTR'), ('brg2-vor', 'ADF', 'VOR'))
@@ -454,6 +584,7 @@ def panels(art):
 
     # CIS mode selector: HDG, NAV, ALT, each with its ON legend
     p = Panel('cismode', art, 10, 'pilot', 0.005, room=200)
+    p.lamps = 'switches'
     for x, key in zip((-14.4, -0.2, 14.1), ('hdg', 'nav', 'alt')):
         cy, cz = p.button(x, -0.5, 8.9, 8.7, name='btn-' + key)
         w2, h2 = 8.9 * PT * 0.42, 8.7 * PT * 0.21

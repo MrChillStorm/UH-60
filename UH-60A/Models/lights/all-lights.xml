@@ -17,6 +17,7 @@
       <x-m>  2.93595 </x-m>
       <y-m>  0.00000 </y-m>
       <z-m> -1.68836 </z-m>
+      <roll-deg> 180 </roll-deg>          <!-- the lower beacon, shining down -->
     </offsets>
   </model>
 
@@ -38,23 +39,4 @@
     </offsets>
   </model>
 
-  <!-- test -->
-  <model>
-    <path>HDR/lightpanel.xml</path>
-    <offsets>
-      <x-m> -5.780 </x-m>
-      <y-m>  0.680 </y-m>
-      <z-m> -0.960 </z-m>
-    </offsets>
-  </model>
-
-  <model>
-    <path>HDR/lightpanel.xml</path>
-    <offsets>
-      <x-m> -5.780 </x-m>
-      <y-m> -0.680 </y-m>
-      <z-m> -0.960 </z-m>
-    </offsets>
-  </model>
-  <!-- -->
 </PropertyList>

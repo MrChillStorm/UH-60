@@ -28,7 +28,7 @@ var rotor_wash_loop = func {
   # particle effect colors
   var land = getprop("/gear/gear/ground-is-solid");
 
-  var red_diffuse = getprop("/rendering/scene/diffuse/red");
+  var red_diffuse = getprop("/rendering/scene/diffuse/red") or 0.8;      # (HDR has no scene diffuse colour)
 
   if (land) {
     setprop("/sim/model/uh60/effects/particles/rotorwash/redcombinedstart",   red_diffuse * 0.40);

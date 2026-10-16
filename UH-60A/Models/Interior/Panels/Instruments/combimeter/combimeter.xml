@@ -612,5 +612,52 @@
       <blue>  0.45 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
+      <lit-gain type="float"> 1.91 </lit-gain>
+    </parameters>
+    <object-name>fond</object-name>
+  </effect>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/vids</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>NG1</object-name>
+    <object-name>NG2</object-name>
+    <object-name>TGT1</object-name>
+    <object-name>TGT2</object-name>
+    <object-name>PSI1</object-name>
+    <object-name>PSI2</object-name>
+    <object-name>TEMP1</object-name>
+    <object-name>TEMP2</object-name>
+    <object-name>XPSI</object-name>
+    <object-name>XTEMP</object-name>
+    <object-name>FUEL1</object-name>
+    <object-name>FUEL2</object-name>
+    <object-name>digit-a0</object-name>
+    <object-name>digit-a1</object-name>
+    <object-name>digit-a2</object-name>
+    <object-name>digit-a00</object-name>
+    <object-name>digit-a3</object-name>
+    <object-name>digit-a4</object-name>
+    <object-name>digit-b0</object-name>
+    <object-name>digit-b1</object-name>
+    <object-name>digit-b2</object-name>
+    <object-name>digit-b00</object-name>
+    <object-name>digit-b3</object-name>
+    <object-name>digit-b4</object-name>
+    <object-name>digit-c1</object-name>
+    <object-name>digit-c2</object-name>
+    <object-name>digit-c3</object-name>
+    <object-name>digit-c4</object-name>
+  </effect>
   <!-- /NVG -->
 </PropertyList>

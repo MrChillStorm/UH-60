@@ -118,7 +118,8 @@ class Gauge:
 
     def write(s, comment, variants=None, light='non-flt'):
         objs = list(s.objs.values())
-        x = I.common_xml([o.name for o in objs], lit=s.lit, glass=['glass'], extra=s.xml, light=light)
+        x = I.common_xml([o.name for o in objs], lit=s.lit, glass=['glass'], extra=s.xml, light=light,
+                         bezel=((s.dd, 0.0, 0.0), (s.R, s.R), True, s.front - 0.0012))
         x = x.replace('<PropertyList>', '<!-- %s; written by fdm/cockpit/gauges.py -->\n<PropertyList>' % comment, 1)
         I.write_instrument(s.name, objs, x)
         for fname, subs in variants or ():
@@ -330,7 +331,8 @@ def apn209():
         g.patch(bug, 100, 120, -0.0022, 0.0022, R * 0.94, R * 1.10, g.dd + 0.0042, name)
     for name, lab, y, z in (('lo-light', 'LO', -0.0095, 0.0010), ('hi-light', 'HI', -0.0095, 0.0205)):
         def lamp(d, box, lab=lab, on=False):
-            x0, y0, x1, y1 = box; d.rectangle(box, fill=(14, 14, 14), outline=(120, 120, 120), width=6)
+            x0, y0, x1, y1 = box                                      # lit, on black: in HDR the whole texture emits
+            d.rectangle(box, fill=(0, 0, 0) if on else (14, 14, 14), outline=(0, 0, 0) if on else (120, 120, 120), width=6)
             d.text(((x0 + x1) / 2, (y0 + y1) / 2), lab, font=I.font(70), fill=(255, 150, 20) if on else (70, 55, 40), anchor='mm')
         g.patch(lamp, 200, 110, y - 0.0040, y + 0.0040, z - 0.0022, z + 0.0022, g.dd + 0.0004, name + '-off', lit=False)
         g.patch(lambda d, box, lab=lab: lamp(d, box, lab, True), 200, 110, y - 0.0040, y + 0.0040, z - 0.0022, z + 0.0022,
@@ -347,10 +349,11 @@ def apn209():
     g.xml += I.select_xml(['off-flag'], '<property>%soff-flag</property>' % RA)
     g.xml += I.select_xml(['lo-light'], '<property>%slo-light</property>' % RA)
     g.xml += I.select_xml(['hi-light'], '<property>%shi-light</property>' % RA)
-    g.xml += emissive(['lo-light', 'hi-light'], (1, 1, 1), factor='/controls/lighting/radalt-norm')
+    g.xml += emissive(['lo-light', 'hi-light'], (1, 1, 1), factor=I.LIGHTS + 'radalt-lamps')
+    g.xml += I.lit_xml(['lo-light', 'hi-light'], I.HDR + 'radalt-lamps')
     g.xml += text_node('digits', RA + 'digits', '%4.0f', 0.0068, 0.0010, -0.0102, g.dd + 0.0006, width=0.028)
     g.xml += I.select_xml(['digits'], '<property>%sdigits-vis</property>' % RA)
-    g.xml += emissive(['digits'], (1.0, 0.45, 0.1), factor='/controls/lighting/radalt-norm')
+    g.xml += emissive(['digits'], (1.0, 0.45, 0.1), factor=I.LIGHTS + 'radalt-lamps')       # HDR: a text node, unlit
     g.xml += rot('lo-knob', RA + 'lo-ft', factor=0.5, centre=(0, -0.0310, -0.0280))
     g.xml += rot('hi-knob', RA + 'hi-ft', factor=0.5, centre=(0, 0.0330, -0.0280))
     g.xml += I.pick_xml('lo-knob', [(0, 'avionics.radalt_bug(0, "lo", 1)'), (2, 'avionics.radalt_bug(0, "lo", -1)'),
@@ -577,12 +580,17 @@ def pdu():
 
 def vids_lighting(name):
     """The display unit's scales (object fond) lit by the nonflight instrument lights (TM 2.70.3: NVG information panel
-    lighting); its lamp columns and digits light themselves. A marked block in the original's XML, replaced each time."""
+    lighting, integral: the markings light themselves); its lamp columns and digits light themselves, in the HDR
+    pipeline at the level of HDR vids, which follows the light outside as the units' photocells do (TM 2.10.3). A marked
+    block in the original's XML, replaced each time."""
     path = os.path.join(I.INSTR, name, name + '.xml')
     x = open(path, encoding='latin-1').read()
     x = re.sub(r'\n  <!-- NVG panel lighting.*?<!-- /NVG -->\n', '\n', x, flags=re.S)
-    blk = ('\n  <!-- NVG panel lighting: written by fdm/cockpit/gauges.py -->' + I.light_xml(['fond'], 'non-flt')
-           + '  <!-- /NVG -->\n')
+    own = re.search(r'<animation>\s*<type>material</type>((?:(?!</animation>).)*?)<factor-prop>controls/lighting/instruments-norm'
+                    r'</factor-prop>', x, flags=re.S)
+    displays = re.findall(r'<object-name>\s*(\S+?)\s*</object-name>', own.group(1))
+    blk = ('\n  <!-- NVG panel lighting: written by fdm/cockpit/gauges.py -->' + I.integral_xml(['fond'], 'non-flt')
+           + I.lit_xml(displays, I.HDR + 'vids') + '  <!-- /NVG -->\n')
     open(path, 'w', encoding='latin-1').write(x.replace('\n</PropertyList>', blk + '</PropertyList>', 1))
 
 

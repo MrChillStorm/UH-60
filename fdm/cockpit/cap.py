@@ -151,9 +151,10 @@ def rounded(y0, y1, z0, z1, radii, n=4):
     return out
 
 
-def legend(d, box, lines, rgb):
+def legend(d, box, lines, rgb, bg=(14, 14, 14)):
+    """A capsule's legend; lit, on black (bg): in the HDR pipeline the whole texture emits."""
     x0, y0, x1, y1 = box
-    d.rectangle(box, fill=(14, 14, 14))
+    d.rectangle(box, fill=bg)
     if not lines:
         d.line([(x0 + (x1 - x0) * 0.3, (y0 + y1) / 2), (x0 + (x1 - x0) * 0.7, (y0 + y1) / 2)], fill=rgb, width=3)
         return
@@ -208,7 +209,7 @@ def build(art):
             # atlas: unlit and lit versions of the legend, 192 x 54 px each
             ux, uy = cell[n % 5], 4 + 54 * (n // 5) * 2; n += 1
             legend(t.d, (ux, uy, ux + 186, uy + 50), lines, (58, 58, 58))
-            legend(t.d, (ux, uy + 54, ux + 186, uy + 104), lines, colour)
+            legend(t.d, (ux, uy + 54, ux + 186, uy + 104), lines, colour, (0, 0, 0))
             ccy, ccz = (COLS[c] + CW / 2 - cx) * I.PT, -(row_top(r) + CH / 2 - cy) * I.PT
             cw, ch = CW * I.PT, CH * I.PT
             y0, y1, z0, z1 = ccy - cw / 2, ccy + cw / 2, ccz - ch / 2, ccz + ch / 2
@@ -217,7 +218,7 @@ def build(art):
             o = A.Obj('lit-' + cid, 'cap.png')
             A.flat(o, [(y0, z0), (y1, z0), (y1, z1), (y0, z1)], PLATE + 0.0003, t.area(ux, uy + 54, ux + 186, uy + 104, y0, y1, z0, z1))
             lit.append(o); legends.append((cid, r < CAUTION_ROWS))
-    # BRT/DIM-TEST switch: a lever straight out, held down at TEST
+    # BRT/DIM-TEST switch: a lever straight out, spring-loaded: held down at TEST, up at BRT/DIM (Nasal/avionics.nas)
     sw = A.Obj('test-switch', 'cap.png')
     sy, sz = (TEST_SWITCH[0] - cx) * I.PT, -(TEST_SWITCH[1] - cy) * I.PT
     A.cylinder(sw, 0.0035, sy, sz, PLATE, PLATE + 0.003, metal, metal, n=6)
@@ -234,21 +235,33 @@ def build(art):
                 '      <property>/controls/electric/battery-switch</property>\n      %s\n    </condition>\n  </animation>\n'
                 % (o.name, cond))
     xml += ('\n  <animation>\n    <type>material</type>\n' + ''.join('    <object-name>%s</object-name>\n' % o.name for o in lit) +
-            '    <emission>\n      <factor-prop>/controls/lighting/caut-advsy-norm</factor-prop>\n      <red> 1 </red>\n'
-            '      <green> 1 </green>\n      <blue> 1 </blue>\n    </emission>\n  </animation>\n')
-    xml += ('\n  <animation>\n    <type>rotate</type>\n    <object-name>test-switch</object-name>\n'
-            '    <property>/sim/model/uh60/cap-test</property>\n    <factor> 30 </factor>\n'
-            '    <center>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </center>\n'
-            '    <axis>\n      <x> 0 </x>\n      <y> 1 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n' % (PLATE, sy, sz))
+            '    <emission>\n      <factor-prop>%scaut-advsy</factor-prop>\n      <red> 1 </red>\n'
+            '      <green> 1 </green>\n      <blue> 1 </blue>\n    </emission>\n  </animation>\n' % I.LIGHTS)
+    xml += I.lit_xml([o.name for o in lit], I.HDR + 'caut-advsy')
+    for prop, deg in (('cap-test', 30), ('cap-brt-dim', -30)):
+        xml += ('\n  <animation>\n    <type>rotate</type>\n    <object-name>test-switch</object-name>\n'
+                '    <property>/sim/model/uh60/%s</property>\n    <factor> %d </factor>\n'
+                '    <center>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </center>\n'
+                '    <axis>\n      <x> 0 </x>\n      <y> 1 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n'
+                % (prop, deg, PLATE, sy, sz))
     xml += ('\n  <animation>\n    <type>pick</type>\n    <object-name>test-switch</object-name>\n    <action>\n'
             '      <button>0</button>\n      <repeatable>false</repeatable>\n      <binding>\n'
             '        <command>property-assign</command>\n        <property>/sim/model/uh60/cap-test</property>\n'
             '        <value>1</value>\n      </binding>\n      <mod-up>\n        <binding>\n'
             '          <command>property-assign</command>\n          <property>/sim/model/uh60/cap-test</property>\n'
+            '          <value>0</value>\n        </binding>\n      </mod-up>\n    </action>\n'
+            '    <action>\n      <button>2</button>\n      <repeatable>false</repeatable>\n      <binding>\n'
+            '        <command>property-assign</command>\n        <property>/sim/model/uh60/cap-brt-dim</property>\n'
+            '        <value>1</value>\n      </binding>\n      <binding>\n        <command>nasal</command>\n'
+            '        <script>avionics.brt_dim()</script>\n      </binding>\n      <mod-up>\n        <binding>\n'
+            '          <command>property-assign</command>\n          <property>/sim/model/uh60/cap-brt-dim</property>\n'
             '          <value>0</value>\n        </binding>\n      </mod-up>\n    </action>\n    <hovered>\n'
             '      <binding>\n        <command>set-tooltip</command>\n        <tooltip-id>uh60-cap-test</tooltip-id>\n'
-            '        <label>Caution/advisory lights: hold to test</label>\n      </binding>\n    </hovered>\n  </animation>\n')
-    head = I.common_xml([o.name for o in objs], lit=['panel'], extra=xml)
+            '        <label>Caution/advisory BRT/DIM-TEST: hold to test (left click); BRT/DIM (right click): %s</label>\n'
+            '        <property>/sim/model/uh60/cap-dim</property>\n        <mapping>nasal</mapping>\n'
+            '        <script>return arg[0] ? "DIM" : "BRT";</script>\n'
+            '      </binding>\n    </hovered>\n  </animation>\n')
+    head = I.common_xml([o.name for o in objs], lit=['panel'], extra=xml, integral=True)
     I.write_instrument('cap', objs, head.replace('<PropertyList>', '<!-- caution/advisory panel: capsules lit by '
                        'Systems/uh60a-cap.xml (fdm/cockpit/cap.py) -->\n<PropertyList>', 1))
     t.save(os.path.join(I.INSTR, 'cap', 'cap.png'))
@@ -322,8 +335,8 @@ MW = [('eng-out-1', ['#1 ENG', 'OUT']), (None, []), ('eng-out-2', ['#2 ENG', 'OU
 
 def write_master_warning():
     """The master warning panel (TM 2.81, figure 2-23): #1 and #2 ENG OUT, FIRE, MASTER CAUTION (Nasal/caution.nas,
-    pressed to reset) and LOW ROTOR RPM, amber; all on in the lamp test, LOW ROTOR RPM flashing; dimmed by the NVG
-    panel's MA WRN control."""
+    pressed to reset) and LOW ROTOR RPM, amber; all on in the lamp test, LOW ROTOR RPM flashing; in DIM dimmed by the
+    NVG panel's MA WRN control (Nasal/avionics.nas)."""
     it = I.item(4, 'copilot')                      # sheet 1, where the capsules were measured
     bx0, bx1, by0, by1 = it[4:8]
     cx, cy = (bx0 + bx1) / 2, (by0 + by1) / 2
@@ -336,7 +349,7 @@ def write_master_warning():
         r, c = divmod(k, 3)
         ux, uy = 16 + 672 * c, 16 + 464 * r
         legend(t.d, (ux, uy, ux + 640, uy + 208), lines, (60, 52, 40))
-        legend(t.d, (ux, uy + 224, ux + 640, uy + 432), lines, AMBER)
+        legend(t.d, (ux, uy + 224, ux + 640, uy + 432), lines, AMBER, (0, 0, 0))
         y0 = (MW_COLS[c] - cx) * I.PT; y1 = y0 + MW_W * I.PT
         z1 = -(MW_ROWS[r] - cy) * I.PT; z0 = z1 - MW_H * I.PT
         o = A.Obj('btn-master', 'caution.png') if cid == 'master' else caps
@@ -382,13 +395,14 @@ def write_master_warning():
   <animation>
     <type>material</type>
 %s    <emission>
-      <factor-prop>/controls/lighting/ma-wrn-norm</factor-prop>
+      <factor-prop>%sma-wrn</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
-""" % (names, ''.join('    <object-name>%s</object-name>\n' % o for o in lit))
+""" % (names, ''.join('    <object-name>%s</object-name>\n' % o for o in lit), I.LIGHTS)
+    x += I.lit_xml(lit, I.HDR + 'ma-wrn')
     for n in (0, 1):
         x += light('lit-eng-out-%d' % (n + 1), '#%d ENG OUT: gas generator speed Ng below 55 %%' % (n + 1),
                    '<less-than><property>engines/engine[%d]/n1-pct</property><value>55</value></less-than>' % n)

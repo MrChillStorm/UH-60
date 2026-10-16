@@ -84,6 +84,73 @@
     <object-name>HDRglaceR2</object-name>
   </animation>
 
+  <!-- the livery in the HDR pipeline (FlightGear 2024.2 on), which the material animation above does not reach:
+       its texture; the paint's roughness is sim/model/livery/roughness (Models/Effects/Bump/bumpspec.eff) -->
+  <animation>
+    <type>pbr</type>
+    <object-name>fuselage</object-name>
+    <object-name>fuselage2</object-name>
+    <object-name>fuselage3</object-name>
+    <object-name>fuselage4</object-name>
+    <object-name>elevator</object-name>
+    <object-name>caches</object-name>
+    <object-name>doorL</object-name>
+    <object-name>doorR</object-name>
+    <object-name>windowL1</object-name>
+    <object-name>windowL2</object-name>
+    <object-name>windowR1</object-name>
+    <object-name>windowR2</object-name>
+    <object-name>cachetail</object-name>
+    <object-name>porteL</object-name>
+    <object-name>porteR</object-name>
+    <object-name>supportlampes</object-name>
+    <object-name>antennes</object-name>
+    <object-name>poignees</object-name>
+    <object-name>barriere</object-name>
+    <object-name>noze</object-name>
+    <object-name>grue</object-name>
+    <object-name>probe</object-name>
+    <object-name>wings</object-name>
+    <object-name>intermoteurs</object-name>
+    <object-name>axeL1</object-name>
+    <object-name>axeL2</object-name>
+    <object-name>axeL3</object-name>
+    <object-name>roueG</object-name>
+    <object-name>axeR1</object-name>
+    <object-name>axeR2</object-name>
+    <object-name>axeR3</object-name>
+    <object-name>roueD</object-name>
+    <object-name>axeT1</object-name>
+    <object-name>axeT2</object-name>
+    <object-name>axeT3</object-name>
+    <object-name>axeT4</object-name>
+    <object-name>roueA</object-name>
+    <object-name>trougrue</object-name>
+    <object-name>crochet</object-name>
+    <object-name>vitres</object-name>
+    <object-name>vitreG</object-name>
+    <object-name>vitreD</object-name>
+    <object-name>glaceL</object-name>
+    <object-name>glaceR</object-name>
+    <object-name>glaceL1</object-name>
+    <object-name>glaceL2</object-name>
+    <object-name>glaceR1</object-name>
+    <object-name>glaceR2</object-name>
+    <object-name>lampes</object-name>
+    <object-name>lampeverte</object-name>
+    <object-name>HDRvitres</object-name>
+    <object-name>HDRvitreG</object-name>
+    <object-name>HDRvitreD</object-name>
+    <object-name>HDRglaceL</object-name>
+    <object-name>HDRglaceR</object-name>
+    <object-name>HDRglaceL1</object-name>
+    <object-name>HDRglaceL2</object-name>
+    <object-name>HDRglaceR1</object-name>
+    <object-name>HDRglaceR2</object-name>
+    <property-base>sim/model/livery</property-base>
+    <base-color-texture-prop>texture</base-color-texture-prop>
+  </animation>
+
   <animation>
     <type>material</type>
     <object-name>fuselage</object-name>

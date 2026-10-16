@@ -31,19 +31,6 @@
   </effect>
 
   <animation>
-    <type>material</type>
-    <object-name>panel</object-name>
-    <object-name>lwc-needle</object-name>
-    <object-name>btn-lwc-test</object-name>
-    <emission>
-      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
-      <red>   0.10 </red>
-      <green> 1.00 </green>
-      <blue>  0.45 </blue>
-    </emission>
-  </animation>
-
-  <animation>
     <type>rotate</type>
     <object-name>lwc-needle</object-name>
     <property>/controls/anti-ice/blade-deice/meter-lwc</property>
@@ -148,11 +135,22 @@
     <type>material</type>
     <object-name>lamp-test-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lamp-test-on</object-name>
+  </effect>
 
   <animation>
     <type>rotate</type>
@@ -267,11 +265,22 @@
     <type>material</type>
     <object-name>lamp-pwr-main-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lamp-pwr-main-on</object-name>
+  </effect>
 
   <animation>
     <type>pick</type>
@@ -311,11 +320,22 @@
     <type>material</type>
     <object-name>lamp-pwr-tail-on</object-name>
     <emission>
+      <factor-prop>/instrumentation/uh60/lights/caut-advsy</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lamp-pwr-tail-on</object-name>
+  </effect>
 
   <animation>
     <type>pick</type>

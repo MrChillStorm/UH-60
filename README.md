@@ -53,7 +53,8 @@ Then add the cloned `UH-60` folder in the FlightGear launcher under Add-ons →
 Additional aircraft folders (or start FlightGear with `--fg-aircraft=`
 pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
 
-- Tested with FlightGear 2024.1.
+- Tested with FlightGear 2024.1 and with the 2024.2 nightly, whose only
+  renderer is HDR (`--compositor=Compositor/HDR/hdr` in 2024.1).
 - The aircraft is in the `UH-60A` folder with the id `uh60a`, so it sits next
   to the UH-60 from the hangar without replacing it.
 - In multiplayer, other pilots need this aircraft installed to see yours as a
@@ -114,15 +115,28 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
   servos, stabilator, SAS and FPS, transmission oil, prime pump, landing
   light and parking brake. MASTER CAUTION comes on with each new amber
   capsule; click it to reset. Hold the panel's BRT/DIM-TEST switch down to
-  test every light.
-- **Instrument lights** in NVG blue-green (NVIS Green A), on the three
-  circuits of the manual: the pilot's and the copilot's flight instruments
-  and the nonflight instruments, each with its INSTR LT dimmer (Aircraft
-  menu → Instrument lights). The radar altimeters dim besides with RAD ALT
-  DIMMING; the display units' lamp columns and digits light themselves.
-  The lights need ac power, so they come on with the generators (above
-  93.75 % rotor speed on the ground: the simulation has no APU). They are
-  set for the night when the flight starts in the dark, off by day.
+  test every light (left click); right click is BRT/DIM.
+- **Cockpit lights** (Aircraft menu → Cockpit lights), in NVG blue-green
+  (NVIS Green A) as the manual has them:
+  - the instruments' lighted bezels on three circuits, the pilot's and the
+    copilot's flight instruments and the nonflight instruments, each with
+    its INSTR LT dimmer; the radar altimeters dim besides with RAD ALT
+    DIMMING, and the display units' scales are lit from within. The panels
+    drawn from the manual's figure stay unlit until they are modelled in
+    3-D. These lights need ac power, so they come on with the generators
+    (above 93.75 % rotor speed on the ground: the simulation has no APU);
+  - the warning, caution and indicator lights, bright, or dim once the
+    caution/advisory panel's BRT/DIM-TEST switch is set to BRT/DIM (it needs
+    PILOT FLT on, and the lights come back bright when power is cut). Dim,
+    the NVG dimming panel's MA WRN and CAUT/ADVSY knobs set them, and the
+    LIGHTED SWITCHES dimmer the mode selectors. The display units' lamps
+    follow the daylight, as their photocells do;
+  - in the HDR renderer, the six glareshield lights (GLARESHIELD LIGHTS
+    dimmer) and the blue-green and white cockpit floodlights under the
+    upper console (BLUE/OFF/WHITE).
+
+  The flight starts with every dimmer of the dialog at its first notch, the
+  floods off and the caution panel on DIM.
 - **Engine ignition switch** below the caution/advisory panel: click to turn
   it; the engines only light off with it ON.
 - **Feel.** The rotor's wake is turbulent near the ground, through
@@ -175,6 +189,10 @@ Sikorsky's simulation as NASA ran it.
   go-around switch on the cyclic. The caution capsules for failures the
   simulation doesn't have stay dark, and the hydraulic ones are lit below
   half rotor speed, an estimate.
+- **HDR renderer:** the radar altimeters' digits are text, which it doesn't
+  let glow, so they show only in the instrument's light; it has no particles
+  (FlightGear says so in its log), and the original's rain-on-glass effect
+  logs a missing shader there.
 
 ## Rebuilding the model and the report
 
@@ -239,7 +257,7 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
 - **Nasal.** `Nasal/uh60.nas` is rewritten: the start and stop sequencer, the
   AFCS messages and the vibration of the view; `convert.nas` is no longer
   loaded.
-- **Flight controls dialog** `Dialogs/afcs.xml` and **instrument lights
+- **Flight controls dialog** `Dialogs/afcs.xml` and **cockpit lights
   dialog** `Dialogs/lights.xml`, with their menu entries in
   `Dialogs/uh60-menu.xml` and `Nasal/dialogs.nas`.
 - **Instrument panel** laid out as in the operator's manual (figure 2-9):
@@ -305,6 +323,18 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   pilots hidden from their own seat in
   FlightGear's and FGCamera's cockpit views (`Models/Pilot/all-pilots.xml`);
   a vibration rattle in `Sounds/uh60-sound.xml`.
+- **HDR renderer** (FlightGear 2024.2 and later, where it is the only one):
+  - the liveries switch the skin's texture in it too (a `pbr` animation in
+    `Models/uh60.xml`), and each livery sets how glossy its paint is
+    (`roughness` in `Models/Liveries/`, read by `Effects/Bump/bumpspec.eff`);
+  - the exterior lights are spots aimed out through their lenses
+    (`Models/lights/HDR/`), and the two test lights that sat in the cockpit
+    are gone;
+  - the instruments have lamps in their bezels (`<light>` in their XML), the
+    caution panel, display units and lit legends emit through
+    `Models/Effects/Lit/lit.eff` and `Shaders/HDR/lit.frag`, and the
+    glareshield lights and cockpit floods are in `Panels/panel.xml`;
+  - the set file marks the aircraft compatible for the launcher.
 - **Set file.** Description, a description for the launcher, credits and the
   flight model rating.
 

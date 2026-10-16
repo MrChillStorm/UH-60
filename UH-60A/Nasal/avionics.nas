@@ -329,13 +329,40 @@ var step_systems = func {
     setprop("/sim/model/uh60/cap/ircm-inop", p and ice.ircm_cool > 0);
 };
 
-# ---------------------------------------------------------------- instrument lights
+# ---------------------------------------------------------------- instrument and panel lights
 # TM 2.70.3: NVG blue-green bezel lights on three circuits with their INSTR LT rheostats (OFF-BRT, 0-1 here):
-# /controls/lighting/instr-plt-flt, instr-cplt-flt and instr-non-flt (Aircraft menu > Instrument lights). The pilot's
+# /controls/lighting/instr-plt-flt, instr-cplt-flt and instr-non-flt (Aircraft menu > Cockpit lights). The pilot's
 # flight instruments and the nonflight ones are on the No. 2 ac primary bus, the copilot's on No. 1; the generators
 # feed them, off line on the ground below 93.75 % rotor speed (the simulation has no APU or external power). The radar
 # altimeters' lights dim besides with RAD ALT DIMMING. Levels for the instruments' XML in /instrumentation/uh60/lights.
+#
+# TM 2.81.2, 2.70.4: the caution/advisory and master warning lights are bright, or dim once the BRT/DIM-TEST switch
+# goes to BRT/DIM with the PILOT FLT control out of OFF (again: bright); without dc power they return to bright. Dim,
+# the NVG dimming panel's MA WRN and CAUT/ADVSY controls set them, and the cockpit indicator lights dim with the
+# caution/advisory panel; the lighted switches (mode selectors) with the LIGHTED SWITCHES control. The radar altimeters'
+# LO/HI lights and digits here likewise, with RAD ALT DIMMING. The material animations take the 0-1 levels; the HDR
+# pipeline (Effects/Lit) takes cd/m2, in lights/hdr: bright LAMP_BRT, dim DIM_LO to DIM_HI over the control's travel,
+# the display units' lamps from VIDS_NIGHT to VIDS_DAY with the light outside (their photocells, TM 2.10.3).
+#
+# TM 2.70.2, secondary lighting (HDR only: spot lights in Panels/panel.xml): the glareshield lights, GLARESHIELD
+# LIGHTS (/controls/lighting/glareshield, OFF-BRT), No. 1 ac primary bus; the cockpit floodlights, BLUE/OFF/WHITE
+# (/controls/lighting/cockpit-flood: 1, 0, -1), dc essential bus.
+#
+# The flight starts with every dimmer of the Cockpit lights dialog at its first notch (0.05), the floods off and the
+# caution panel DIM.
 var LT = U ~ "lights/";
+var LAMP_BRT = 600;
+var DIM_LO = 0.05; var DIM_HI = 2;            # dim, at most as bright as the instruments' markings at BRT
+var VIDS_NIGHT = 3; var VIDS_DAY = 400;
+var CAP_DIM = "/sim/model/uh60/cap-dim";
+var FIRST_NOTCH = 0.05;
+var dc_was = 0;
+
+var brt_dim = func {         # the BRT/DIM-TEST switch to BRT/DIM
+    if (b("/controls/electric/battery-switch") and val("/controls/lighting/instr-plt-flt") > 0)
+        setprop(CAP_DIM, !b(CAP_DIM));
+};
+
 var lights = func {
     var wow = b("/gear/gear[0]/wow") or b("/gear/gear[1]/wow") or b("/gear/gear[2]/wow");
     var ac = !(wow and val("/rotors/main/rpm-pct") < 93.75);
@@ -347,6 +374,23 @@ var lights = func {
     var ra = clamp(val("/controls/lighting/radalt-norm", 1), 0, 1);
     setprop(LT ~ "radalt[0]", plt * ra);
     setprop(LT ~ "radalt[1]", cplt * ra);
+    var dc = b("/controls/electric/battery-switch");
+    if (dc_was and !dc) setprop(CAP_DIM, 0);              # power cut: bright when it comes back
+    dc_was = dc;
+    var dim = b(CAP_DIM);
+    setprop(LT ~ "cap-mode", dim ? "DIM" : "BRT");
+    foreach (var k; [["ma-wrn", "ma-wrn-norm"], ["caut-advsy", "caut-advsy-norm"], ["switches", "lighted-switches"],
+                     ["radalt-lamps", "radalt-norm"]]) {
+        var f = clamp(val("/controls/lighting/" ~ k[1], 1), 0, 1);
+        setprop(LT ~ k[0], dim ? f : 1);
+        setprop(LT ~ "hdr/" ~ k[0], dim ? DIM_LO * math.pow(DIM_HI / DIM_LO, f) : LAMP_BRT);
+    }
+    var day = clamp((90 - val("/sim/time/sun-angle-rad") * R2D + 6) / 12, 0, 1);     # sun 6 deg below to above
+    setprop(LT ~ "hdr/vids", VIDS_NIGHT * math.pow(VIDS_DAY / VIDS_NIGHT, day));
+    setprop(LT ~ "glareshield", ac ? clamp(val("/controls/lighting/glareshield"), 0, 1) : 0);
+    var flood = b("/controls/electric/battery-switch") ? val("/controls/lighting/cockpit-flood") : 0;
+    setprop(LT ~ "flood-blue", flood > 0.5);
+    setprop(LT ~ "flood-white", flood < -0.5);
 };
 
 # ---------------------------------------------------------------- init and loop
@@ -368,13 +412,10 @@ var init = func {
     }
     foreach (var k; ["ma-wrn-norm", "caut-advsy-norm", "radalt-norm"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, 1);
-    # instrument lights: set for the night, off by day (the sun more than 3 deg below the horizon: night), once the
-    # sun's place is known
-    settimer(func {
-        var night = val("/sim/time/sun-angle-rad") > 1.62;
-        foreach (var k; ["plt-flt", "cplt-flt", "non-flt"])
-            if (getprop("/controls/lighting/instr-" ~ k) == nil) setprop("/controls/lighting/instr-" ~ k, night ? 0.7 : 0);
-    }, 2);
+    foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches", "glareshield"])
+        if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, FIRST_NOTCH);
+    if (getprop("/controls/lighting/cockpit-flood") == nil) setprop("/controls/lighting/cockpit-flood", 0);
+    if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, 1);
 };
 
 var update = func {

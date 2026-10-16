@@ -235,5 +235,33 @@
       <blue>  0.45 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
+      <lit-gain type="float"> 1.91 </lit-gain>
+    </parameters>
+    <object-name>fond</object-name>
+  </effect>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/vids</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>rpm1</object-name>
+    <object-name>rpm2</object-name>
+    <object-name>rpmR</object-name>
+    <object-name>trq1</object-name>
+    <object-name>trq2</object-name>
+    <object-name>digit10R</object-name>
+    <object-name>digit1R</object-name>
+    <object-name>digit10L</object-name>
+    <object-name>digit1L</object-name>
+  </effect>
   <!-- /NVG -->
 </PropertyList>

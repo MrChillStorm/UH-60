@@ -389,6 +389,62 @@ def lift_glareshield():
     return {round(y, 3): (hood[v], edge[c] if c < len(edge) else 0.0) for c, ((y, _), v) in enumerate(zip(cols, var))}
 
 
+# ---------------------------------------------------------------- secondary lights (HDR)
+
+# TM 2.70.2: six NVG blue-green lights in the glareshield light the instrument panel (GLARESHIELD LIGHTS, OFF-BRT, No. 1
+# ac primary bus); the overhead cockpit floodlight panel at the upper console's aft end has two blue-green and two white
+# floodlights (BLUE/OFF/WHITE, dc essential bus; figure 2-4: two round lamps either side of its control and two oblong
+# ones outboard of them; which are which the TM doesn't say). Spot lights for the HDR pipeline, their levels (cd at 1)
+# in /instrumentation/uh60/lights (Nasal/avionics.nas).
+LT = '/instrumentation/uh60/lights/'
+NVG_GREEN = (0.10, 1.00, 0.45)
+GLARE_Y = (0.13, 0.40, 0.66)        # the glareshield lights' butt lines, each side
+GLARE_IN = 0.025                    # m in from the lip's lower edge, under the hood
+GLARE_CD = 0.12
+GLARE_AIM_Z = -0.12                 # aimed down at the plate's middle
+OVERHEAD = (0.93298, 0.16245, 30.54)                  # Overhead/overhead.xml in this frame (HEAD): x, z, pitch
+FLOOD_AT = (0.330, -0.018)          # in the overhead's frame: under the upper console's aft lower edge
+FLOODS = [(0.06, 'flood-blue', NVG_GREEN, 2.5), (0.17, 'flood-white', (1.0, 0.95, 0.85), 5.0)]   # |y|, circuit, cd
+FLOOD_AIM = (0.05, 0.35, -0.20)     # each at its own side of the panel's lower half and the console below it
+
+
+def light_xml(name, p, a, rgb, prop, cd, e, cut, rng):
+    return ('  <light>\n    <name>%s</name>\n    <type>spot</type>\n    <position>\n      <x-m> %.4f </x-m>\n'
+            '      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </position>\n    <direction>\n'
+            '      <lookat-x-m> %.4f </lookat-x-m>\n      <lookat-y-m> %.4f </lookat-y-m>\n      <lookat-z-m> %.4f </lookat-z-m>\n'
+            '    </direction>\n    <color>\n      <r> %.2f </r>\n      <g> %.2f </g>\n      <b> %.2f </b>\n    </color>\n'
+            '    <intensity>\n      <property>%s</property>\n      <scale> %g </scale>\n    </intensity>\n'
+            '    <spot-exponent> %g </spot-exponent>\n    <spot-cutoff> %g </spot-cutoff>\n    <range-m> %g </range-m>\n'
+            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + tuple(rgb) + (prop, cd, e, cut, rng)))
+
+
+def secondary_lights_xml():
+    """The glareshield lights (under the hood GLARE_IN in from its lip, by the hood's columns) and the floodlights."""
+    lines, n0, V = read_hood()
+    at = []
+    for y, ks in hood_columns(V):
+        xz = sorted((V[k][0], V[k][1]) for k in ks)
+        low = [min(xz[j:j + 2], key=lambda q: q[1]) for j in range(0, len(xz) - 1, 2)]   # the underside, back to front
+        x = low[-1][0] - GLARE_IN
+        at.append((y, x, float(np.interp(x, [q[0] for q in low], [q[1] for q in low])) - 0.004))
+    ys, xs, zs = zip(*at)
+    out = ['', '  <!-- Glareshield lights and cockpit floodlights (HDR), written by fdm/cockpit/panel_face.py -->']
+    for n, y in enumerate(GLARE_Y):
+        x, z = float(np.interp(y, ys, xs)), float(np.interp(y, ys, zs))
+        for side in (1, -1):
+            out.append(light_xml('glareshield-%d' % (2 * n + (side < 0)), (x, side * y, z),
+                                 (plate_x(y, GLARE_AIM_Z), side * y, GLARE_AIM_Z), NVG_GREEN, LT + 'glareshield',
+                                 GLARE_CD, 2, 55, 0.7))
+    ox, oz, th = OVERHEAD; c, sn = math.cos(math.radians(th)), math.sin(math.radians(th))
+    qx, qz = FLOOD_AT
+    for y, circuit, rgb, cd in FLOODS:
+        for side in (1, -1):
+            p = (ox + qx * c + qz * sn, side * y, oz - qx * sn + qz * c)
+            ax, ay, az = FLOOD_AIM
+            out.append(light_xml('%s-%d' % (circuit, side > 0), p, (ax, side * ay, az), rgb, LT + circuit, cd, 1, 60, 2.5))
+    return '\n'.join(out)
+
+
 # ---------------------------------------------------------------- panel.xml
 
 HEAD = """<?xml version="1.0" encoding="ISO-8859-1"?>
@@ -430,7 +486,7 @@ HEAD = """<?xml version="1.0" encoding="ISO-8859-1"?>
 
 
 def write_xml(pl):
-    out = [HEAD]
+    out = [HEAD, secondary_lights_xml()]
     for p in pl:
         if p['comment']:
             out.append('  <!-- %s (%d) -->' % (p['comment'], p['num']))

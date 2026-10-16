@@ -4,14 +4,23 @@
 
   <light>
     <name>navlightred</name>
-    <type>point</type>
+    <!-- HDR: a spot aimed out through its lens, so that it lights the night around it and not its own skin;
+         intensity in candela, falling off as cos^3 away from the horizontal: the ground below gets a little -->
+    <type>spot</type>
+    <direction>
+      <lookat-x-m> 0 </lookat-x-m>
+      <lookat-y-m> -1 </lookat-y-m>
+      <lookat-z-m> 0 </lookat-z-m>
+    </direction>
     <color>
       <r> 1 </r>
-      <g> 0 </g>
-      <b> 0 </b>
+      <g> 0.06 </g>
+      <b> 0.03 </b>
     </color>
-    <intensity> 15 </intensity>
-    <range-m> 25 </range-m>
+    <intensity> 40 </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 70 </spot-cutoff>
+    <range-m> 20 </range-m>
   </light>
 
   <animation>

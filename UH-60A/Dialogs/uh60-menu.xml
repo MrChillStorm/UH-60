@@ -92,7 +92,7 @@
         </binding>
       </item>
       <item>
-        <label>Instrument lights</label>
+        <label>Cockpit lights</label>
         <binding>
           <command>nasal</command>
           <script>uh60.lights_dlg.open()</script>

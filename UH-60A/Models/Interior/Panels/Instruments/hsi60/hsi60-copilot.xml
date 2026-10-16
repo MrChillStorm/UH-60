@@ -51,6 +51,222 @@
     </emission>
   </animation>
 
+  <light>
+    <name>bezel-lamp-0</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> 0.0494 </y-m>
+      <z-m> 0.0205 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-1</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> 0.0209 </y-m>
+      <z-m> 0.0492 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-2</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> -0.0200 </y-m>
+      <z-m> 0.0496 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-3</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> -0.0492 </y-m>
+      <z-m> 0.0209 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-4</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> -0.0494 </y-m>
+      <z-m> -0.0205 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-5</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> -0.0205 </y-m>
+      <z-m> -0.0494 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-6</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> 0.0205 </y-m>
+      <z-m> -0.0494 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-7</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0155 </x-m>
+      <y-m> 0.0494 </y-m>
+      <z-m> -0.0205 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0109 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.008299 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 59.6 </spot-cutoff>
+    <range-m> 0.115 </range-m>
+  </light>
+
   <animation>
     <type>translate</type>
     <object-name>dev-bar</object-name>
@@ -519,6 +735,60 @@
       <blue>  0.45 </blue>
     </emission>
   </animation>
+
+  <light>
+    <name>course-lamp</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0227 </x-m>
+      <y-m> 0.0530 </y-m>
+      <z-m> 0.0481 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0187 </lookat-x-m>
+      <lookat-y-m> 0.0530 </lookat-y-m>
+      <lookat-z-m> 0.0407 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.001275 </scale>
+    </intensity>
+    <spot-exponent> 0 </spot-exponent>
+    <spot-cutoff> 69.9 </spot-cutoff>
+    <range-m> 0.022 </range-m>
+  </light>
+
+  <light>
+    <name>km-lamp</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0227 </x-m>
+      <y-m> -0.0480 </y-m>
+      <z-m> 0.0501 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0187 </lookat-x-m>
+      <lookat-y-m> -0.0480 </lookat-y-m>
+      <lookat-z-m> 0.0427 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/cplt-flt</property>
+      <scale> 0.001433 </scale>
+    </intensity>
+    <spot-exponent> 0 </spot-exponent>
+    <spot-cutoff> 73.0 </spot-cutoff>
+    <range-m> 0.023 </range-m>
+  </light>
 
   <animation>
     <type>select</type>

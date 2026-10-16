@@ -8,6 +8,7 @@
       <livery>
         <name    type="string">Detlef</name>
         <texture type="string">Liveries/2048x2048/uh60-1.png</texture>
+        <roughness type="float"> 0.60 </roughness>   <!-- HDR: the paint, 0 gloss .. 1 matte -->
         <specular>
           <red   type="float"> 0.03 </red>
           <green type="float"> 0.03 </green>

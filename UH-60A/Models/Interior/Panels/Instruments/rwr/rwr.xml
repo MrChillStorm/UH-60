@@ -20,15 +20,4 @@
     <object-name>glass</object-name>
   </effect>
 
-  <animation>
-    <type>material</type>
-    <object-name>panel</object-name>
-    <emission>
-      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
-      <red>   0.10 </red>
-      <green> 1.00 </green>
-      <blue>  0.45 </blue>
-    </emission>
-  </animation>
-
 </PropertyList>

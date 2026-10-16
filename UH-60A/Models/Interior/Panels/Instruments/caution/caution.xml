@@ -27,12 +27,26 @@
     <object-name>lit-master</object-name>
     <object-name>lit-low-rpm</object-name>
     <emission>
-      <factor-prop>/controls/lighting/ma-wrn-norm</factor-prop>
+      <factor-prop>/instrumentation/uh60/lights/ma-wrn</factor-prop>
       <red> 1 </red>
       <green> 1 </green>
       <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/ma-wrn</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+    </parameters>
+    <object-name>lit-eng-out-1</object-name>
+    <object-name>lit-eng-out-2</object-name>
+    <object-name>lit-fire</object-name>
+    <object-name>lit-master</object-name>
+    <object-name>lit-low-rpm</object-name>
+  </effect>
 
   <!-- #1 ENG OUT: gas generator speed Ng below 55 % -->
   <animation>

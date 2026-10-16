@@ -181,7 +181,8 @@ def hsi():
         H = U + 'hsi[%d]/' % n
         bugp = '/autopilot/settings/heading-bug-deg' if n == 0 else H + 'heading-bug-deg'
         x = I.common_xml(names, lit=['card', 'lubber', 'hdg-bug', 'brg1', 'brg2', 'course', 'to', 'from', 'dev-bar'],
-                         glass=['glass'], extra='', light=('plt-flt', 'cplt-flt')[n])
+                         glass=['glass'], extra='', light=('plt-flt', 'cplt-flt')[n],
+                         bezel=((0.0062, 0.0, 0.0), (0.0465, 0.0465), True, 0.017))   # the card; the windows below
         x = x.replace('%s', 'hsi60.ac', 1).replace('<PropertyList>', '<!-- %s horizontal situation indicator, TM 1-1520-237-10 '
                       'figure 3-31 (%s); data from Nasal/avionics.nas -->\n<PropertyList>' % (('pilot\'s', 'copilot\'s')[n], MARK), 1)
         a = ''
@@ -198,12 +199,19 @@ def hsi():
         a += text_node('course-digits', H + 'course-deg', '%03.0f', 0.0075, 0.053, bz + 0.033, 0.0187)
         a += text_node('km-digits', H + 'km', '%04.0f', 0.0075, -0.048, bz + 0.035, 0.0184, 0.026)
         a += I.light_xml(['course-digits', 'km-digits'], ('plt-flt', 'cplt-flt')[n])
+        a += I.window_lamp_xml(('plt-flt', 'cplt-flt')[n], (0.0187, 0.053, bz + 0.033), (0.011, 0.0044), 'course-lamp')
+        a += I.window_lamp_xml(('plt-flt', 'cplt-flt')[n], (0.0187, -0.048, bz + 0.035), (0.013, 0.0044), 'km-lamp')
         a += select(['course-digits', 'km-digits'], '<property>controls/electric/battery-switch</property>')
         x = x.replace('\n</PropertyList>', a + '\n</PropertyList>')
         open(os.path.join(HSI_DIR, fname), 'w').write(x)
 
 
 # ---------------------------------------------------------------- VSI
+
+# the old attitude indicator's glass (vitre), 1 mm in front of the CIS pointers, moved forward in its case for the
+# bezel lamps (instruments.bezel_lamps) to sit behind it
+VSI_GLASS = 0.0144
+
 
 def vsi():
     """Additions to the old attitude indicator (its frame: origin at the sphere's centre, glass at 6.4 mm)."""
@@ -218,7 +226,7 @@ def vsi():
     for k, (key, word, rgb, y) in enumerate(lights):
         for j, col in enumerate(((105, 105, 105), rgb)):
             x0, y0 = 200 + 100 * j, 10 + 60 * k
-            t.d.rectangle([x0, y0, x0 + 90, y0 + 46], fill=(14, 14, 14))
+            t.d.rectangle([x0, y0, x0 + 90, y0 + 46], fill=(14, 14, 14) if j == 0 else (0, 0, 0))   # lit: it all emits
             t.d.text((x0 + 45, y0 + 23), word, font=I.font(30), fill=col, anchor='mm')
             (dark_uv if j == 0 else lit_uv).append(t.area(x0, y0, x0 + 90, y0 + 46, y - 0.005, y + 0.005, 0.0650, 0.0700))
     white = t.swatch(WHITE)
@@ -251,7 +259,8 @@ def vsi():
     for n in (0, 1):
         V = U + 'vsi[%d]/' % n
         x = I.common_xml(names, lit=['gs-scale-r', 'gs-ptr', 'dev-scale', 'dev-ptr', 'turn', 'turn-marks'],
-                         light=('plt-flt', 'cplt-flt')[n])
+                         light=('plt-flt', 'cplt-flt')[n], bezel=((0.0, 0.0, 0.0), (0.060, 0.060), True, VSI_GLASS, 0.003))
+                                                         # the ball and the CIS scales round it; the case is 4 mm wider
         x = x.replace('%s', 'cis.ac', 1).replace('<PropertyList>', '<!-- %s VSI: what the old attitude indicator lacked '
                       '(TM 1-1520-237-10 figure 3-30); %s -->\n<PropertyList>' % (('pilot\'s', 'copilot\'s')[n], MARK), 1)
         a = translate(['gs-ptr'], V + 'gs-norm', 0.020, (0, 0, 1)) + translate(['dev-ptr'], V + 'dev-norm', 0.016, (0, 1, 0))
@@ -260,7 +269,8 @@ def vsi():
             a += select([f + '-flag'], '<property>%s%s-flag</property>' % (V, f))
         for key, word, rgb, y in lights:
             a += select([key + '-on'], '<property>%s%s</property>' % (V, key))
-            a += emissive([key + '-on'])
+            a += emissive([key + '-on'], factor=I.LIGHTS + 'caut-advsy')      # cockpit indicator lights (TM 2.81.2)
+            a += I.lit_xml([key + '-on'], I.HDR + 'caut-advsy')
         x = x.replace('\n</PropertyList>', a + '\n</PropertyList>')
         open(os.path.join(AI_DIR, ('cis.xml', 'cis-copilot.xml')[n]), 'w').write(x)
     # the attitude indicator itself: the CIS's command bars and collective pointer, and the additions
@@ -287,6 +297,10 @@ def vsi():
         a += select(['nav-yaw-steering-bar'], '<property>%spitch-vis</property>' % C)
         a += translate(['ils-flag'], C + 'coll-cmd', 0.020, (0, 0, 1))
         a += select(['ils-flag'], '<property>%scoll-vis</property>' % C)
+        a += ('  <animation>\n    <type>translate</type>\n    <object-name>vitre</object-name>\n'
+              '    <property>constants/zero</property>\n    <offset-m> %.4f </offset-m>\n'
+              '    <axis>\n      <x> 1 </x>\n      <y> 0 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n'
+              % (VSI_GLASS - 0.0064))
         a += '  <!-- /CIS -->\n'
         open(os.path.join(AI_DIR, fname), 'w', encoding='latin-1').write(base.replace('\n</PropertyList>', a + '\n</PropertyList>', 1))
 

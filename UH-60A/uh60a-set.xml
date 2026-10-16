@@ -22,6 +22,11 @@
     <aircraft-version>1.1</aircraft-version>
     <status>alpha</status>
     <minimum-fg-version>2018.2.0</minimum-fg-version>
+    <!-- for the launcher of FlightGear 2024.2 and later, whose only renderer is HDR: the model's shading (the pbr
+         animation, Effects/Bump), lights (lights/HDR, the cockpit's lamps) and lit parts (Effects/Lit) work there -->
+    <compatibility>
+      <pbr-model type="bool">true</pbr-model>
+    </compatibility>
 
     <flight-model>jsb</flight-model>
     <aero>uh60a</aero>

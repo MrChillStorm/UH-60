@@ -7,6 +7,7 @@
       <livery>
         <name    type="string">Multinational Force and Observers</name>
         <texture type="string">Liveries/2048x2048/MFO.png</texture>
+        <roughness type="float"> 0.60 </roughness>   <!-- HDR: the paint, 0 gloss .. 1 matte -->
         <specular>
           <red   type="float"> 0.03 </red>
           <green type="float"> 0.03 </green>

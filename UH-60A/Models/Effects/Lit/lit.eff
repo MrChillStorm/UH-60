@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- Self-lit parts of the cockpit (lamps, lit legends, displays, integrally lit panels) in the HDR pipeline, which
+     leaves out the material animation's emission: the object's texture emits lit-color x lit-level x lit-gain
+     (cd/m2). The other pipelines keep model-default and the material animation. The instruments' XML (fdm/cockpit)
+     sets the parameters, lit-level bound to a level in /instrumentation/uh60/lights (Nasal/avionics.nas). -->
+
+<PropertyList>
+
+  <name>lit</name>
+  <inherits-from>Effects/model-default</inherits-from>
+
+  <parameters>
+    <lit-color type="vec3d">1.0 1.0 1.0</lit-color>
+    <lit-level type="float">0.0</lit-level>
+    <lit-gain type="float">1.0</lit-gain>
+  </parameters>
+
+  <technique n="109">
+    <pass>
+      <program>
+        <fragment-shader n="0">Aircraft/UH-60A/Shaders/HDR/lit.frag</fragment-shader>
+      </program>
+      <uniform n="20">
+        <name>lit_color</name>
+        <type>float-vec3</type>
+        <value><use>lit-color</use></value>
+      </uniform>
+      <uniform n="21">
+        <name>lit_level</name>
+        <type>float</type>
+        <value><use>lit-level</use></value>
+      </uniform>
+      <uniform n="22">
+        <name>lit_gain</name>
+        <type>float</type>
+        <value><use>lit-gain</use></value>
+      </uniform>
+    </pass>
+  </technique>
+
+</PropertyList>

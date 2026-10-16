@@ -36,6 +36,222 @@
     </emission>
   </animation>
 
+  <light>
+    <name>bezel-lamp-0</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> 0.0219 </y-m>
+      <z-m> 0.0088 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-1</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> 0.0092 </y-m>
+      <z-m> 0.0217 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-2</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> -0.0090 </y-m>
+      <z-m> 0.0218 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-3</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> -0.0218 </y-m>
+      <z-m> 0.0090 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-4</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> -0.0218 </y-m>
+      <z-m> -0.0090 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-5</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> -0.0090 </y-m>
+      <z-m> -0.0218 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-6</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> 0.0090 </y-m>
+      <z-m> -0.0218 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
+  <light>
+    <name>bezel-lamp-7</name>
+    <type>spot</type>
+    <position>
+      <x-m> 0.0111 </x-m>
+      <y-m> 0.0218 </y-m>
+      <z-m> -0.0090 </z-m>
+    </position>
+    <direction>
+      <lookat-x-m> 0.0080 </lookat-x-m>
+      <lookat-y-m> 0.0000 </lookat-y-m>
+      <lookat-z-m> 0.0000 </lookat-z-m>
+    </direction>
+    <color>
+      <r> 0.10 </r>
+      <g> 1.00 </g>
+      <b> 0.45 </b>
+    </color>
+    <intensity>
+      <property>/instrumentation/uh60/lights/non-flt</property>
+      <scale> 0.001526 </scale>
+    </intensity>
+    <spot-exponent> 3 </spot-exponent>
+    <spot-cutoff> 58.6 </spot-cutoff>
+    <range-m> 0.051 </range-m>
+  </light>
+
   <animation>
     <type>rotate</type>
     <object-name>hour</object-name>
