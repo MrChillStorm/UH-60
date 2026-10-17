@@ -91,11 +91,10 @@ KBLK_TR, VBLK_TR = 0.796, 30.0   # fin blockage factor below 30 kt
 # the centre (the bearingless crossbeam), their flap inertia from the Lock number [HB]: the coning that gives per lb of
 # thrust is GenHel's DA0_DT_TR within 15 %; a weak spring (the crossbeam's stiffness, assumed) holds them at precone
 # at rest. Pitch as GenHel rigs it: cuff + BIAS_TR + TWIST_TR r/R - tan(delta-3) x flap; SC1095 sections
-# The default is GenHel's closed form: flown in FlightGear at full power (a full collective pull, 140 % torque, the rotor
-# drooping to 90 %), the blade-element rotor tops out near 1,900 lb at its pitch stop, its blades stalled, and the
-# aircraft yaws away with full left pedal, where the closed form gives 2,400 lb and holds the heading. Its validation
-# results are in the report; it stays an option until its stall at high thrust is understood.
-TR_MODEL = 'bailey'
+# At full power (a full collective pull, 140 % torque, the rotor drooping to 90 %) the blade-element rotor tops out near
+# 1,900 lb at its pitch stop, its blades stalled, and the aircraft yaws away with full left pedal, where the closed
+# form gives 2,400 lb and holds the heading.
+TR_MODEL = 'blades'
 R_ROOT_TR = 0.2 * R_TR      # ft, inboard end of the aerodynamic blade (assumed)
 NSEG_TR = 6
 I_B_TR = 0.0023769 * A_TR * CHORD_TR * R_TR ** 4 / GAMMA_TR     # slug ft^2, flap inertia about the hinge

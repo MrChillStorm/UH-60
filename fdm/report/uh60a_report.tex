@@ -141,9 +141,10 @@ A Python script writes the model from the transcribed tables (Table~\ref{tab:mod
 demand, so the function graph must be free of cycles; every quantity that depends on its own past, the blade flap and lag
 angles and rates of both rotors, the wake states, the rotor speed, the tail rotor inflow, the blade's elastic twist and the engines' states,
 therefore lives in flight-control-system channels, which JSBSim runs once per frame in a fixed order and which can write
-properties back. These channels integrate the states explicitly at the simulation rate of 480\,Hz, which is
-3.2$^\circ$ of rotor azimuth per step; the wake states use a semi-implicit step. Trims and control responses at this rate
-are within 0.5\,\% of those at 960\,Hz, where 120\,Hz was off by up to 4\,\%, and one step costs about 0.1\,ms. The blade loads of a frame use the states of
+properties back. These channels integrate the states explicitly at the simulation rate of 120\,Hz, the rate FlightGear runs
+the model at: 12.9$^\circ$ of main rotor azimuth per step and 60$^\circ$ of the tail rotor's; the wake states use a semi-implicit
+step. Trims at this rate are within 0.8\,\% of those at 960\,Hz and the peaks of control responses within 1--4\,\%; 480\,Hz
+would be within 0.5\,\% at four times the cost of about 0.12\,ms per step. The blade loads of a frame use the states of
 the previous frame. The same XML runs in FlightGear and in the offline harness used here.
 
 \begin{table}[t]
@@ -271,7 +272,7 @@ wheel; 17 structure contacts taken from the 3-D model's skin carry the aircraft 
 
 % =====================================================================================================================
 \section{Method}\label{sec:method}
-The evaluation drives JSBSim from Python with the same files as FlightGear, at 480\,Hz, with the wake noise off. A trim solves for
+The evaluation drives JSBSim from Python with the same files as FlightGear, at 120\,Hz, with the wake noise off. A trim solves for
 the four controls and the attitudes that zero the six accelerations averaged over two rotor revolutions (Hann-weighted, so that the
 tail rotor's 4.6 revolutions per main rotor revolution leave no phase-dependent remainder), with the airframe held while the rotor and
 wake settle. Away from the nose the trim variables are the pitch and roll attitudes with the velocity fixed in the earth frame, since
@@ -323,9 +324,12 @@ differences are at 162\,kt: the collective \NBcollhi\,\% low, the lateral cyclic
 \NBthetahi$^\circ$ high, and the pedal \NBpedhs\,\% from the test, which moves 7.5\,\% to the right between 139 and 162\,kt. That move is the
 collective-to-pedal mixing: the collective rises by a fifth of its travel, and through the rigging the test's tail rotor pitch goes from
 \NBtrpTlo{} to \NBtrpThi$^\circ$ (+\NBtrpTrise$^\circ$), against \NBtrpYlo{} to \NBtrpYhi$^\circ$ (+\NBtrpYrise$^\circ$) for Bailey's rotor
-(\NBYpedhs\,\% of pedal from the test). The blade-element rotor, asked for some 1600\,lb at an advance ratio of 0.4, reaches the static
-stall of its retreating blades near 17.5$^\circ$: more pitch no longer adds thrust, and the trims stop short of a balance from about 158\,kt.
-Its sections pitch there at a reduced frequency near 0.2, where real sections stall later. Gormont's dynamic stall delay~\cite{gorm},
+(\NBYpedhs\,\% of pedal from the test). The blade-element rotor, asked for some 1600\,lb at an advance ratio of 0.4, works past
+the static stall of its retreating blades, which begins near 17.5$^\circ$: at 120\,Hz it reaches the balance at \NBtrpMhi$^\circ$
+(+\NBtrpMrise$^\circ$ from 139\,kt), with the cyclic and the pedal the furthest from the test of any speed; at 480\,Hz, with 15$^\circ$
+of its azimuth per step instead of 60$^\circ$, more pitch no longer adds thrust and the trims stop short of a balance from about 158\,kt.
+The point is at the edge of what the rotor's step resolves. Its sections pitch there at a reduced frequency near 0.2, where real
+sections stall later. Gormont's dynamic stall delay~\cite{gorm},
 built in as a switch, leaves the trims below the stall unchanged. With its reattachment delay applied once a section has stalled, the limit
 stays where it is; without it the 162\,kt point trims, at 19.3$^\circ$ and 1780\,lb, the main rotor at 2600\,hp against the test's 2510. The crossbeam's flap stiffness, which is
 not published, also moves the limit (with a flap frequency of 1.15 per revolution instead of 1.02 the point trims). Over the scatter of the
@@ -488,7 +492,10 @@ some 0.4\,in of pedal at low speed, which brings it closer to the test in the ho
 and at zero sideslip. In crosswinds Bailey's rotor has the smaller pedal error, the blade-element rotor sitting to the right of the
 high-altitude aircraft, and their tail rotor powers are alike. Bailey's rotor also has the smaller error after pedal steps; both are below GenHel's. The physical differences show at the edges of the
 envelope: the blade-element rotor reaches its thrust limit from about 158\,kt, and in a left crosswind its blades meet the flow reversing through the disc.
-For a pilot the difference is small; for the physics, the blade-element rotor is the one that can tell when it is being asked for too much.
+Flown in FlightGear, a full collective pull from the hover (both engines at 140\,\% torque, the rotor drooping to 90\,\%) took it to its
+pitch stop, stalled at about 1900\,lb, and the aircraft yawed away against full left pedal; the closed form makes 2400\,lb there and
+holds the heading. The engines' 140\,\% is itself more than a T700 gives (Section~\ref{sec:assess}). For a pilot the difference is
+small short of that; for the physics, the blade-element rotor is the one that can tell when it is being asked for too much.
 
 \subsection{Stability derivatives}\label{sec:derivs}
 \begin{table}[t]
@@ -547,6 +554,7 @@ the fin anti-damping in yaw ($+$0.06\,s$^{-1}$ in the hover, against $+$0.02 uns
 \toprule
 Trim controls and attitudes, 50--139\,kt & \ok \\
 Trim at 162\,kt (collective, lateral cyclic, pedal) & \pok \\
+Heading at full power (blade-element tail rotor) & \nok \\
 Lateral-directional trim at zero sideslip & \ok \\
 Bank change between climb and descent & \pok \\
 Hover power, OGE and in ground effect & \ok \\
@@ -570,7 +578,8 @@ pitch at speed the model is too stable. A third of TM-85890's $M_w$, too small a
 point to the same missing destabilising moment, and Section~\ref{sec:derivs} locates it in the balance of rotor, fuselage and stabilator rather than in
 any single term. The other open items are the cruise power against one of the two tests, the tail rotor's power (low in the hover
 against one test, high in cruise against another), the hover yaw damping, the anti-torque at the top speed, and the lateral moment per inch
-of cyclic. Retreating-blade stall limits the
+of cyclic. At full collective the engines give up to 140\,\% torque each as the rotor droops, more than a T700 can, and the
+blade-element tail rotor then stalls. Retreating-blade stall limits the
 model at high thrust and speed ($C_T=0.009$ above $\mu=0.28$); blade torsion is not modelled, and dynamic stall only as a tail rotor experiment.
 
 % =====================================================================================================================

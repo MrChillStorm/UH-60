@@ -7,7 +7,7 @@ FG_PROPS = ['/controls/engines/engine[0]/throttle']
 TERRAIN_FT = -10000.0      # trims: terrain elevation (far below = out of ground effect)
 
 
-def load(root=None, dt=1 / 480.0, model='uh60a', fps=False):        # the rate FlightGear runs (uh60a-set.xml)
+def load(root=None, dt=1 / 120.0, model='uh60a', fps=False):        # the rate FlightGear runs (uh60a-set.xml)
     root = root or os.environ.get('UH60_ROOT') or os.path.join(HERE, 'root')      # UH60_ROOT: a variant (report/mkresults.py --tr)
     f = jsbsim.FGFDMExec(root)
     f.set_debug_level(0)

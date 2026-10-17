@@ -4,9 +4,10 @@
 
   <sim>
 
-    <!-- the flight model's rate: the rotor's blades are integrated once per step, 3.2 deg of azimuth at 480 Hz
-         (fdm/report: the results converge to within 0.5 % of a finer step; 120 Hz was off by up to 4 %) -->
-    <model-hz type="int">480</model-hz>
+    <!-- the flight model's rate: the rotors' blades are integrated once per step, 12.9 deg of the main rotor's azimuth
+         and 60 deg of the tail rotor's at 120 Hz. 480 Hz converges to within 0.5 % of a finer step, 120 Hz to within
+         0.8 % in trim and 1-4 % in the peaks of control responses (fdm/report), at a quarter of the cost -->
+    <model-hz type="int">120</model-hz>
 
     <description>Sikorsky UH-60A Black Hawk</description>
     <long-description>The US Army's twin-turbine utility helicopter. The JSBSim flight model simulates the four main rotor blades individually, with flapping, lead-lag and a dynamic wake, after Sikorsky's GenHel engineering simulation (NASA CR-166309), and is checked against US Army flight tests: trim, hover and cruise power, ground effect and control responses. It includes the T700 engines and their fuel controls, the rotor speed, the stabilator, SAS, pitch bias actuator and flight path stabilization (aircraft menu: Flight controls). The aircraft starts cold and dark; the aircraft menu has an autostart.</long-description>
