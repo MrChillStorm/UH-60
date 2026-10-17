@@ -207,7 +207,7 @@ def common_xml(objs, lit=(), glass=(), extra='', light='non-flt', bezel=None, in
     out = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<!-- written by fdm/cockpit/instruments.py -->\n\n'
     out += '<PropertyList>\n\n  <path>%%s</path>\n\n  <animation>\n    <type>noshadow</type>\n%s  </animation>\n' % objects_xml(objs)
     for g in glass:
-        out += ('\n  <effect>\n    <inherits-from>../../../../Effects/Glass/glass</inherits-from>\n'
+        out += ('\n  <effect>\n    <inherits-from>../../../../Effects/Glass/instrument-glass</inherits-from>\n'
                 '    <object-name>%s</object-name>\n  </effect>\n' % g)
     if lit:
         out += integral_xml(lit, light) if integral else light_xml(lit, light)

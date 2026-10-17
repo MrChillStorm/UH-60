@@ -374,6 +374,11 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
     caution panel, display units and lit legends emit through
     `Models/Effects/Lit/lit.eff` and `Shaders/HDR/lit.frag`, and the
     glareshield lights and cockpit floods are in `Panels/panel.xml`;
+  - the instruments' glass is clear, reflecting by Fresnel's equations, and
+    mirrors the sun where it reaches the glass
+    (`Models/Effects/Glass/instrument-glass.eff` and
+    `Shaders/HDR/instrument_glass.frag`), instead of the original's lit
+    white film;
   - the set file marks the aircraft compatible for the launcher.
 - **Set file.** Description, a description for the launcher, credits and the
   flight model rating.

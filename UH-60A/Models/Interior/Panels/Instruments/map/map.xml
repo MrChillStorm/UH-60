@@ -78,7 +78,7 @@
 
   <!-- working for Compositor -->
   <effect>
-    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <inherits-from>../../../../Effects/Glass/instrument-glass</inherits-from>
     <object-name>vitre</object-name>
   </effect>
 

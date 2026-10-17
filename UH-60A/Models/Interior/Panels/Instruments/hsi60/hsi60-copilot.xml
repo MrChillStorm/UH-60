@@ -28,7 +28,7 @@
   </animation>
 
   <effect>
-    <inherits-from>../../../../Effects/Glass/glass</inherits-from>
+    <inherits-from>../../../../Effects/Glass/instrument-glass</inherits-from>
     <object-name>glass</object-name>
   </effect>
 
