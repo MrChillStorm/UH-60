@@ -245,9 +245,24 @@ var displays = func {
 # ---------------------------------------------------------------- radar altimeters AN/APN-209 (3.29)
 # Each pilot's own: LO SET turns it on (counterclockwise past 0: OFF) and sets the L bug and his LO light, HI SET the H
 # bug and HI light; pushed, it tests (1000 ft, HI on, LO off, no flag). About 2 minutes of warm-up after power comes on;
-# above 1500 ft and when off or not tracking the pointer is out of sight behind the mask.
+# above 1500 ft and when off or not tracking the pointer is out of sight behind the mask. It is a servo: it parks behind
+# the mask (2000 "ft" on the instrument's table, 135 deg) and sweeps from there down the scale when the set starts to
+# track, at about 240 deg/s.
 
 var ra = {on_t: [999, 999], was: [1, 1]};
+var RA_PARK = 2000;
+var ra_ang = func(ft) {              # the dial's angle of a pointer value (Models/.../apn209.xml, fdm/cockpit/gauges.py)
+    if (ft <= 0) return -180;
+    if (ft <= 200) return -180 + 0.9 * ft;
+    if (ft <= 1500) return (ft - 200) * 90 / 1300;
+    return 90 + (math.min(ft, RA_PARK) - 1500) * 45 / (RA_PARK - 1500);
+};
+var ra_ft = func(a) {
+    if (a <= -180) return 0;
+    if (a <= 0) return (a + 180) / 0.9;
+    if (a <= 90) return 200 + a * 1300 / 90;
+    return 1500 + (math.min(a, 135) - 90) * (RA_PARK - 1500) / 45;
+};
 var lo_bug = func {
     var lo = -1;
     foreach (var n; [0, 1]) {
@@ -276,7 +291,9 @@ var step_radalt = func {
         var test = on and b(R ~ "test");
         var ft = test ? 1000 : h;
         var vis = on and (test or (warm and h <= 1500));
-        setprop(R ~ "pointer-ft", ft); setprop(R ~ "pointer-vis", vis);
+        var a0 = ra_ang(val(R ~ "pointer-ft", RA_PARK));
+        var a1 = ra_ang(vis ? ft : RA_PARK);
+        setprop(R ~ "pointer-ft", ra_ft(a0 + clamp(a1 - a0, -240 * DT, 240 * DT)));
         setprop(R ~ "digits", math.round(ft)); setprop(R ~ "digits-vis", vis);
         setprop(R ~ "off-flag", !(test or (on and warm)));
         setprop(R ~ "lo-light", on and !test and warm and h <= lo);
@@ -409,6 +426,7 @@ var init = func {
     foreach (var n; [0, 1]) {         # radar altimeters on, L bug 80 ft, H bug 800 ft (TM 3.29.3)
         if (getprop(U ~ "radalt[" ~ n ~ "]/lo-ft") == nil) setprop(U ~ "radalt[" ~ n ~ "]/lo-ft", 80);
         if (getprop(U ~ "radalt[" ~ n ~ "]/hi-ft") == nil) setprop(U ~ "radalt[" ~ n ~ "]/hi-ft", 800);
+        if (getprop(U ~ "radalt[" ~ n ~ "]/pointer-ft") == nil) setprop(U ~ "radalt[" ~ n ~ "]/pointer-ft", RA_PARK);
     }
     foreach (var k; ["ma-wrn-norm", "caut-advsy-norm", "radalt-norm"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, 1);

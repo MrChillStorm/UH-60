@@ -65,8 +65,9 @@ Then add the cloned `UH-60` folder in the FlightGear launcher under Add-ons →
 Additional aircraft folders (or start FlightGear with `--fg-aircraft=`
 pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
 
-- Tested with FlightGear 2024.1 and with the 2024.2 nightly, whose only
-  renderer is HDR (`--compositor=Compositor/HDR/hdr` in 2024.1).
+- Needs FlightGear 2024.2 or later, the nightly builds for now. The
+  aircraft is a testbed for them: its cockpit and lights are built for the
+  HDR renderer, and earlier versions miss instruments on the panel.
 - The aircraft is in the `UH-60A` folder with the id `uh60a`, so it sits next
   to the UH-60 from the hangar without replacing it.
 - In multiplayer, other pilots need this aircraft installed to see yours as a
@@ -109,10 +110,10 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
 - **Radar altimeters** (AN/APN-209, one per pilot). The LO SET knob turns
   the set on (fully back past 0 is OFF) and sets the L bug; the HI SET knob
   sets the H bug, and holding it in (middle click) tests the set: 1000 ft,
-  HI light on, no flag. The OFF flag stays in view for about two minutes of
-  warm-up after power comes on, and above 1500 ft the pointer hides behind
-  the dial's mask. The LO and HI lights come on below the L bug and above
-  the H bug.
+  HI light on, no flag. Without power, through about two minutes of
+  warm-up (OFF flag in view) and above 1500 ft the pointer waits behind the
+  dial's mask; when the set starts to track it sweeps out and down the
+  scale. The LO and HI lights come on below the L bug and above the H bug.
 - **Panel switches.** Blade deice POWER, MODE and test selector run the
   manual's test cycle and its failure tests on the caution panel; the ice
   rate meter's PRESS TO TEST, the IRCM's cooldown, the NVG panel's warning

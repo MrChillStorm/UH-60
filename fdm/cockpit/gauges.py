@@ -280,6 +280,9 @@ def alt():
 
 # ---------------------------------------------------------------- radar altimeter AN/APN-209
 
+RA_PARK_FT = 2000          # the pointer's parked position behind the dial mask (135 deg), as Nasal/avionics.nas uses it
+
+
 def ra_angle(ft):
     """Pointer angle, clockwise from 12 o'clock: 0 ft at the bottom, 200 ft at the top, 1500 ft at 3 o'clock."""
     ft = max(0.0, min(1500.0, ft))
@@ -341,9 +344,13 @@ def apn209():
     g.knob('hi-knob', 0.0330, -0.0280, 0.013)
     g.glass()
     RA = '/instrumentation/uh60/radalt[0]/'
-    table = [(-50, -180)] + [(ft, ra_angle(ft)) for ft in (0, 200, 1500)]
+    # off, warming up, not tracking or above 1500 ft the pointer is parked behind the dial mask (TM 3.29: "pointer moving
+    # behind the dial mask"); Nasal/avionics.nas drives it there and back like the servo it is
+    table = [(-50, -180)] + [(ft, ra_angle(ft)) for ft in (0, 200, 1500)] + [(RA_PARK_FT, 135)]
     g.xml += rot('pointer', RA + 'pointer-ft', table)
-    g.xml += I.select_xml(['pointer'], '<property>%spointer-vis</property>' % RA)
+    # (the mask covers the needle's outer part only: the needle shows once it has swung out past the mask's edge, 98 deg)
+    g.xml += I.select_xml(['pointer'], '<less-than><property>%spointer-ft</property><value>%.0f</value></less-than>'
+                          % (RA, 1500 + (98 - 90) * (RA_PARK_FT - 1500) / 45))
     g.xml += rot('lo-bug', RA + 'lo-ft', [(-50, -180)] + [(ft, ra_angle(ft)) for ft in (0, 200, 1500)])
     g.xml += rot('hi-bug', RA + 'hi-ft', [(0, -180)] + [(ft, ra_angle(ft)) for ft in (200, 1500)])
     g.xml += I.select_xml(['off-flag'], '<property>%soff-flag</property>' % RA)
