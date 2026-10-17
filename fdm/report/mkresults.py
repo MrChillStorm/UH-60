@@ -1,11 +1,17 @@
 """Run the validation programme for the report and cache the results in report/results/<stage>.json.
 
   python3 report/mkresults.py [stage ...]      (default: all stages; a stage's cache is rewritten when run)
+  python3 report/mkresults.py --var=<variant> [stage ...]   the tail rotor stages (TR_STAGES) with a model variant
+                                                (VARIANTS: bailey = GenHel's Bailey tail rotor; gwash = GenHel's wash
+                                                factors at the tail; --tr=bailey also works), built in a root of its
+                                                own (root-<variant>), cached as results/<stage>-<variant>.json
 
 Stages: b1 (level-flight trims, Ballin fig. B1), latdir (lateral-directional trims, USAAEFA), dyn (Ballin app. D
 control responses), hover (OGE hover power), level (level-flight power), fm (rotor figure of merit and a blade
 element momentum reference), ge (ground effect, hover flown by the test autopilot), derivs (stability derivatives
-at Hilbert's loading), split (power budget in the hover and in cruise)."""
+at Hilbert's loading), split (power budget in the hover and in cruise), xwind (low speed in every wind direction,
+USAAEFA 77-17), trpower and trpower5 (tail rotor power in level flight, the Airloads flights, wings level and at 5 deg
+of nose-left sideslip), yawdamp (hover yaw derivatives by component)."""
 import sys, os, math, json, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 FDM = os.path.dirname(HERE)
@@ -72,7 +78,7 @@ def latdir_stage(_=None):
 def dyn(_=None):
     with Pool(4) as p:
         runs = p.map(DY.simulate, [(fid, False) for fid in DY.D])
-    return {fid: dict(resid=res, **{k: [float(x) for x in v] for k, v in m.items()}) for fid, _, m, res in runs}
+    return {fid: dict(resid=res, trim=m.pop('trim'), **{k: [float(x) for x in v] for k, v in m.items()}) for fid, _, m, res in runs}
 
 
 # ---------------------------------------------------------------- hover and level-flight power [USAAEFA 77-17, 83-24]
@@ -315,12 +321,69 @@ def split(_=None):
         return p.map(_split, [('hover', 17000, 0), ('cruise', 70, 0.22), ('cruise', 70, 0.30)])
 
 
-STAGES = dict(b1=b1, latdir=latdir_stage, dyn=dyn, hover=hover, level=level, fm=fm, ge=ge, derivs=derivs, split=split)
+# ---------------------------------------------------------------- low speed in every wind direction [USAAEFA 77-17 figs 106-110]
+def xwind(_=None):
+    import lowspeed
+    return lowspeed.sweep([None])[None]
+
+
+# ---------------------------------------------------------------- tail rotor power in level flight [Airloads flights 84-90]
+def trpower(_=None):
+    import trpower as TP
+    from data import yeo_trpower as Y
+    with Pool(len(Y.TR_POWER)) as p:
+        res = p.map(TP.run, [(None, cw) for cw in Y.TR_POWER])
+    return [dict(cw=cw, da=da, rows=o) for r, cw, da, o in res]
+
+
+def trpower5(_=None):
+    """the same at 5 deg of nose-left sideslip (the flights were flown wings level, the sideslip not published; the
+    aircraft carried the ESSS fairings, with 2-3 deg more nose-left inherent sideslip than the basic aircraft)"""
+    import trpower as TP
+    from data import yeo_trpower as Y
+    with Pool(len(Y.TR_POWER)) as p:
+        res = p.map(TP.run, [(None, cw, -5.0) for cw in Y.TR_POWER])
+    return [dict(cw=cw, da=da, rows=o) for r, cw, da, o in res]
+
+
+# ---------------------------------------------------------------- hover yaw derivatives by component [fdm/yawdamp.py]
+def yawdamp(_=None):
+    import yawdamp as YD
+    return YD.stage(None)
+
+
+STAGES = dict(b1=b1, latdir=latdir_stage, dyn=dyn, hover=hover, level=level, fm=fm, ge=ge, derivs=derivs, split=split,
+              xwind=xwind, trpower=trpower, trpower5=trpower5, yawdamp=yawdamp)
+TR_STAGES = ('b1', 'latdir', 'dyn', 'hover', 'xwind', 'trpower', 'yawdamp')   # what the tail rotor model changes most: pedal, yaw, its power
+
+
+# model variants: name -> uh60data settings (built into fdm/root-<name>, results cached as <stage>-<name>.json)
+VARIANTS = {'bailey': dict(TR_MODEL='bailey'),
+            'gwash': dict(TR_WASH='genhel', FIN_WASH='genhel', STAB_WASH='genhel', TR_BLOCKAGE='genhel'),
+            'gwash-bailey': dict(TR_MODEL='bailey', TR_WASH='genhel', FIN_WASH='genhel', STAB_WASH='genhel', TR_BLOCKAGE='genhel')}
+
+
+def variant_root(name):
+    """fdm/root-<name>: fdm/root with the FDM built with the variant's settings (the case models' Systems links kept)"""
+    import shutil, genuh60 as G
+    root = os.path.join(FDM, 'root-' + name)
+    if not os.path.isdir(root):
+        shutil.copytree(os.path.join(FDM, 'root'), root, symlinks=True)
+    for k, val in VARIANTS[name].items():
+        setattr(U, k, val)
+    G.build(os.path.join(root, 'aircraft', 'uh60a'))
+    return root
+
 
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    for name in [a for a in sys.argv[1:] if a in STAGES] or list(STAGES):
+    var = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('--tr=') or a.startswith('--var=')), None)
+    suffix = ''
+    if var:
+        os.environ['UH60_ROOT'] = variant_root(var); suffix = '-' + var
+    names = [a for a in sys.argv[1:] if a in STAGES] or (list(TR_STAGES) if var else list(STAGES))
+    for name in names:
         t0 = time.time()
         res = STAGES[name]()
-        json.dump(res, open(os.path.join(OUT, name + '.json'), 'w'), indent=1, default=float)
-        print('%-7s %5.0f s' % (name, time.time() - t0), flush=True)
+        json.dump(res, open(os.path.join(OUT, name + suffix + '.json'), 'w'), indent=1, default=float)
+        print('%-7s %5.0f s' % (name + suffix, time.time() - t0), flush=True)

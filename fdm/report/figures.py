@@ -32,6 +32,14 @@ def save(fig, name):
     fig.savefig(os.path.join(OUT, name + '.pdf')); plt.close(fig)
 
 
+C_BAI = '#4d9221'           # the Bailey tail rotor variant
+
+
+def res_opt(name):
+    f = os.path.join(RES, name + '.json')
+    return json.load(open(f)) if os.path.exists(f) else None
+
+
 # ----------------------------------------------------------------------------------------------- geometry
 SKIP = ('wings', 'grue', 'trougrue', 'barriere', 'probe', 'lampes', 'supportlampes', 'lampeverte', 'antennes', 'crochet', 'poignees')
 
@@ -153,8 +161,11 @@ def fig_trim():
     panels = (('lon', 'longitudinal cyclic (% fwd)'), ('lat', 'lateral cyclic (% right)'), ('coll', 'collective (%)'), ('ped', 'pedal (% right)'),
               ('theta', 'pitch attitude (deg)'), ('phi', 'roll attitude (deg)'), ('hp', 'main rotor power (hp)'), ('stab', 'stabilator (deg TED)'))
     fig, axs = plt.subplots(2, 4, figsize=(W2, 3.9), sharex=True)
+    Rb = res_opt('b1-bailey')
     for a, (k, lab) in zip(axs.flat, panels):
         a.plot(V, [m[k] for m in M], '-', color=C_MOD, label='model')
+        if Rb and k == 'ped':
+            a.plot([m['V'] for m in Rb['model']], [m[k] for m in Rb['model']], '--', color=C_BAI, lw=1.0, label='model, Bailey tail rotor')
         tv = [t['V'] for t in T]; ty = [t[k] for t in T]
         low = [i for i, t in enumerate(T) if t['V'] < 35]
         a.plot([tv[i] for i in range(len(T)) if i not in low], [ty[i] for i in range(len(T)) if i not in low], 'o', mfc='white', mec=C_TEST, ms=4, label='USAAEFA test')
@@ -164,6 +175,10 @@ def fig_trim():
     for a in axs[1]:
         a.set_xlabel('true airspeed (kt)')
     axs[0, 0].legend(frameon=False, fontsize=6.3, loc='lower left')
+    if Rb:
+        h, l = axs[0, 3].get_legend_handles_labels()
+        axs[0, 3].legend([x for x, y in zip(h, l) if y.startswith('model')], [y for y in l if y.startswith('model')],
+                         frameon=False, fontsize=6.0, loc='lower right')
     fig.tight_layout(pad=0.3, w_pad=0.6, h_pad=0.6)
     save(fig, 'trim')
 
@@ -186,7 +201,10 @@ def fig_power():
     ins = (x >= 0.0102) & (x <= 0.0172)
     b.plot(x[ins] * 1e4, [PERF.tail_rotor_hover(c) * 1e5 for c in x[ins]], '-', color=C_TEST, lw=1.0, label='test [77-17 fig. 10]')
     b.plot(x[~ins] * 1e4, [PERF.tail_rotor_hover(c) * 1e5 for c in x[~ins]], ':', color=C_TEST, lw=1.0, label='test line extrapolated')
-    b.plot([h['ct_tr'] * 1e4 for h in Hv], [h['cp_tr'] * 1e5 for h in Hv], 'o-', color=C_MOD, ms=3.5, label='model')
+    b.plot([h['ct_tr'] * 1e4 for h in Hv], [h['cp_tr'] * 1e5 for h in Hv], 'o-', color=C_MOD, ms=3.5, label='model, blade-element tail rotor')
+    Hb = res_opt('hover-bailey')
+    if Hb:
+        b.plot([h['ct_tr'] * 1e4 for h in Hb], [h['cp_tr'] * 1e5 for h in Hb], 's--', color=C_BAI, ms=3, lw=0.9, label='model, Bailey tail rotor')
     b.set_xlabel('tail rotor $C_T\\times10^4$ (net anti-torque thrust)'); b.set_ylabel('tail rotor $C_P\\times10^5$')
     b.set_title('(b) tail rotor shaft power, OGE hover', loc='left', fontsize=8.5); b.legend(frameon=False, fontsize=6.5, loc='upper left')
     # (c) level flight
@@ -237,7 +255,7 @@ RESP = (('201', 'hover, 1 in right lateral cyclic'), ('204', 'hover, 0.5 in forw
 
 def fig_response():
     import dynamics as DY
-    Dn = res('dyn')
+    Dn = res('dyn'); Db = res_opt('dyn-bailey')
     fig, axs = plt.subplots(2, 3, figsize=(W2, 3.9), sharex=True)
     names = {'p': 'roll rate', 'q': 'pitch rate', 'r': 'yaw rate'}
     for a, (fid, title) in zip(axs.flat, RESP):
@@ -248,6 +266,9 @@ def fig_response():
             if y is not None:
                 a.plot(t, DY.rel(y, t, t0), st, color=col, lw=1.0, label=lab)
         a.plot(t, DY.rel(np.array(Dn[fid][v]), t, t0), '-', color=C_MOD, lw=1.3, label='model')
+        if Db and v == 'r':
+            a.plot(t, DY.rel(np.array(Db[fid][v]), t, t0), '-', color=C_BAI, lw=1.0, label='model, Bailey tail rotor')
+            a.legend(frameon=False, fontsize=6.0, loc='lower right')
         a.axvline(t0, color=C_REF, lw=0.6)
         a.set_title('%s (file %s)' % (title, fid), fontsize=7.3)
         a.set_ylabel('%s (deg/s)' % names[v], fontsize=7.5)
@@ -258,9 +279,83 @@ def fig_response():
     save(fig, 'response')
 
 
+# ----------------------------------------------------------------------------------------------- low speed, all wind azimuths
+def fig_xwind():
+    from data import usaaefa_lowspeed as L
+    M, Mb = res('xwind'), res_opt('xwind-bailey')
+    speeds = (10, 20, 35)
+    rows = (('ped', '716', 'pedal (in. from full left)', L.PED), ('ped', '717', 'pedal (in. from full left)', L.PED),
+            ('lon', '716', 'long. cyclic (in. from full fwd)', L.LON), ('tr_hp', '716', 'tail rotor shaft hp', None))
+    fig, axs = plt.subplots(len(rows), len(speeds), figsize=(W2, 6.6), sharex=True)
+    for j, V in enumerate(speeds):
+        for i, (k, ac, lab, data) in enumerate(rows):
+            a = axs[i, j]
+            test = data[(ac, V)] if data else L.TR_HP[V]
+            a.plot([z for z, t in zip(L.AZ, test) if t is not None], [t for t in test if t is not None], 'o', mfc='white', mec=C_TEST, ms=3.5,
+                   label='test [77-17]')
+            for R, col, name in ((M, C_MOD, 'blade-element tail rotor'), (Mb, C_BAI, 'Bailey tail rotor')):
+                if not R:
+                    continue
+                pts = [r for r in R['%s_%d' % (ac, V)] if k in r and r['resid'] < 0.05]
+                a.plot([r['az'] for r in pts], [r[k] for r in pts], '-', color=col, lw=1.0, label=name)
+            if i == 0:
+                a.set_title('%d kt' % V, fontsize=8.5)
+            if j == 0:
+                a.set_ylabel('%s\n%s' % (lab, '9,860 ft' if ac == '716' else '2,080 ft'), fontsize=7)
+            a.set_xticks(range(0, 361, 90)); a.set_xlim(0, 360)
+    for a in axs[-1]:
+        a.set_xlabel('relative wind azimuth (deg)')
+    axs[0, 0].legend(frameon=False, fontsize=6.0, loc='upper left')
+    fig.tight_layout(pad=0.3, w_pad=0.5, h_pad=0.5)
+    save(fig, 'xwind')
+
+
+# ----------------------------------------------------------------------------------------------- main rotor wake at the tail
+def fig_wake():
+    import mrwake
+    from data import genhel_empennage as E
+    fig, axs = plt.subplots(1, 2, figsize=(W1 * 2, 2.1), sharey=True)
+    ia = mrwake.A1.index(0.0)
+    for a, target, title in zip(axs, ('tr', 'stab'), ('(a) tail rotor disc', '(b) stabilator')):
+        d = mrwake.load(target)
+        chi = d['chi']
+        for psi, ls, lab in ((0, '-', 'flight forward (wake aft)'), (90, '--', 'sideward (wake to the side)'), (180, ':', 'rearward (wake forward)')):
+            ip = d['psi'].index(psi)
+            a.plot(chi, [d['k'][ia][ic][ip][2] for ic in range(len(chi))], ls, color=C_MOD, lw=1.0, label='ring wake, ' + lab)
+        a.plot(E.WASH_CHI, E.EKZ[E.WASH_A1.index(0)], 'o-', color=C_GH, ms=2.8, lw=0.8, label='GenHel factor (any direction)')
+        a.axhline(0, color=C_REF, lw=0.5)
+        a.set_xlabel('wake skew $\\chi$ (deg)'); a.set_title(title, loc='left', fontsize=8.5); a.set_xlim(0, 90)
+    axs[0].set_ylabel('downwash / mean inflow')
+    axs[0].legend(frameon=False, fontsize=5.8, loc='upper left')
+    fig.tight_layout(pad=0.3, w_pad=0.5)
+    save(fig, 'wake')
+
+
+# ----------------------------------------------------------------------------------------------- tail rotor power, level flight
+def fig_trpower():
+    from data import yeo_trpower as Y
+    M, Mb = res('trpower'), res_opt('trpower-bailey')
+    cws = (0.0065, 0.0074, 0.0083, 0.0091)
+    fig, axs = plt.subplots(1, 4, figsize=(W2, 2.3), sharey=True)
+    for a, cw in zip(axs, cws):
+        t = Y.TR_POWER[cw]
+        a.plot([m for m, c in t], [c * 1e3 for m, c in t], 'o', mfc='white', mec=C_TEST, ms=3.2, label='test [Airloads, JAHS 2004 fig. 4]')
+        for R, col, name in ((M, C_MOD, 'blade-element'), (Mb, C_BAI, 'Bailey')):
+            if not R:
+                continue
+            e = [x for x in R if abs(x['cw'] - cw) < 1e-6][0]
+            pts = [r for r in e['rows'] if r['resid'] < 0.05]
+            a.plot([r['mu'] for r in pts], [r['cp_tr'] * 1e3 for r in pts], '-', color=col, lw=1.0, label=name)
+        a.set_title('$C_W$ = %.4f' % cw, fontsize=8); a.set_xlabel('advance ratio $\\mu$'); a.set_xlim(0, 0.4); a.set_ylim(0, 4.5)
+    axs[0].set_ylabel('tail rotor $C_P\\times10^3$')
+    axs[0].legend(frameon=False, fontsize=5.8, loc='upper right')
+    fig.tight_layout(pad=0.3, w_pad=0.4)
+    save(fig, 'trpower')
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    which = sys.argv[1:] or ['geometry', 'trim', 'power', 'ge', 'response']
+    which = sys.argv[1:] or ['geometry', 'trim', 'power', 'ge', 'response', 'wake', 'xwind', 'trpower']
     for w in which:
         globals()['fig_' + w]()
         print('fig', w)

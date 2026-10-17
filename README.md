@@ -25,14 +25,25 @@ How it was built, and the comparisons test by test, are in the report:
   wake (Peters–He), with ground effect from the hover chart and its fade
   in forward flight. Retreating blade stall, vortex ring state and
   translational lift come out of this, not out of special cases.
-- **Tail rotor** after GenHel, canted 20° so that it also lifts, with the
-  main rotor's wake and the fin's blockage.
-- **Fuselage, stabilator and fin** from GenHel's wind tunnel tables, in the
-  main rotor's wake.
+- **Tail rotor** built like the main rotor: four blades flapping on the
+  bearingless crossbeam, six SC1095 segments each, and an inflow that
+  reverses with the thrust and carries on into the vortex ring state, where
+  a left crosswind blows the tail rotor's wake back through it. Its blades
+  can stall. It is canted 20° so that it also lifts. GenHel's closed-form
+  tail rotor can be built instead, for comparison.
+- **Where the main rotor's wake goes:** a ring-vortex wake model decides
+  how much of it reaches the tail rotor, fin and stabilator, for any speed
+  and wind direction (in fast forward flight it does, in sideward and
+  rearward flight it misses them). The fin sits in the tail rotor's own
+  wake, which is its blockage, as the wake model gives it (not tuned to
+  Sikorsky's figure).
+- **Fuselage, stabilator and fin** from GenHel's wind tunnel tables.
 - **Engines and rotor speed.** Two T700 engines with their fuel controls,
   start sequence and power turbine governors; the rotor speed is free, so
   it droops when you pull hard and the engines catch it, and you can
-  autorotate.
+  autorotate. The rotor keeps its own spin when the airframe yaws: a quick
+  pedal kick droops the rotor, and the tail rotor with it, until the
+  governor answers.
 - **Flight controls as in the aircraft:** the mechanical mixing, the
   stabilator schedule, the two stability augmentation channels (SAS), the
   pitch bias actuator and the flight path stabilization (FPS) with
@@ -153,13 +164,15 @@ Sikorsky's simulation as NASA ran it.
 
 | | Reference | This model |
 |---|---|---|
-| Level-flight trim, 50–162 kt | USAAEFA (TM-88360 fig. B1) | longitudinal cyclic and collective within 7.0 % of travel, pitch within 1.9° |
-| Bank and lateral cyclic at zero sideslip, 60–140 kt | USAAEFA 79-24 | within 1.3° and 0.30 in |
-| Hover power out of ground effect, 13,000–19,000 lb | USAAEFA tethered hover | 0.965–0.995 of the test |
-| Ground effect, 5–40 ft wheel height | operator's manual | within 0.010 of the torque ratio |
+| Level-flight trim, 50–162 kt | USAAEFA (TM-88360 fig. B1) | longitudinal cyclic within 5.6 % and collective within 8.9 % of travel (the latter at 162 kt), pitch within 1.5° |
+| Bank and lateral cyclic at zero sideslip, 60–140 kt | USAAEFA 79-24 | within 1.4° and 0.31 in |
+| Hover power out of ground effect, 13,000–19,000 lb | USAAEFA tethered hover | 0.949–0.979 of the test |
+| Ground effect, 5–40 ft wheel height | operator's manual | within 0.009 of the torque ratio |
 | Rotor figure of merit | full-scale and model rotor tests | within 0.026 |
-| Main rotor power in cruise, 72–162 kt | USAAEFA 79-24 | within 3.6 % |
-| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.14 deg/s (GenHel 2.77), better than GenHel in 12 of 16 cases |
+| Main rotor power in cruise, 72–162 kt | USAAEFA 79-24 | within 4.6 % |
+| Pedal hovering in a wind from any direction, 10–40 kt | USAAEFA 77-17 | 0.42 in rms (0.78 with GenHel's wash at the tail) |
+| Tail rotor power in the same | USAAEFA 77-17 | 39 hp low on average |
+| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.27 deg/s (GenHel 2.77), better than GenHel in 10 of 16 cases |
 | Pitch rate after a 1 in aft step at 100 kt | 24.1 deg/s | 16.4 (GenHel 19.3) |
 
 ## Known gaps
@@ -167,18 +180,28 @@ Sikorsky's simulation as NASA ran it.
 - **Pitch at speed** is too stable: the pitch-up after an aft cyclic step at
   100 kt is weaker than in the test, and the slow pitch divergence the Army
   measured with the SAS on doesn't appear. The model's angle-of-attack
-  stability derivative is a third of GenHel's.
+  stability derivative is a third of that of NASA's TM-85890 model.
 - **Cruise power** is 2–10 % above the 77-17 test, which disagrees by 4–6 %
   with the 79-24 test of the same airframe; the model sits between them.
 - **Lateral-directional:** at 100 kt a pedal step rolls the model (and
   GenHel) the wrong way; the bank changes half as much between climb and
   descent as in the test; lateral cyclic moves the aircraft about 1.5 times
   as much per inch as the test suggests.
-- **Tail rotor** hover power is 5–11 % low.
-- **Trim at 162 kt:** the lateral cyclic is 9 % and the pedal 7 % away from
-  the test.
+- **Tail rotor:** its power is 14–23 % low in the hover against one test
+  and up to twice another test's in cruise (half of that gap goes if the
+  aircraft flew with 5° of sideslip, which is likely but unpublished). The
+  fin's blockage, from the wake model alone, is two-thirds of Sikorsky's
+  measured figure, so in a hover crosswind at altitude the pedal sits
+  0.4 in right of the test. Hover yaw damping: flight identification says
+  more than the model has; the test's own time histories don't settle it.
+- **Trim at 162 kt:** the blade-element tail rotor reaches its static stall
+  from about 158 kt and the trim stops short. The aircraft flew 162 kt
+  with 1.5–2° less tail rotor pitch, so the model lacks anti-torque
+  at the top speed. The lateral cyclic is 8 % and the pedal 11 % away
+  from the test.
 - **Not modelled:** blade torsion and dynamic stall (heavy and fast, the
-  retreating blade stalls early instead), rotor damage and overstress,
+  retreating blade stalls early instead; a dynamic stall delay for the
+  tail rotor is in the generator as an experiment), rotor damage and overstress,
   hydraulic and most electrical failures. The transmission oil gauges are
   cosmetic.
 - **Cockpit:** no icing, external tanks, radar threats or fire are
@@ -323,6 +346,19 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   pilots hidden from their own seat in
   FlightGear's and FGCamera's cockpit views (`Models/Pilot/all-pilots.xml`);
   a vibration rattle in `Sounds/uh60-sound.xml`.
+- **Rotor models** driven blade by blade by the flight model
+  (`fdm/rotorvis.py`): the hub at the simulated rotor's azimuth, each blade
+  with its own flap, lag and pitch (collective and cyclic), and droop at
+  rest. As it speeds up each blade fades out and a faint fan of wedges
+  behind it fades in, both with the rotor's rpm (in the HDR renderer;
+  `Models/Effects/RotorBlur`), into a disc as dense as the blades' time-
+  averaged coverage: darker at the root, the tip stripes a faint ring. Half
+  of it is a smear at each blade's own position, which the display samples
+  as a camera does, so the blades show as a pattern travelling round the
+  disc and its partial shadow. The tail rotor likewise, geared to the main
+  rotor (pitch from the pedals; no flapping). They replace the original's
+  blurred-blade textures and discs of wedges (`Models/Externals/MainRotor/`,
+  `TailRotor/`).
 - **HDR renderer** (FlightGear 2024.2 and later, where it is the only one):
   - the liveries switch the skin's texture in it too (a `pbr` animation in
     `Models/uh60.xml`), and each livery sets how glossy its paint is

@@ -126,6 +126,32 @@ def tab_b1():
     corr = [100 * (at(x['V'])['hp'] / (x['hp'] - 0.5 * rho * (x['V'] * 1.68781) ** 3 * 2.8 / 550) - 1) for x in R['test'] if x['V'] >= 72]
     put('Bpowcorr', max(abs(c) for c in corr))
     put('Bpowfifty', 100 * (m50['hp'] / t50['hp'] - 1), '%.0f')
+    # pedal, both tail rotor models: 50-139 kt range of the error, and 162 kt
+    for suf, tag in (('', ''), ('-bailey', 'Y')):
+        Rm = res_opt('b1' + suf)
+        if not Rm:
+            continue
+        MM = Rm['model']; mv = [m['V'] for m in MM]
+        d = [float(np.interp(t['V'], mv, [m['ped'] for m in MM])) - t['ped'] for t in R['test'] if 50 <= t['V'] <= 139]
+        put('B%spedmin' % tag, min(d)); put('B%spedmax' % tag, max(d))
+        t162 = [t for t in R['test'] if t['V'] == 162][0]
+        m162 = [m for m in MM if m['V'] == 162][0]
+        put('B%spedhs' % tag, m162['ped'] - t162['ped']); put('B%spedhsres' % tag, m162['resid'], '%.2f')
+    # the tail rotor pitch that pedal and collective give through the rigging and the collective-to-pedal mixing (the
+    # model's own, 0.5 in bias included), test against both models at 139 and 162 kt
+    def trp(ped, coll):
+        ped_in = (ped / 100 - 0.5) * 2 * U.PED_IN
+        return U.TR_CUFF_CENTER + U.TR_DEG_IN * (ped_in + U.PED_BIAS_IN + U.MIX_COLL_PED * (coll / 100 * U.COLL_IN - U.COLL_IN / 2))
+    tt = {t['V']: t for t in R['test']}
+    put('BtrpTlo', trp(tt[139]['ped'], tt[139]['coll'])); put('BtrpThi', trp(tt[162]['ped'], tt[162]['coll']))
+    put('BtrpTrise', trp(tt[162]['ped'], tt[162]['coll']) - trp(tt[139]['ped'], tt[139]['coll']))
+    for suf, tag in (('', 'M'), ('-bailey', 'Y')):
+        Rm = res_opt('b1' + suf)
+        if not Rm:
+            continue
+        mm = {m['V']: m for m in Rm['model']}
+        put('Btrp%slo' % tag, trp(mm[139]['ped'], mm[139]['coll'])); put('Btrp%shi' % tag, trp(mm[162]['ped'], mm[162]['coll']))
+        put('Btrp%srise' % tag, trp(mm[162]['ped'], mm[162]['coll']) - trp(mm[139]['ped'], mm[139]['coll']))
 
 
 # ----------------------------------------------------------------------------------------------- lateral-directional
@@ -269,6 +295,8 @@ def tab_resp():
                                                                       f(pk(gh)), f(pk(m)), f(g), ('\\textbf{%s}' % f(mm)) if (np.isfinite(g) and mm < g) else f(mm))
         if np.isfinite(g) and np.isfinite(mm) and not bad:
             n += 1; better += mm < g; rg.append(g); rm_.append(mm)
+        if fid == '209':
+            put('Rpedrms', mm); put('Rpedrmsgh', g)
     body += '\\bottomrule\n\\end{tabular}\n'
     write('resp', body)
     # hover cyclic steps: peak overshoot of GenHel and the model over the test; hover pedal step
@@ -290,12 +318,49 @@ def tab_resp():
     put('Qmod', np.nanmax(DY.rel(np.array(Dn['401']['q']), t, t0)[w]))
 
 
+# ----------------------------------------------------------------------------------------------- hover yaw: fitted derivatives
+def yaw_fit(case, y):
+    """first-order fit r' = N_r r + N_ped ped over 3 s after the input: (N_r 1/s, N_ped deg/s2 per in)"""
+    from scipy.optimize import least_squares
+    t = np.array(case['t']); k, t0 = DY.primary(case)
+    t_in, inc = DY.inputs(case); ped = np.interp(t, t_in, inc['ped'])
+    y = DY.rel(np.array(y, float), t, t0); ok = (t >= t0 - 0.2) & (t <= t0 + 3.0) & np.isfinite(y)
+    def sim(prm):
+        r = np.zeros_like(t)
+        for i in range(1, len(t)):
+            r[i] = r[i - 1] + (t[i] - t[i - 1]) * (prm[0] * r[i - 1] + prm[1] * ped[i])
+        return r
+    f = least_squares(lambda prm: sim(prm)[ok] - y[ok], [-0.3, 20.0], bounds=([-3, 0], [0.5, 200]))
+    return f.x
+
+
+def tab_yawfit():
+    case = DY.D['209']
+    for tag, y in (('test', DY.curve(case, 'r', 'test')), ('gh', DY.curve(case, 'r', 'genhel')), ('mod', res('dyn')['209']['r'])) + \
+            ((('bai', res_opt('dyn-bailey')['209']['r']),) if res_opt('dyn-bailey') else ()):
+        nr, npd = yaw_fit(case, y)
+        put('Yaw%sNr' % tag, nr, '%.2f'); put('Yaw%sNp' % tag, npd, '%.0f')
+
+
+def tab_yawdamp():
+    """quasi-static hover yaw derivatives by component [yawdamp.py]: case 209's hover, and TM-85890's 1-kt condition"""
+    D = res('yawdamp')
+    d = D['209']
+    put('Ydr', d['Nr']['total'], '%.2f'); put('Ydrtr', d['Nr']['tr'], '%.2f'); put('Ydrfin', d['Nr']['fin'], '%+.2f')
+    put('Ydrmr', d['Nr']['rest'], '%.2f'); put('Ydp', -d['Nped']['total'], '%.2f'); put('Ydv', d['Nv']['total'], '%.4f')
+    h = D['hb']
+    put('Ydhbr', h['Nr']['total'], '%.2f'); put('Ydhbv', h['Nv']['total'], '%.4f'); put('Ydhbp', -h['Nped']['total'], '%.2f')
+    Db = res_opt('yawdamp-bailey')
+    if Db:
+        put('YdYr', Db['209']['Nr']['total'], '%.2f')
+
+
 # ----------------------------------------------------------------------------------------------- derivatives
 def tab_derivs():
     Dv = res('derivs'); G, Aa, Ap = Dv['genhel'], Dv['augmented']['d'], Dv['aero']['d']
     units = dict(Xu='1/s', Xw='1/s', Xq='ft/s/rad', Zu='1/s', Zw='1/s', Zq='ft/s/rad', Mu='rad/s/ft', Mw='rad/s/ft', Mq='1/s',
                  Xe='ft/s$^2$/in', Ze='ft/s$^2$/in', Me='rad/s$^2$/in', Xc='ft/s$^2$/in', Zc='ft/s$^2$/in', Mc='rad/s$^2$/in')
-    body = '\\begin{tabular}{@{}llrrr@{}}\n\\toprule\n & & GenHel & \\multicolumn{2}{c}{model} \\\\\n\\cmidrule(l){4-5}\n & unit & \\cite{hb} & PBA, stab. & aero only \\\\\n\\midrule\n'
+    body = '\\begin{tabular}{@{}llrrr@{}}\n\\toprule\n & & TM-85890 & \\multicolumn{2}{c}{model} \\\\\n\\cmidrule(l){4-5}\n & unit & \\cite{hb} & PBA, stab. & aero only \\\\\n\\midrule\n'
     for k in G:
         sym = '$%s_{%s}$' % (k[0], {'e': '\\delta_e', 'c': '\\delta_c'}.get(k[1], k[1]))
         fmt = '%.4f' if abs(G[k]) < 0.1 else '%.3f' if abs(G[k]) < 10 else '%.2f'
@@ -306,9 +371,168 @@ def tab_derivs():
     put('Zqgh', G['Zq'], '%.1f'); put('Zqmod', Ap['Zq'], '%.1f'); put('Mqgh', G['Mq'], '%.2f'); put('Mqmod', Ap['Mq'], '%.2f')
 
 
+# ----------------------------------------------------------------------------------------------- low speed, all azimuths
+def res_opt(name):
+    f = os.path.join(RES, name + '.json')
+    return json.load(open(f)) if os.path.exists(f) else None
+
+
+def xwind_errors(R, chan, ac, data):
+    """model minus test over all speeds and azimuths (trimmed points with test data)"""
+    from data import usaaefa_lowspeed as L
+    d = []
+    for key, rows in R.items():
+        a, V = key.split('_')
+        if a != ac:
+            continue
+        test = data[(a, int(V))] if data else L.TR_HP.get(int(V))
+        for r in rows:
+            if chan not in r or r['resid'] > 0.05:
+                continue
+            t = test[L.AZ.index(r['az'])]
+            if t is not None:
+                d.append(r[chan] - t)
+    return np.array(d)
+
+
+def tab_xwind():
+    from data import usaaefa_lowspeed as L
+    cols = [(n, lab, res_opt(n)) for n, lab in (('xwind-gwash', 'GenHel wash'), ('xwind', 'blade-element'), ('xwind-bailey', 'Bailey'))]
+    cols = [c for c in cols if c[2]]
+    rows = (('pedal 716', 'ped', '716', L.PED, '%.2f', 'in'), ('pedal 717', 'ped', '717', L.PED, '%.2f', 'in'),
+            ('long.\\ cyclic 716', 'lon', '716', L.LON, '%.2f', 'in'), ('long.\\ cyclic 717', 'lon', '717', L.LON, '%.2f', 'in'),
+            ('TR power 716', 'tr_hp', '716', None, '%.0f', 'hp'))
+    body = '\\begin{tabular}{@{}l' + 'rr' * len(cols) + '@{}}\n\\toprule\n'
+    body += ' & ' + ' & '.join('\\multicolumn{2}{c}{%s}' % lab for n, lab, R in cols) + ' \\\\\n'
+    body += ''.join('\\cmidrule(%s){%d-%d}' % ('lr' if i < len(cols) - 1 else 'l', 2 + 2 * i, 3 + 2 * i) for i in range(len(cols))) + '\n'
+    body += ' & ' + ' & '.join('mean & rms' for c in cols) + ' \\\\\n\\midrule\n'
+    for lab, ch, ac, data, fmt, unit in rows:
+        cells = []
+        for n, _, R in cols:
+            d = xwind_errors(R, ch, ac, data)
+            cells += [sgn(d.mean(), fmt), fmt % np.sqrt((d ** 2).mean())] if len(d) else ['--', '--']
+            tag = {'xwind': 'B', 'xwind-bailey': 'Y', 'xwind-gwash': 'G'}[n]
+            if len(d):
+                put('X%s%s%s' % (tag, ch.replace('_', ''), {'716': 'C', '717': 'E'}[ac]), np.sqrt((d ** 2).mean()), fmt)   # C: Coyote Flats, E: Edwards
+                put('X%s%smean%s' % (tag, ch.replace('_', ''), {'716': 'C', '717': 'E'}[ac]), d.mean(), fmt)
+        body += '%s (%s) & %s \\\\\n' % (lab, unit, ' & '.join(cells))
+    body += '\\bottomrule\n\\end{tabular}\n'
+    write('xwind', body)
+    for n, _, R in cols:
+        tag = {'xwind': 'B', 'xwind-bailey': 'Y', 'xwind-gwash': 'G'}[n]
+        d = np.concatenate([xwind_errors(R, 'ped', ac, L.PED) for ac in ('716', '717')])
+        put('X%sped' % tag, np.sqrt((d ** 2).mean()), '%.2f')
+        d = np.concatenate([xwind_errors(R, 'lon', ac, L.LON) for ac in ('716', '717')])
+        put('X%slon' % tag, np.sqrt((d ** 2).mean()), '%.2f')
+
+
+# ----------------------------------------------------------------------------------------------- tail rotor power, level flight
+def tab_trpower():
+    from data import yeo_trpower as Y
+    for n, tag in (('trpower', 'B'), ('trpower-bailey', 'Y'), ('trpower5', 'F')):
+        R = res_opt(n)
+        if not R:
+            continue
+        for lo, hi, band in ((0.12, 0.20, 'lo'), (0.22, 0.32, 'mid'), (0.33, 0.38, 'hi')):
+            mm, tt = [], []
+            for e in R:
+                if e['cw'] > 0.0092:
+                    continue
+                pts = [r for r in e['rows'] if r['resid'] < 0.05]
+                tp = [(m, c) for m, c in Y.TR_POWER[e['cw']] if lo <= m <= hi]
+                if not tp or len(pts) < 2:
+                    continue
+                for m, c in tp:
+                    if pts[0]['mu'] <= m <= pts[-1]['mu']:
+                        mm.append(np.interp(m, [r['mu'] for r in pts], [r['cp_tr'] for r in pts])); tt.append(c)
+            if mm:
+                put('TP%s%s' % (tag, band), np.mean(mm) / np.mean(tt), '%.1f')
+                put('TP%s%sm' % (tag, band), 1e3 * np.mean(mm), '%.2f'); put('TP%s%st' % (tag, band), 1e3 * np.mean(tt), '%.2f')
+                print('trpower %s %s: %d points, model %.2f test %.2f (x1e3)' % (tag, band, len(mm), 1e3 * np.mean(mm), 1e3 * np.mean(tt)))
+
+
+# ----------------------------------------------------------------------------------------------- the two tail rotor models
+def tab_tr():
+    """the blade-element and Bailey tail rotors against every test that sees the tail rotor"""
+    from data import usaaefa_lowspeed as L
+    import harness as H
+    sets = [('', 'blade-element'), ('-bailey', 'Bailey')]
+    have = [(suf, lab) for suf, lab in sets if res_opt('b1' + suf)]
+    if len(have) < 2:
+        return
+    rows = []
+    # hover trim pedal of the five hovers of TM-88360 app. D (in from centre, + right; 6.0 in travel)
+    appd = DY.D
+    hov = [f for f in appd if appd[f]['condition'] == 'hover']
+    def first_test(fid):
+        c = appd[fid]; t = np.array(c['t']); y = np.array([np.nan if v is None else v for v in (c['ped']['test'] or [])], float)
+        w = (t < 0.5) & np.isfinite(y) if len(y) else np.zeros(0, bool)
+        return float(np.median(y[w])) if w.any() else np.nan
+    tt = np.nanmean([first_test(f) for f in hov])
+    cells = []
+    for suf, _ in have:
+        Dn = res_opt('dyn' + suf)
+        cells.append(np.mean([3 * Dn[f]['trim']['ped'] for f in hov]) if Dn and 'trim' in Dn[hov[0]] else np.nan)
+    rows.append(('hover trim pedal, 5 hovers (in, + right)', '%.2f' % tt, ['%.2f' % c for c in cells]))
+    # level flight pedal 50-139 kt, 162 kt
+    test = {t[0]: t[4] for t in H.BALLIN_B1}
+    for lab, Vs in (('level-flight pedal 50--139 kt, mean error (\\%)', (50, 72, 95, 117, 139)), ('level-flight pedal 162 kt, error (\\%)', (162,))):
+        cells = []
+        for suf, _ in have:
+            M = res('b1' + suf)['model']
+            d = [np.interp(V, [m['V'] for m in M], [m['ped'] for m in M]) - test[V] for V in Vs]
+            bad = any(m['resid'] > 0.05 for m in M if m['V'] in Vs)
+            cells.append(sgn(np.mean(d)) + ('$^*$' if bad else ''))
+        rows.append((lab, '--', cells))
+    # zero-sideslip pedal (lat-dir sweeps)
+    cells = []
+    for suf, _ in have:
+        R = res_opt('latdir' + suf)
+        cells.append(sgn(np.mean([R['model']['%d_level_b0_0' % V]['ped'] - R['test']['%d_level' % V]['ped'] for V in (60, 100, 140)])) if R else '--')
+    rows.append(('zero-sideslip pedal 60--140 kt, mean error (\\%)', '--', cells))
+    # crosswinds
+    cells = []
+    for suf, _ in have:
+        R = res_opt('xwind' + suf)
+        d = np.concatenate([xwind_errors(R, 'ped', ac, L.PED) for ac in ('716', '717')]) if R else []
+        cells.append('%.2f' % np.sqrt(np.mean(np.square(d))) if len(d) else '--')
+    rows.append(('pedal in crosswinds 10--40 kt, rms (in)', '--', cells))
+    cells = []
+    for suf, _ in have:
+        R = res_opt('xwind' + suf)
+        d = xwind_errors(R, 'tr_hp', '716', None) if R else []
+        cells.append(sgn(np.mean(d), '%.0f') if len(d) else '--')
+    rows.append(('tail rotor power in crosswinds, mean error (hp)', '--', cells))
+    # hover tail rotor power
+    cells = []
+    for suf, _ in have:
+        Hv = res_opt('hover' + suf)
+        r = [h['cp_tr'] / PERF.tail_rotor_hover(h['ct_tr']) for h in Hv if h['ct_tr'] >= 0.0102] if Hv else []
+        cells.append('%.2f--%.2f' % (min(r), max(r)) if r else '--')
+    rows.append(('tail rotor power, OGE hover, model/test', '--', cells))
+    # pedal steps: yaw-rate rms error
+    peds = [f for f in appd if 'pedal' in appd[f]['input']]
+    def rms_case(fid, m):
+        case = appd[fid]; t = np.array(case['t']); k, t0 = DY.primary(case); ax = DY.AXIS[k]
+        w = (t >= t0) & (t <= t0 + 2.5); test = DY.curve(case, ax, 'test')
+        return float(np.sqrt(np.nanmean((DY.rel(m, t, t0)[w] - DY.rel(test, t, t0)[w]) ** 2)))
+    cells = []
+    for suf, _ in have:
+        Dn = res_opt('dyn' + suf)
+        cells.append('%.1f' % np.mean([rms_case(f, np.array(Dn[f][DY.AXIS[DY.primary(appd[f])[0]]])) for f in peds]) if Dn else '--')
+    gh = np.mean([rms_case(f, DY.curve(appd[f], DY.AXIS[DY.primary(appd[f])[0]], 'genhel')) for f in peds])
+    rows.append(('yaw rate after %d pedal steps, mean rms (deg/s; GenHel %.1f)' % (len(peds), gh), '--', cells))
+    body = '\\begin{tabular}{@{}>{\\raggedright\\arraybackslash}p{3.7cm}r' + 'r' * len(have) + '@{}}\n\\toprule\n'
+    body += ' & test & ' + ' & '.join(lab for _, lab in have) + ' \\\\\n\\midrule\n'
+    for lab, t, cells in rows:
+        body += '%s & %s & %s \\\\\n' % (lab, t, ' & '.join(cells))
+    body += '\\bottomrule\n\\end{tabular}\n'
+    write('tr', body)
+
+
 if __name__ == '__main__':
     os.makedirs(OUT, exist_ok=True)
-    for f in (tab_params, tab_model, tab_b1, tab_latdir, tab_power, tab_ge, tab_resp, tab_derivs):
+    for f in (tab_params, tab_model, tab_b1, tab_latdir, tab_power, tab_ge, tab_resp, tab_derivs, tab_xwind, tab_trpower, tab_tr, tab_yawfit, tab_yawdamp):
         try:
             f()
         except FileNotFoundError as e:
