@@ -334,6 +334,7 @@ class Model:
         ci, si = math.cos(U.SHAFT_TILT), math.sin(U.SHAFT_TILT)
         r.declare('rotor/omega-rad_sec', U.OMEGA)
         r.declare('rotor/psi-rad', 0.0)
+        r.declare('rotor/tr/psi-rad', 0.0)
         for k in range(U.NB):
             r.declare('rotor/b%d/beta-rad' % k, 0.0)
             r.declare('rotor/b%d/betadot-rad_sec' % k, 0.0)
@@ -357,6 +358,9 @@ class Model:
         # (JSBSim's <mod> is an integer modulus, so the wrap is explicit)
         psn = S(p('rotor/psi-rad'), M(p('rotor/omega-rad_sec'), p('simulation/dt')))
         r.fn('rotor/psi-next', IFTHEN(GT(psn, v(2 * math.pi)), D(psn, v(2 * math.pi)), psn), out='rotor/psi-rad')
+        # the tail rotor's, geared to it (for the model: fdm/rotorvis.py)
+        psn = S(p('rotor/tr/psi-rad'), M(v(U.OMEGA_TR / U.OMEGA), p('rotor/omega-rad_sec'), p('simulation/dt')))
+        r.fn('rotor/tr/psi-next', IFTHEN(GT(psn, v(2 * math.pi)), D(psn, v(2 * math.pi)), psn), out='rotor/tr/psi-rad')
         dt = p('simulation/dt')
         init_fast = GT(p('ctl/init-fast'), v(0.5))
         if U.LAG_DOF:
@@ -851,17 +855,31 @@ class Model:
         o.fn('out/tail-rpm', M(v(RPM * U.OMEGA_TR / U.OMEGA), W), out='/rotors/tail/rpm')
         R2D = 180 / math.pi
         o.fn('out/cone-deg', M(v(R2D / U.NB), S(*[p('rotor/b%d/beta-rad' % k) for k in range(U.NB)])), out='/rotors/main/cone-deg')
-        # the model bends each blade at its hinge (cone1) and along its span (cone2-4): flapping, plus the static
-        # droop of the blades that the centrifugal force takes out
+        # the model bends each blade at its hinge (cone1) and along its span (cone2-4), positive up (Models/Externals/
+        # MainRotor/blade.xml: factor -1 about +y, the blade along +x): flapping, plus the static droop of the blades
+        # that the centrifugal force takes out
         nr2 = SQR(MIN(v(1), Q(W, v(U.OMEGA))))
-        o.fn('out/cone1', NEG(p('out/cone-deg')), out='/rotors/main/cone1-deg')
+        o.fn('out/cone1', p('out/cone-deg'), out='/rotors/main/cone1-deg')
         for i, d in ((2, 0.6), (3, 0.8), (4, 1.0)):
-            o.fn('out/cone%d' % i, M(v(d), D(v(1), nr2)), out='/rotors/main/cone%d-deg' % i)
+            o.fn('out/cone%d' % i, M(v(-d), D(v(1), nr2)), out='/rotors/main/cone%d-deg' % i)
         o.lag('out/tpp-lat', 'aero/rotor/b1-deg', 0.15)
         o.lag('out/tpp-lon', 'aero/rotor/a1-deg', 0.15)
         o.fn('out/roll-deg', p('out/tpp-lat'), out='/rotors/main/roll-deg')
         o.fn('out/yaw-deg', NEG(p('out/tpp-lon')), out='/rotors/main/yaw-deg')
         o.fn('out/mr-incidence', D(p('ctl/theta0-deg'), v(7.5)), out='/rotors/main/blade[0]/incidence-deg')
+        # each blade for the rotor's model (fdm/rotorvis.py): its hinge azimuth (from the tail, anticlockwise from
+        # above), flap (up +), lag (lead +) and pitch (collective and cyclic); azimuth and flap are FlightGear's
+        # multiplayer rotor properties
+        wrap = lambda e: IFTHEN(GT(e, v(360)), D(e, v(360)), e)     # (JSBSim's <mod> is an integer modulus)
+        for k in range(U.NB):
+            o.fn('out/b%d-position' % k, wrap(S(M(v(R2D), p('rotor/psi-rad')), v(90.0 * k))),
+                 out='/rotors/main/blade[%d]/position-deg' % k)
+            o.fn('out/b%d-flap' % k, M(v(R2D), p('rotor/b%d/beta-rad' % k)), out='/rotors/main/blade[%d]/flap-deg' % k)
+            o.fn('out/b%d-lag' % k, M(v(R2D), p('rotor/b%d/delta-rad' % k)), out='/rotors/main/blade[%d]/lag-deg' % k)
+            o.fn('out/b%d-pitch' % k, p('aero/rotor/b%d/theta-deg' % k), out='/rotors/main/blade[%d]/pitch-deg' % k)
+        for k in range(U.NB_TR):                                       # the tail rotor's blades: azimuth and flap
+            o.fn('out/tr-b%d-position' % k, wrap(S(M(v(R2D), p('rotor/tr/psi-rad')), v(90.0 * k))),
+                 out='/rotors/tail/blade[%d]/position-deg' % k)
         o.fn('out/tr-incidence', D(p('ctl/thetaTR-deg'), v(10)), out=['/rotors/tail/blade[0]/incidence-deg', '/rotors/tail/blade/incidence-deg'])
         Qmr = p('aero/rotor/torque-ftlb')
         o.fn('out/total-torque', Qmr, out='/rotors/gear/total-torque')

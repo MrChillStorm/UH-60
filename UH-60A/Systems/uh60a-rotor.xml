@@ -2,6 +2,7 @@
 <system name="UH-60A rotor">
 <property value="27">rotor/omega-rad_sec</property>
 <property value="0">rotor/psi-rad</property>
+<property value="0">rotor/tr/psi-rad</property>
 <property value="0">rotor/b0/beta-rad</property>
 <property value="0">rotor/b0/betadot-rad_sec</property>
 <property value="-0.07">rotor/b0/delta-rad</property>
@@ -40,6 +41,7 @@
 </channel>
 <channel name="rotor azimuth">
 <fcs_function name="rotor/psi-next"><function><ifthen><gt><sum><property>rotor/psi-rad</property><product><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum><value>6.2831853</value></gt><difference><sum><property>rotor/psi-rad</property><product><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum><value>6.2831853</value></difference><sum><property>rotor/psi-rad</property><product><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum></ifthen></function><output>rotor/psi-rad</output></fcs_function>
+<fcs_function name="rotor/tr/psi-next"><function><ifthen><gt><sum><property>rotor/tr/psi-rad</property><product><value>4.6155556</value><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum><value>6.2831853</value></gt><difference><sum><property>rotor/tr/psi-rad</property><product><value>4.6155556</value><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum><value>6.2831853</value></difference><sum><property>rotor/tr/psi-rad</property><product><value>4.6155556</value><property>rotor/omega-rad_sec</property><property>simulation/dt</property></product></sum></ifthen></function><output>rotor/tr/psi-rad</output></fcs_function>
 </channel>
 <channel name="lag damper">
 <fcs_function name="rotor/b0/ldm-theta-rad"><description>damper pickup angle: blade pitch at the cuff less the geometric angle</description><function><product><value>0.017453293</value><difference><property>aero/rotor/b0/theta-deg</property><value>17.481</value></difference></product></function></fcs_function>

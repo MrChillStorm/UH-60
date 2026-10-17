@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
+<!-- The tail rotor, written by fdm/rotorvis.py (see there): the hub at the flight model's
+     tail rotor azimuth -->
+
 <PropertyList>
 
   <path>tailrotor.ac</path>
@@ -8,15 +11,24 @@
     <object-name>rotortail</object-name>
   </animation>
 
-  <!-- Blades -->
   <model>
     <name>Blade1</name>
     <path>blade.xml</path>
+    <overlay>
+      <params>
+        <flap>rotors/tail/blade[0]/flap-deg</flap>
+      </params>
+    </overlay>
   </model>
 
   <model>
     <name>Blade2</name>
     <path>blade.xml</path>
+    <overlay>
+      <params>
+        <flap>rotors/tail/blade[1]/flap-deg</flap>
+      </params>
+    </overlay>
     <offsets>
       <heading-deg> 90 </heading-deg>
     </offsets>
@@ -25,6 +37,11 @@
   <model>
     <name>Blade3</name>
     <path>blade.xml</path>
+    <overlay>
+      <params>
+        <flap>rotors/tail/blade[2]/flap-deg</flap>
+      </params>
+    </overlay>
     <offsets>
       <heading-deg> 180 </heading-deg>
     </offsets>
@@ -33,6 +50,11 @@
   <model>
     <name>Blade4</name>
     <path>blade.xml</path>
+    <overlay>
+      <params>
+        <flap>rotors/tail/blade[3]/flap-deg</flap>
+      </params>
+    </overlay>
     <offsets>
       <heading-deg> 270 </heading-deg>
     </offsets>
@@ -47,11 +69,16 @@
     <object-name>Blade4</object-name>
   </animation>
 
-  <!-- Rotation du rotor -->
+  <!-- the hub at blade 0's azimuth -->
   <animation>
-    <type>spin</type>
+    <type>rotate</type>
     <object-name>rotorcomplet</object-name>
-    <property>rotors/tail/rpm</property>
+    <property>rotors/tail/blade[0]/position-deg</property>
+    <center>
+      <x-m> 0.00000 </x-m>
+      <y-m> 0.00000 </y-m>
+      <z-m> 0.00000 </z-m>
+    </center>
     <axis>
       <x> 0 </x>
       <y> 0 </y>
