@@ -367,15 +367,15 @@ var step_systems = func {
 # LIGHTS (/controls/lighting/glareshield, OFF-BRT), No. 1 ac primary bus; the cockpit floodlights, BLUE/OFF/WHITE
 # (/controls/lighting/cockpit-flood: 1, 0, -1), dc essential bus.
 #
-# The flight starts with the floods off and, if the sun is down, every dimmer of the Cockpit lights dialog at its first
-# notch (0.05) and the caution panel DIM; by day with the dimmers off and the caution panel BRT (DIM, at most 2 cd/m2,
-# is for the night).
+# The flight starts with the floods and glareshield lights off and, if the sun is down, the instrument lights' and
+# lighted switches' dimmers of the Cockpit lights dialog at half and the caution panel DIM; by day with those dimmers
+# off and the caution panel BRT (DIM, at most 2 cd/m2, is for the night).
 var LT = U ~ "lights/";
 var LAMP_BRT = 1030;
 var DIM_LO = 0.05; var DIM_HI = 2;            # dim, at most as bright as the instruments' markings at BRT
 var VIDS_NIGHT = 3; var VIDS_DAY = LAMP_BRT;
 var CAP_DIM = "/sim/model/uh60/cap-dim";
-var FIRST_NOTCH = 0.05;
+var NIGHT_DIMMERS = 0.5;                       # the instrument lights' and lighted switches' dimmers at a night start
 var dc_was = 0;
 
 var brt_dim = func {         # the BRT/DIM-TEST switch to BRT/DIM
@@ -434,12 +434,13 @@ var init = func {
     foreach (var k; ["ma-wrn-norm", "caut-advsy-norm", "radalt-norm"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, 1);
     if (getprop("/controls/lighting/cockpit-flood") == nil) setprop("/controls/lighting/cockpit-flood", 0);
-    # with the sun down every dimmer at its first notch and the caution panel DIM, by day the dimmers off and BRT:
-    # decided once the start's time of day has taken (it isn't yet when this runs)
+    if (getprop("/controls/lighting/glareshield") == nil) setprop("/controls/lighting/glareshield", 0);
+    # with the sun down the instrument lights and lighted switches at half and the caution panel DIM, by day those
+    # dimmers off and BRT: decided once the start's time of day has taken (it isn't yet when this runs)
     settimer(func {
         var night = val("/sim/time/sun-angle-rad") * R2D > 90;
-        foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches", "glareshield"])
-            if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, night ? FIRST_NOTCH : 0);
+        foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches"])
+            if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, night ? NIGHT_DIMMERS : 0);
         if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, night);
     }, 5);
 };

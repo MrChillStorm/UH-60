@@ -147,9 +147,9 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
     dimmer) and the blue-green and white cockpit floodlights under the
     upper console (BLUE/OFF/WHITE).
 
-  The flight starts with the floods off and, at night, every dimmer of the
-  dialog at its first notch and the caution panel on DIM; by day with the
-  dimmers off and the caution panel on BRT.
+  The flight starts with the floods and glareshield lights off and, at
+  night, the instrument lights and lighted switches at half and the caution
+  panel on DIM; by day with those dimmers off and the caution panel on BRT.
 - **Engine ignition switch** below the caution/advisory panel: click to turn
   it; the engines only light off with it ON.
 - **Feel.** The rotor's wake is turbulent near the ground, through
