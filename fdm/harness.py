@@ -12,7 +12,7 @@ def load(root=None, dt=1 / 480.0, model='uh60a', fps=False):        # the rate F
     f = jsbsim.FGFDMExec(root)
     f.set_debug_level(0)
     for prop in FG_PROPS:
-        f[prop] = 1.0
+        f[prop] = 0.0                 # the collective down
     f['/sim/freeze/fuel'] = 1.0       # constant weight in tests
     f['rotor/turb/enable'] = 0.0      # deterministic (no wake turbulence)
     f['ctl/fps'] = 1.0 if fps else 0.0   # FPS off: the tests fly the SAS-only aircraft
@@ -40,7 +40,7 @@ def set_state(f, V_kt=0.0, alt_ft=1000.0, theta=0.0, phi=0.0, gamma=0.0, beta=0.
 
 def controls(f, coll=0.5, lon=0.0, lat=0.0, ped=0.0):
     """coll 0..1 (up), lon -1..1 (+ forward), lat -1..1 (+ right), ped -1..1 (+ right)"""
-    f['/controls/engines/engine[0]/throttle'] = 1.0 - coll
+    f['/controls/engines/engine[0]/throttle'] = coll
     f['fcs/elevator-cmd-norm'] = lon; f['fcs/aileron-cmd-norm'] = lat; f['fcs/rudder-cmd-norm'] = -ped   # JSBSim: + = left
 
 

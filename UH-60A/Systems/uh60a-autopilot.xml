@@ -1147,8 +1147,8 @@
       <gamma>0.0</gamma>
       <Ti>/autopilot/uh60/gain/coll_ti</Ti>
       <Td>0.0</Td>
-      <u_min>0.1</u_min>
-      <u_max>1.0</u_max>
+      <u_min>0.0</u_min>
+      <u_max>0.9</u_max>
     </config>
     <output>/controls/engines/engine[0]/throttle</output>
   </pid-controller>
@@ -1166,7 +1166,7 @@
     <max-rate-of-change>0.08</max-rate-of-change>
     <input>
       <expression>
-        <value>1.0</value>
+        <value>0.0</value>
       </expression>
     </input>
     <output>/controls/engines/engine[0]/throttle</output>
@@ -1574,10 +1574,7 @@
       <expression>
         <product>
           <property>/autopilot/uh60/gain/ped_coll</property>
-          <difference>
-            <value>1.0</value>
-            <property>/controls/engines/engine[0]/throttle</property>
-          </difference>
+          <property>/controls/engines/engine[0]/throttle</property>
         </product>
       </expression>
     </input>
@@ -1617,10 +1614,7 @@
       <expression>
         <product>
           <property>/autopilot/uh60/gain/lat_coll</property>
-          <difference>
-            <value>1.0</value>
-            <property>/controls/engines/engine[0]/throttle</property>
-          </difference>
+          <property>/controls/engines/engine[0]/throttle</property>
         </product>
       </expression>
     </input>

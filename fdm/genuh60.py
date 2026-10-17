@@ -87,10 +87,10 @@ class Model:
     # ------------------------------------------------------------ controls (rigging and mixing)
     def controls(s):
         c = s.ctl
-        c.declare('/controls/engines/engine[0]/throttle', 1.0)
+        c.declare('/controls/engines/engine[0]/throttle', 0.0)
         c.channel('pilot')
-        coll = c.fn('ctl/coll-in', M(D(v(1), p('/controls/engines/engine[0]/throttle')), v(U.COLL_IN)), clip=('0', '%g' % U.COLL_IN),
-                    desc='collective lever, inches up from the bottom (throttle axis: 1 = down)')
+        coll = c.fn('ctl/coll-in', M(p('/controls/engines/engine[0]/throttle'), v(U.COLL_IN)), clip=('0', '%g' % U.COLL_IN),
+                    desc='collective lever, inches up from the bottom (throttle axis: 1 = up)')
         # Stick and pedals, -1..1 from their centre (FlightGear trim included). The centre is the trim point, which the
         # FPS trim actuators move: on the real aircraft they move the stick, which FlightGear cannot, so here the trim
         # point moves under a centred stick, and a full deflection still reaches the stops.

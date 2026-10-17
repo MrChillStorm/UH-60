@@ -183,7 +183,7 @@ class PID:
 GAINS = dict(
     h_k=0.5,            # 1/s: vertical speed per ft of height error (hover)
     alt_k=0.2,          # 1/s: (cruise)
-    coll_kp=-0.02,      # throttle (1 = collective down) per ft/s of vertical speed error
+    coll_kp=0.02,       # throttle (1 = collective up) per ft/s of vertical speed error
     coll_ti=2.0,
     # (the hover velocity loops retuned for the model at 480 Hz, whose hover pitch-speed mode is less damped than at
     # 120 Hz: the old u_kp -0.5, u_ti 7, th_tq 0.3, v_kp 0.8 set a 10 s pitch oscillation of 6 deg going)
@@ -281,8 +281,8 @@ def components():
                   cond_on('coll-cruise'), -L['cruise_vs'], L['cruise_vs']))
     c.append(Gain('flag: collective flying', MUL(eng, A('axis-coll'), DIF(1, td)), I('coll-fly')))
     c.append(Gain('flag: collective lowering', MUL(eng, A('axis-coll'), td), I('coll-down')))
-    c.append(PID('collective', P(I('vs-cmd')), J('velocities/h-dot-fps'), CTL['thr'], 'coll_kp', 'coll_ti', 0.1, 1.0, cond_on('coll-fly')))
-    c.append(RateLimit('collective down after touchdown', V(1.0), CTL['thr'], L['coll_down'], cond_on('coll-down'), init='output'))
+    c.append(PID('collective', P(I('vs-cmd')), J('velocities/h-dot-fps'), CTL['thr'], 'coll_kp', 'coll_ti', 0.0, 0.9, cond_on('coll-fly')))
+    c.append(RateLimit('collective down after touchdown', V(0.0), CTL['thr'], L['coll_down'], cond_on('coll-down'), init='output'))
     # pitch: ground velocity (hover) or airspeed (cruise) -> pitch attitude -> longitudinal cyclic
     c.append(PID('pitch command, hover', P(I('ref-u')), P(I('u-fps')), I('theta-cmd'), 'u_kp', 'u_ti', *L['theta_hover'], cond_on('lon-hover')))
     c.append(PID('pitch command, cruise', P(I('ref-speed')), J('velocities/vc-kts'), I('theta-cmd'), 'spd_kp', 'spd_ti', *L['theta_cruise'],
@@ -306,10 +306,10 @@ def components():
     # on the wheels the tail wheel holds the heading and the heading hold has nothing to work on: the pedals follow the
     # collective as a pilot's would, to about the hover pedal at lift-off, where the heading hold takes over from them
     c.append(Gain('flag: pedals on the wheels', MUL(eng, A('axis-yaw'), DIF(1, air)), I('yaw-ground')))
-    c.append(RateLimit('pedals on the wheels', MUL(G('ped_coll'), DIF(1, P(CTL['thr']))), CTL['rud'], L['ground_rate'], cond_on('yaw-ground'), init='output'))
+    c.append(RateLimit('pedals on the wheels', MUL(G('ped_coll'), P(CTL['thr'])), CTL['rud'], L['ground_rate'], cond_on('yaw-ground'), init='output'))
     # likewise right cyclic against the tail rotor's push
     c.append(Gain('flag: lateral cyclic on the wheels', MUL(eng, A('axis-lat'), DIF(1, air)), I('lat-ground')))
-    c.append(RateLimit('lateral cyclic on the wheels', MUL(G('lat_coll'), DIF(1, P(CTL['thr']))), CTL['ail'], L['ground_rate'], cond_on('lat-ground'), init='output'))
+    c.append(RateLimit('lateral cyclic on the wheels', MUL(G('lat_coll'), P(CTL['thr'])), CTL['ail'], L['ground_rate'], cond_on('lat-ground'), init='output'))
     c.append(Gain('flag: longitudinal cyclic on the wheels', MUL(eng, A('axis-lon'), DIF(1, air)), I('lon-ground')))
     c.append(RateLimit('longitudinal cyclic on the wheels', V(0.0), CTL['elev'], L['ground_rate'], cond_on('lon-ground'), init='output'))
     c.append(PID('pedals, cruise', P(T('beta-deg')), J('aero/beta-deg'), CTL['rud'], 'b_kp', 'b_ti', -1.0, 1.0, cond_on('yaw-cruise')))

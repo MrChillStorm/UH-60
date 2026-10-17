@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <system name="UH-60A controls">
-<property value="1">/controls/engines/engine[0]/throttle</property>
+<property value="0">/controls/engines/engine[0]/throttle</property>
 <property value="0">fps/pitch-pct</property>
 <property value="0">fps/roll-pct</property>
 <property value="0">fps/yaw-pct</property>
@@ -35,7 +35,7 @@
 <property value="0">fps/cyc-still-s</property>
 <property value="0">fps/ped-still-s</property>
 <channel name="pilot">
-<fcs_function name="ctl/coll-in"><description>collective lever, inches up from the bottom (throttle axis: 1 = down)</description><function><product><difference><value>1</value><property>/controls/engines/engine[0]/throttle</property></difference><value>10</value></product></function><clipto><min>0</min><max>10</max></clipto></fcs_function>
+<fcs_function name="ctl/coll-in"><description>collective lever, inches up from the bottom (throttle axis: 1 = up)</description><function><product><property>/controls/engines/engine[0]/throttle</property><value>10</value></product></function><clipto><min>0</min><max>10</max></clipto></fcs_function>
 <fcs_function name="ctl/lon-norm"><function><sum><property>fcs/elevator-cmd-norm</property><property>fcs/pitch-trim-cmd-norm</property></sum></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>
 <fcs_function name="ctl/lat-norm"><function><sum><property>fcs/aileron-cmd-norm</property><property>fcs/roll-trim-cmd-norm</property></sum></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>
 <fcs_function name="ctl/ped-norm"><function><product><value>-1</value><sum><property>fcs/rudder-cmd-norm</property><property>fcs/yaw-trim-cmd-norm</property></sum></product></function><clipto><min>-1</min><max>1</max></clipto></fcs_function>

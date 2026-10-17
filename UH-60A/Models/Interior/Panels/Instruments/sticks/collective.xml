@@ -29,9 +29,10 @@
   <animation>
     <type>rotate</type>
     <object-name>CollectiveComplet</object-name>
-    <!-- the collective is the throttle axis, 1 = down (multiplay float[10] is the passenger door) -->
+    <!-- the collective is the throttle axis, 1 = up (multiplay float[10] is the passenger door) -->
     <property>controls/engines/engine[0]/throttle</property>
-    <factor> -20 </factor>
+    <factor> 20 </factor>
+    <offset-deg> -20 </offset-deg>
     <axis>
       <x> 0 </x>
       <y> 1 </y>

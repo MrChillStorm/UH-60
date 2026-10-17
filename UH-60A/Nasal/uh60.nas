@@ -71,7 +71,7 @@ var engines = func(on) {
   if (on) {
     setprop("/controls/engines/ignition", 1);
     setprop("/controls/rotor/brake", 0);
-    setprop("/controls/engines/engine[0]/throttle", 1);   # collective down
+    setprop("/controls/engines/engine[0]/throttle", 0);   # collective down
     phase = 1;
   } else {
     phase = 10;

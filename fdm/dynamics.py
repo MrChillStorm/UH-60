@@ -149,7 +149,7 @@ def hover_trim(f, pba, alt=5250.0, dT=0.0):
     for ax in ('coll', 'lon', 'lat', 'yaw'): s['axis-' + ax] = 0
     for _ in range(int(6 / f['simulation/dt'])): s.step()
     f['ctl/sas1'] = 0.0; f['ctl/sas2'] = 0.0
-    coll = 1 - f[genap.CTL['thr']]
+    coll = f[genap.CTL['thr']]
     return [coll, f['fcs/elevator-cmd-norm'], f['fcs/aileron-cmd-norm'], -f['fcs/rudder-cmd-norm']], abs(f['velocities/h-dot-fps']) + abs(s['internal/u-fps']) + abs(s['internal/v-fps'])
 
 

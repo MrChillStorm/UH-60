@@ -13,7 +13,7 @@
   <gain>
     <h_k type="double">0.5</h_k>
     <alt_k type="double">0.2</alt_k>
-    <coll_kp type="double">-0.02</coll_kp>
+    <coll_kp type="double">0.02</coll_kp>
     <coll_ti type="double">2.0</coll_ti>
     <u_kp type="double">-0.3</u_kp>
     <u_ti type="double">14.0</u_ti>

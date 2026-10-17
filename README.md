@@ -85,9 +85,9 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
   20 % Ng, the starter drops out at 52–65 % and it idles at 63–69 %. There
   is no cockpit battery switch: set `/controls/electric/battery-switch`, or
   let the autostart do it.
-- **Collective** is the throttle axis, the way round of the original
-  aircraft: full throttle is the collective's bottom. Reverse your throttle
-  axis if you want it the other way.
+- **Collective** is the throttle axis: full throttle is the collective at
+  the top, closed throttle at the bottom (the original aircraft had it the
+  other way). Reverse your throttle axis if you want it that way.
 - **Flight controls dialog** (Aircraft menu → Flight controls): SAS 1 and 2,
   FPS, pitch bias actuator and the stabilator's automatic mode, with an
   "All AFCS on" button. A message on screen tells you when any of them is

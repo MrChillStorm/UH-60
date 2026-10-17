@@ -29,16 +29,16 @@
     </engine>
   </electric>
 
-  <!-- collective: engine[0] throttle, 1 = full down. ENG POWER CONT levers: mixture, 0 OFF, 0.5 IDLE, 1 FLY -->
+  <!-- collective: engine[0] throttle, 0 = full down, 1 = full up. ENG POWER CONT levers: mixture, 0 OFF, 0.5 IDLE, 1 FLY -->
   <engines>
     <ignition          type="bool">true</ignition>
     <engine            n="0">
-      <throttle        type="double">1</throttle>
+      <throttle        type="double">0</throttle>
       <mixture         type="double">1</mixture>
       <np-trim         type="double">0</np-trim>
     </engine>
     <engine            n="1">
-      <throttle        type="double">1</throttle>
+      <throttle        type="double">0</throttle>
       <mixture         type="double">1</mixture>
       <np-trim         type="double">0</np-trim>
     </engine>
