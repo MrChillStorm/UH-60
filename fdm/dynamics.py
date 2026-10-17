@@ -28,7 +28,7 @@ def case_model(fid, root=None):
     """the Ballin model file with the case's weight, CG and Ballin's inertias (all mass at the CG, as the test
     configuration of genuh60): aircraft/uh60a-b<file> next to uh60a-ballin"""
     import re
-    root = root or os.path.join(HERE, 'root')
+    root = root or os.environ.get('UH60_ROOT') or os.path.join(HERE, 'root')      # UH60_ROOT: a variant (report/mkresults.py --tr)
     src = os.path.join(root, 'aircraft', 'uh60a', 'uh60a-ballin.xml')
     name = 'uh60a-b' + fid
     d = os.path.join(root, 'aircraft', name)
@@ -224,6 +224,7 @@ def simulate(args):
     r[:, 6] = np.degrees(np.unwrap(np.radians(r[:, 6])))     # heading through 0/360 before interpolating
     for j, v in enumerate(('p', 'q', 'r', 'phi', 'theta', 'psi'), 1):
         m[v] = np.interp(t, r[:, 0], r[:, j])
+    m['trim'] = dict(coll=float(coll), lon=float(lon), lat=float(lat), ped=float(ped))
     return fid, pba, m, float(np.abs(res).max())
 
 

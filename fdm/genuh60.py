@@ -23,6 +23,7 @@ from data import genhel_fuselage as FUS
 from data import genhel_empennage as EMP
 from data import heyson_ground as HG
 import peters_he as PH
+import mrwake
 import numpy as np
 
 FT = 1.0 / 12.0
@@ -45,6 +46,12 @@ def section_tables():
         else:
             cl.append([hi_cl[a]] * len(AF.MACH)); cd.append([hi_cd[a]] * len(AF.MACH))
     return a_rows, cl, cd
+
+
+# SC1095 angle of maximum lift against the Mach numbers of its tables (deg, from the tables, held at 16 above Mach 0.6)
+STALL_ALPHA = [12, 12, 12, 12, 10, 14, 16, 16, 16, 16, 16]
+# and its lift curve slope, per deg (-4 to 4 deg)
+LIFT_SLOPE = [0.1138, 0.1138, 0.1138, 0.1138, 0.1162, 0.1212, 0.1354, 0.1638, 0.1288, 0.1163, 0.1094]
 
 
 def _odd(xs, ys):
@@ -347,6 +354,25 @@ class Model:
                 for i in range(len(st)):
                     r.declare('rotor/ph/%s%d' % (tg, i), 0.0)
         r.declare('rotor/tr/dw', 0.0)
+        if U.TR_MODEL == 'blades':
+            for k in range(U.NB_TR):
+                r.declare('rotor/tr/b%d/beta-rad' % k, U.PRECONE_TR)
+                r.declare('rotor/tr/b%d/betadot-rad_sec' % k, 0.0)
+            r.declare('rotor/tr/v0-fps', 0.0)
+        if U.TR_MODEL == 'blades' and getattr(U, 'TR_DYN_STALL', None):
+            # the tail rotor's section angles of attack of the frame before (the aerodynamic functions keep their last
+            # values until they run again), for their rates in the stall delay
+            # and whether each has stalled: its delayed angle past the static stall angle (SC1095's angle of maximum lift),
+            # until the angle falls 4 deg below that again; Gormont's reattachment delay applies only then
+            r.channel('tail rotor section angles')
+            for k in range(U.NB_TR):
+                for j in range(U.NSEG_TR):
+                    e, q = 'aero/rotor/tr/b%d/s%d' % (k, j), 'rotor/tr/b%d/s%d' % (k, j)
+                    r.declare(q + '/stalled', 0)
+                    r.fn(q + '/alpha-prev', p(e + '/alpha-deg'))
+                    ass = T1(e + '/mach', AF.MACH, STALL_ALPHA)
+                    r.fn(q + '/stalled-next', IFTHEN(GT(ABS(p(e + '/alpha-lift-deg')), ass), v(1),
+                                                     IFTHEN(LT(ABS(p(e + '/alpha-deg')), D(ass, v(4))), v(0), p(q + '/stalled'))), out=q + '/stalled')
         r.channel('shaft kinematics')
         # body rates (inertial) in shaft axes
         r.fn('rotor/ps', S(M(v(ci), p('velocities/p-rad_sec')), M(v(si), p('velocities/r-rad_sec'))))
@@ -498,6 +524,9 @@ class Model:
             r.fn('rotor/v0-next', MAX(v(0), S(p('rotor/v0-fps'), M(p('simulation/dt'), Q(D(
                 Q(p('aero/rotor/thrust-lbs'), M(p('atmosphere/rho-slugs_ft3'), v(A * (U.TIP_LOSS ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0)))),
                 M(v(2), p('aero/rotor/Vprime-fps'), p('rotor/v0-fps'))), v(8 / (3 * math.pi) * U.R))))), out='rotor/v0-fps')
+        if U.TR_MODEL == 'blades':
+            s.tail_rotor_states()
+            return
         # tail rotor: GenHel's closed-form Bailey solution [GH 5.4-7]. The inflow equation is solved by fixed-point
         # iteration, one (relaxed) step per frame, from the previous frame's thrust and advance ratios.
         r.channel('tail rotor')
@@ -512,6 +541,54 @@ class Model:
         B2 = B ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0     # momentum over the effective disc B^2 A
         dwn = Q(M(v(G), S(M(muz, t31), M(th, t32), M(v(U.TWIST_TR), t33))), S(M(v(2 * B2), SQ(S(mu2, SQR(D(muz, dw)), v(1e-6)))), M(v(G), t31)))
         r.fn('rotor/tr/dw-next', S(dw, M(v(0.5), D(dwn, dw))), out='rotor/tr/dw')
+
+    def tail_rotor_states(s):
+        """The blade-element tail rotor's states (aerodynamics in tail_rotor_blades): each blade's flapping on its centre
+        hinge, as the main rotor's (semi-implicit, at the FDM rate: 15 deg of azimuth a step at 1190 rpm, its flap
+        frequency 0.29 rad a step), and the uniform inflow (Pitt-Peters' momentum, over the effective disc B^2 A):
+        (8 / 3 pi) R dv/dt + 2 V' v = T / (rho A), V' the mass flow through the disc. Its axial part goes to nearly
+        nothing when the rotor moves into its own wake (a left crosswind or a right yaw, the wake blowing left): then
+        the induced velocity grows and the thrust falls away, vortex ring state as momentum theory can't have it."""
+        r = s.rot
+        cK, sK = math.cos(U.CANT_TR), math.sin(U.CANT_TR)
+        dt = p('simulation/dt')
+        W = M(v(U.OMEGA_TR / U.OMEGA), p('rotor/omega-rad_sec'))
+        init_fast = GT(p('ctl/init-fast'), v(0.5))
+        r.channel('tail rotor flapping')
+        # body rates in the hub frame (a0 aft, b0 = t x a0), inertial
+        Pi, Qi, Ri = p('velocities/p-rad_sec'), p('velocities/q-rad_sec'), p('velocities/r-rad_sec')
+        wa, wb = r.fn('rotor/tr/wa', NEG(Pi)), r.fn('rotor/tr/wb', S(M(v(sK), Qi), M(v(cK), Ri)))
+        Pd, Qd, Rd = p('accelerations/pdot-rad_sec2'), p('accelerations/qdot-rad_sec2'), p('accelerations/rdot-rad_sec2')
+        wad, wbd = r.fn('rotor/tr/wad', NEG(Pd)), r.fn('rotor/tr/wbd', S(M(v(sK), Qd), M(v(cK), Rd)))
+        I = U.I_B_TR
+        for k in range(U.NB_TR):
+            b = 'rotor/tr/b%d' % k
+            psi = S(p('rotor/tr/psi-rad'), v(k * math.pi / 2))
+            c, sn = COS(psi), SIN(psi)
+            be = p(b + '/beta-rad')
+            # gyroscopic (Coriolis of the blade's spin in the turning hub frame) and hub angular acceleration terms
+            wr = S(M(c, wa), M(sn, wb)); wed = S(NEG(M(sn, wad)), M(c, wbd))
+            bdd = r.fn(b + '/betaddot', S(Q(S(
+                p('aero/rotor/tr/b%d/Mflap' % k),
+                NEG(M(v(U.K_FLAP_TR), D(be, v(U.PRECONE_TR)))),
+                NEG(M(v(2 * I), W, wr))), v(I)),
+                NEG(M(SQR(W), COS(be), SIN(be))), wed),
+                desc='flap acceleration: aerodynamic and spring moments, gyroscopic, centrifugal stiffness, hub angular acceleration')
+            bd_new = S(p(b + '/betadot-rad_sec'), M(bdd, dt))
+            b_new = S(be, M(bd_new, dt))
+            lo, hi = U.FLAP_STOP_TR
+            r.fn(b + '/betadot-next', IFTHEN(LT(b_new, v(lo)), MAX(bd_new, v(0)), IFTHEN(GT(b_new, v(hi)), MIN(bd_new, v(0)), bd_new)),
+                 out=b + '/betadot-rad_sec')
+            r.fn(b + '/beta-next', IFTHEN(M(init_fast, LT(W, v(20))), v(U.PRECONE_TR),
+                                          MAX(v(lo), MIN(v(hi), S(be, M(p(b + '/betadot-rad_sec'), dt))))), out=b + '/beta-rad')
+        r.channel('tail rotor inflow')
+        A = math.pi * U.R_TR ** 2 * (U.TIP_LOSS_TR ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0)
+        v0 = p('rotor/tr/v0-fps')
+        Vm = r.fn('rotor/tr/Vprime-fps', SQ(S(SQR(p('aero/rotor/tr/Vinplane-fps')), SQR(S(p('aero/rotor/tr/Vaxial-fps'), v0)), v(25.0))),
+                  desc='mass flow velocity through the disc (with a 5 ft/s floor, as the main rotor)')
+        # (it reverses with the thrust: full right pedal)
+        r.fn('rotor/tr/v0-next', S(v0, M(dt, Q(D(Q(p('aero/rotor/tr/rotor-thrust-lbs'), M(p('atmosphere/rho-slugs_ft3'), v(A))),
+                                                M(v(2), Vm, v0)), v(8 / (3 * math.pi) * U.R_TR)))), out='rotor/tr/v0-fps')
 
     # ------------------------------------------------------------ unsteady wake (FCS)
     def wake_turbulence(s):
@@ -782,23 +859,208 @@ class Model:
         s.add(Fb, Mb)
 
     # ------------------------------------------------------------ tail rotor [GH 5.4]
-    def tail_rotor(s):
-        """Bailey's closed-form rotor (inflow solved in the FCS), canted 20 deg, with the main rotor wash, the
-        fuselage sidewash and dynamic pressure loss of the fin maps, and the fin blockage factor below 30 kt."""
+    def psi_flow(s):
+        """direction of the in-plane flight path at the main rotor hub (deg from the nose, to the right), for the
+        ring-wake tables [mrwake.py]; defined once"""
+        if not s.g.has('aero/rotor/psi-flow-deg'):
+            ps = ATAN2(p('aero/rotor/uhy'), p('aero/rotor/uhx'))
+            s.g.fn('aero/rotor/psi-flow-deg', M(v(180 / math.pi), IFTHEN(LT(ps, v(0)), S(ps, v(2 * math.pi)), ps)),
+                   'direction of the in-plane flight path at the hub, from the nose to the right')
+
+    def tr_hub_velocity(s):
+        """The hub's velocity relative to the air (body axes): flight, rotation, the main rotor's wake (the ring-wake model
+        over the disc, TR_WASH 'vortex', or GenHel's empennage factors), the fuselage sidewash and the fin maps' dynamic
+        pressure loss [GH 5.4-5, 5.4-6]."""
         g = s.g
-        cn, sn_ = math.cos(U.CANT_TR), math.sin(U.CANT_TR)
-        t = (0.0, cn, -sn_)          # thrust axis: right and up
         rx, ry, rz = s.arm_cg(U.FS_TR, U.BL_TR, U.WL_TR)
         rx, ry, rz = [g.fn('aero/rotor/tr/r%s-ft' % a, e) for a, e in zip('xyz', (rx, ry, rz))]
         Pa, Qa, Ra = p('velocities/p-aero-rad_sec'), p('velocities/q-aero-rad_sec'), p('velocities/r-aero-rad_sec')
         kq, v0 = p('aero/emp/kqv'), p('aero/rotor/vi-fps')
-        ekx, ekz = p('aero/emp/ekx'), p('aero/emp/ekz')
-        ux, uy = p('aero/rotor/uhx'), p('aero/rotor/uhy')
+        wash = getattr(U, 'TR_WASH', 'genhel')
+        if wash == 'vortex':
+            # the main rotor's wake from the ring-wake model [mrwake.py] against the skew, the direction it is blown
+            # and the disc's tilt, mean over the tail rotor's disc: the hub's velocity relative to the air is less it
+            mw = mrwake.load()
+            s.psi_flow()
+            k = [g.fn('aero/rotor/tr/k-mr-%s' % a, T3('aero/rotor/chi-deg', 'aero/rotor/psi-flow-deg', 'aero/rotor/a1-deg', mw['chi'], mw['psi'],
+                                                       mw['a1'], [[[c[i] for c in row] for row in tab] for tab in mw['k']]),
+                      'main rotor induced velocity over the tail rotor disc, over its mean inflow') for i, a in enumerate('xyz')]
+            wx, wy, wz = [NEG(M(ki, v0)) for ki in k]
+            if getattr(U, 'TR_WASH_BLEND', None):
+                # near the hover the ideal ring wake (no contraction, no tip-vortex roll-up) leaves the tail rotor outside
+                # the wake; GenHel's measured empennage factors put 0.4 of the inflow on it there. Blend from GenHel's at
+                # a skew of TR_WASH_BLEND[0] to the ring wake at TR_WASH_BLEND[1]
+                c0, c1 = U.TR_WASH_BLEND
+                bw = g.fn('aero/rotor/tr/wash-blend', MAX(v(0), MIN(v(1), Q(D(p('aero/rotor/chi-deg'), v(c0)), v(c1 - c0)))),
+                          '0: GenHel\'s wash factors, 1: the ring wake')
+                ekx, ekz = p('aero/emp/ekx'), p('aero/emp/ekz')
+                ux, uy = p('aero/rotor/uhx'), p('aero/rotor/uhy')
+                gx, gy, gz = M(ekx, v0, ux), M(ekx, v0, uy), NEG(M(ekz, v0))
+                wx, wy, wz = [S(M(bw, a), M(D(v(1), bw), b)) for a, b in ((wx, gx), (wy, gy), (wz, gz))]
+        elif wash == 'none':
+            wx = wy = wz = v(0)
+        else:
+            ekx, ekz = p('aero/emp/ekx'), p('aero/emp/ekz')
+            ux, uy = p('aero/rotor/uhx'), p('aero/rotor/uhy')
+            wx, wy, wz = M(ekx, v0, ux), M(ekx, v0, uy), NEG(M(ekz, v0))
         ufwd = MAX(v(0), p('velocities/u-aero-fps'))
-        vb = [g.fn('aero/rotor/tr/V%s-fps' % a, e) for a, e in zip('xyz', (
-            S(M(kq, p('velocities/u-aero-fps')), D(M(Qa, rz), M(Ra, ry)), M(ekx, v0, ux)),
-            S(M(kq, p('velocities/v-aero-fps')), D(M(Ra, rx), M(Pa, rz)), M(ekx, v0, uy), NEG(M(ufwd, p('aero/emp/sigma-deg'), kq, v(math.pi / 180)))),
-            S(M(kq, p('velocities/w-aero-fps')), D(M(Pa, ry), M(Qa, rx)), NEG(M(ekz, v0)))))]
+        return [g.fn('aero/rotor/tr/V%s-fps' % a, e) for a, e in zip('xyz', (
+            S(M(kq, p('velocities/u-aero-fps')), D(M(Qa, rz), M(Ra, ry)), wx),
+            S(M(kq, p('velocities/v-aero-fps')), D(M(Ra, rx), M(Pa, rz)), wy, NEG(M(ufwd, p('aero/emp/sigma-deg'), kq, v(math.pi / 180)))),
+            S(M(kq, p('velocities/w-aero-fps')), D(M(Pa, ry), M(Qa, rx)), wz)))]
+
+    def tr_blockage(s):
+        vkt = Q(p('velocities/vt-fps'), v(1.68781))
+        return s.g.fn('aero/rotor/tr/k-blockage', IFTHEN(LT(vkt, v(U.VBLK_TR)), S(v(U.KBLK_TR), M(v((1 - U.KBLK_TR) / U.VBLK_TR ** 2), SQR(vkt))), v(1)),
+                      'fin blockage [GH 5.4-8]')
+
+    def tr_wake_on_fin(s, Vt, Va, Vb, vi):
+        """the tail rotor wake's skew and direction and its induced velocity, for the fin's sidewash (empennage)"""
+        g = s.g
+        g.fn('aero/rotor/tr/vi-fps', vi, 'induced velocity at the disc')
+        g.fn('aero/rotor/tr/chi-deg', M(v(180 / math.pi), ATAN2(p('aero/rotor/tr/Vinplane-fps'), S(Vt, vi))),
+             'wake skew from the axis (0: straight along -t; over 90: blown back through the disc)')
+        ps = ATAN2(NEG(Vb), NEG(Va))
+        g.fn('aero/rotor/tr/psi-wake-deg', M(v(180 / math.pi), IFTHEN(LT(ps, v(0)), S(ps, v(2 * math.pi)), ps)),
+             'direction the wake leaves in the disc plane, from aft towards down')
+
+    def tail_rotor(s):
+        if U.TR_MODEL == 'blades':
+            return s.tail_rotor_blades()
+        s.tail_rotor_bailey()
+
+    def tail_rotor_blades(s):
+        """Blade-element tail rotor, canted 20 deg, top blade aft: four blades flapping on a centre hinge (states in
+        tail_rotor_states), with delta-3, each of NSEG_TR segments at its own angle of attack and Mach number in the
+        SC1095 tables, in the air at the hub (tr_hub_velocity) plus its own motion and the induced inflow. Thrust,
+        in-plane force and the blades' moments on the hub (the torque among them: the drive's reaction on the
+        airframe) all come from the blades; the fin blockage is the fin's own force in the rotor's wake (TR_BLOCKAGE 'fin',
+        empennage) or GenHel's factor on the thrust.
+
+        Hub frame: t the thrust axis (right and up), a0 aft (a blade at zero azimuth, as in the model's tail rotor),
+        b0 = t x a0 (down); a blade at azimuth psi lies along r = cos psi a0 + sin psi b0 and moves along
+        e = -sin psi a0 + cos psi b0; flapped by beta (towards t) it lies along d = cos b r + sin b t, normal
+        n = -sin b r + cos b t."""
+        g = s.g
+        cK, sK = math.cos(U.CANT_TR), math.sin(U.CANT_TR)
+        t, a0, b0 = (0.0, cK, -sK), (-1.0, 0.0, 0.0), (0.0, sK, cK)
+        dot = lambda u, x: S(*[M(v(cu), xe) for cu, xe in zip(u, x) if cu != 0])
+        vb = s.tr_hub_velocity()
+        Va = g.fn('aero/rotor/tr/Va-fps', dot(a0, vb)); Vb = g.fn('aero/rotor/tr/Vb-fps', dot(b0, vb))
+        Vt = g.fn('aero/rotor/tr/Vaxial-fps', S(dot(t, vb), M(p('aero/rotor/vi-fps'), p('rotor/turb/tr'))),
+                  'hub velocity along the thrust axis, relative to the air')
+        g.fn('aero/rotor/tr/Vinplane-fps', SQ(S(SQR(Va), SQR(Vb), v(1e-6))))
+        rates = (p('velocities/p-aero-rad_sec'), p('velocities/q-aero-rad_sec'), p('velocities/r-aero-rad_sec'))
+        wa, wb, wt = [g.fn('aero/rotor/tr/w%s' % n, dot(u, rates)) for n, u in (('a', a0), ('b', b0), ('t', t))]
+        W = g.fn('aero/rotor/tr/omega-rad_sec', M(v(U.OMEGA_TR / U.OMEGA), p('rotor/omega-rad_sec')))
+        v0 = p('rotor/tr/v0-fps')
+        rho, a_snd = p('atmosphere/rho-slugs_ft3'), p('atmosphere/a-fps')
+        segs, edges = U.segments(U.NSEG_TR, U.R_ROOT_TR, U.R_TR)
+        a_rows, cl_tab, cd_tab = section_tables()
+        Fa, Fb, Ft_, Ma, Mb, Mt = [], [], [], [], [], []
+        ds = U.TR_DYN_STALL == 'gormont'
+        for k in range(U.NB_TR):
+            b = 'aero/rotor/tr/b%d' % k
+            psi = g.fn(b + '/psi', S(p('rotor/tr/psi-rad'), v(k * math.pi / 2)))
+            c, sn = g.fn(b + '/cpsi', COS(psi)), g.fn(b + '/spsi', SIN(psi))
+            beta, bd = p('rotor/tr/b%d/beta-rad' % k), p('rotor/tr/b%d/betadot-rad_sec' % k)
+            cb, sb = g.fn(b + '/cbeta', COS(beta)), g.fn(b + '/sbeta', SIN(beta))
+            vr = g.fn(b + '/Vr', S(M(c, Va), M(sn, Vb)))
+            ve = g.fn(b + '/Ve', S(NEG(M(sn, Va)), M(c, Vb)))
+            wr, we = S(M(c, wa), M(sn, wb)), g.fn(b + '/we', S(NEG(M(sn, wa)), M(c, wb)))
+            vn = g.fn(b + '/Vn', S(NEG(M(sb, vr)), M(cb, S(Vt, v0))), 'hub velocity and inflow along the blade normal')
+            vd = g.fn(b + '/Vd', S(M(cb, vr), M(sb, S(Vt, v0))), 'spanwise')
+            rote = g.fn(b + '/rot-e', D(M(wt, cb), M(wr, sb)), 'body rotation: velocity along e per ft of radius')
+            th0 = g.fn(b + '/theta-deg', D(S(p('ctl/thetaTR-deg'), v(U.BIAS_TR)), M(v(U.K1_TR * 180 / math.pi), beta)),
+                       'pitch at the centre: cuff + bias - tan(delta-3) x flap [GH 5.4-7]')
+            fn_j, ft_j, fr_j, mf_j, mt_j = [], [], [], [], []
+            for j, (rr, dr) in enumerate(segs):
+                e = b + '/s%d' % j
+                UT = g.fn(e + '/UT', S(ve, M(v(rr), rote), M(W, v(rr), cb)))
+                UP = g.fn(e + '/UP', S(vn, NEG(M(v(rr), we)), M(v(rr), bd)), 'flow through the blade, from the thrust side +')
+                V2 = g.fn(e + '/V2', S(SQR(UT), SQR(UP), v(1e-4)))
+                Vv = g.fn(e + '/V', SQ(V2))
+                th = S(th0, v(math.degrees(U.TWIST_TR) * rr / U.R_TR))
+                ar = g.fn(e + '/alpha-raw', D(th, M(v(180 / math.pi), ATAN2(UP, UT))))
+                g.fn(e + '/alpha-deg', IFTHEN(GT(ar, v(180)), D(ar, v(360)), IFTHEN(LT(ar, v(-180)), S(ar, v(360)), ar)))
+                g.fn(e + '/mach', MIN(Q(Vv, a_snd), v(1.0)))
+                if ds:
+                    cl, cd = s.stall_delay(e, 'rotor/tr/b%d/s%d/alpha-prev' % (k, j), Vv, a_rows, cl_tab, cd_tab)
+                else:
+                    cl = g.fn(e + '/cl', T2(e + '/alpha-deg', e + '/mach', a_rows, AF.MACH, cl_tab))
+                    cd = g.fn(e + '/cd', S(T2(e + '/alpha-deg', e + '/mach', a_rows, AF.MACH, cd_tab), v(U.DCD)))
+                r_in, r_out = edges[j], edges[j + 1]
+                fl = max(0.0, min(1.0, (U.TIP_LOSS_TR * U.R_TR - r_in) / (r_out - r_in)))
+                Lk = g.fn(e + '/Lk', M(v(0.5 * U.CHORD_TR * dr * fl), rho, Vv, cl), 'lift / V')
+                Dk = g.fn(e + '/Dk', M(v(0.5 * U.CHORD_TR * dr), rho, cd, SQ(S(V2, SQR(vd)))), 'drag / V')
+                Fn = g.fn(e + '/Fn', D(M(Lk, UT), M(Dk, UP)), 'force along the blade normal (thrust side), lbf')
+                Ft = g.fn(e + '/Ft', NEG(S(M(Lk, UP), M(Dk, UT))), 'force along the blade motion, lbf')
+                fn_j.append(Fn); ft_j.append(Ft); fr_j.append(NEG(M(Dk, vd))); mf_j.append(M(v(rr), Fn)); mt_j.append(M(v(rr), Ft))
+            Fn_k, Ft_k, Fr_k = g.fn(b + '/Fn', S(*fn_j)), g.fn(b + '/Ft', S(*ft_j)), g.fn(b + '/Fr', S(*fr_j))
+            g.fn(b + '/Mflap', S(*mf_j), 'aerodynamic flap moment about the hinge, ft lbf (towards the thrust side +)')
+            Mte = g.fn(b + '/Me', S(*mt_j), 'moment of the forces along the blade motion, ft lbf')
+            # on the hub (hinge at the centre: no flap moment): forces, and r Ft (cos b t - sin b r)
+            rad = g.fn(b + '/F-radial', D(M(Fr_k, cb), M(Fn_k, sb)))
+            Fa.append(D(M(rad, c), M(Ft_k, sn))); Fb.append(S(M(rad, sn), M(Ft_k, c))); Ft_.append(S(M(Fn_k, cb), M(Fr_k, sb)))
+            Ma.append(NEG(M(Mte, sb, c))); Mb.append(NEG(M(Mte, sb, sn))); Mt.append(M(Mte, cb))
+        Fha, Fhb = g.fn('aero/rotor/tr/Fa-lbs', S(*Fa), 'in-plane force, aft'), g.fn('aero/rotor/tr/Fb-lbs', S(*Fb))
+        T = g.fn('aero/rotor/tr/rotor-thrust-lbs', S(*Ft_), 'the blades\' thrust')
+        Mha, Mhb, Mht = [g.fn('aero/rotor/tr/M%s-ftlb' % n, S(*x)) for n, x in (('a', Ma), ('b', Mb), ('t', Mt))]
+        Qtr = g.fn('aero/rotor/tr/torque-ftlb', NEG(Mht), 'aerodynamic torque (against the rotation)')
+        g.fn('aero/rotor/tr/power-hp', Q(M(Qtr, W), v(550)))
+        # fin blockage: the fin's own force in the tail rotor's wake (empennage), or GenHel's factor on the thrust
+        if U.TR_BLOCKAGE == 'fin':
+            s.tr_wake_on_fin(Vt, Va, Vb, v0)
+            kb = g.fn('aero/rotor/tr/k-blockage', v(1), 'none on the thrust: the fin\'s own force in the wake')
+        else:
+            kb = s.tr_blockage()
+        Tn = g.fn('aero/rotor/tr/thrust-lbs', M(T, kb), 'net of the fin blockage')
+        # body axes: x = -a, y = sK b + cK t, z = cK b - sK t
+        Fx, Fy, Fz = NEG(Fha), S(M(v(sK), Fhb), M(v(cK), Tn)), D(M(v(cK), Fhb), M(v(sK), Tn))
+        Mx, My, Mz = NEG(Mha), S(M(v(sK), Mhb), M(v(cK), Mht)), D(M(v(cK), Mhb), M(v(sK), Mht))
+        Fx, Fy, Fz = [g.fn('aero/rotor/tr/F%s-lbs' % n, e) for n, e in zip('XYZ', (Fx, Fy, Fz))]
+        ax, ay, az = s.arm_rp(U.FS_TR, U.BL_TR, U.WL_TR)
+        Mo = (S(D(M(ay, Fz), M(az, Fy)), Mx), S(D(M(az, Fx), M(ax, Fz)), My), S(D(M(ax, Fy), M(ay, Fx)), Mz))
+        s.add((Fx, Fy, Fz), Mo)
+
+    def stall_delay(s, e, prev, Vv, a_rows, cl_tab, cd_tab):
+        """Gormont's dynamic stall delay [USAAMRDL TR 72-67, eqs. 39-45] on a section e: the static tables are entered
+        at alpha - K1 gamma sqrt|c alpha' / 2V| sign(alpha') (K1 1 pitching up, 0.5 down; gamma from the thickness
+        ratio, falling to nothing at high Mach, one for lift and one for drag and moment), the lift carried back to the
+        section's own angle along the lift curve slope: the linear lift less the stall's shortfall at the delayed angle
+        (Gormont scales by (alpha - alpha0) / (alpha_ref - alpha0), the same in the linear range but singular near zero
+        lift; held within +-2.2). alpha' from the frame before's angle (prev). Faded out in reverse flow (|alpha| > 35 deg)
+        and below 60-120 ft/s, where the angle swings through the blade's own wake rather than pitching. The reattachment delay (K1 0.5 with the angle falling) only once the section has
+        stalled (the flag kept in the FCS): a section that never separated has nothing to reattach."""
+        g = s.g
+        d = 0.06 - U.TC_SC1095
+        gl, m1l, m0l = 1.4 - 6.0 * d, 0.4 + 5.0 * d, 0.9 + 2.5 * d
+        gd, m1d, m0d = 1.0 - 2.5 * d, 0.2, 0.7 + 2.5 * d
+        a = p(e + '/alpha-deg')
+        da = D(a, p(prev))
+        da = IFTHEN(GT(da, v(180)), D(da, v(360)), IFTHEN(LT(da, v(-180)), S(da, v(360)), da))
+        ad = g.fn(e + '/alpha-dot', Q(M(v(math.pi / 180), da), p('simulation/dt')), 'rad/s')
+        rt = SQ(MIN(v(0.05), Q(M(v(0.5 * U.CHORD_TR), ABS(ad)), MAX(Vv, v(60)))))
+        fade = M(MAX(v(0), MIN(v(1), Q(D(Vv, v(60)), v(60)))), LT(ABS(a), v(35)))
+        k1 = IFTHEN(LT(ad, v(0)), M(v(-U.DS_K1_DOWN), p(prev.replace('alpha-prev', 'stalled'))), v(1.0))
+        base = M(v(180 / math.pi), k1, rt, fade)
+        dl = g.fn(e + '/dalpha-lift-deg', M(base, T1(e + '/mach', [0, m1l, m0l, 1.0], [gl, gl, 0, 0])), 'stall delay')
+        dd = M(base, T1(e + '/mach', [0, m1d, m0d, 1.0], [gd, gd, 0, 0]))
+        g.fn(e + '/alpha-lift-deg', D(a, dl))
+        g.fn(e + '/alpha-drag-deg', D(a, dd))
+        slope = T1(e + '/mach', AF.MACH, LIFT_SLOPE)
+        cl = g.fn(e + '/cl', MAX(v(-2.2), MIN(v(2.2), S(T2(e + '/alpha-lift-deg', e + '/mach', a_rows, AF.MACH, cl_tab), M(slope, dl)))))
+        cd = g.fn(e + '/cd', S(T2(e + '/alpha-drag-deg', e + '/mach', a_rows, AF.MACH, cd_tab), v(U.DCD)))
+        return cl, cd
+
+    def tail_rotor_bailey(s):
+        """Bailey's closed-form rotor (inflow solved in the FCS), canted 20 deg, in the air of tr_hub_velocity, with the
+        fin blockage as the blade-element rotor's."""
+        g = s.g
+        cn, sn_ = math.cos(U.CANT_TR), math.sin(U.CANT_TR)
+        t = (0.0, cn, -sn_)          # thrust axis: right and up
+        vb = s.tr_hub_velocity()
+        v0 = p('aero/rotor/vi-fps')
         Vax = g.fn('aero/rotor/tr/Vaxial-fps', S(M(v(t[1]), vb[1]), M(v(t[2]), vb[2]), M(v0, p('rotor/turb/tr'))), 'along the thrust axis')
         V2 = S(SQR(vb[0]), SQR(vb[1]), SQR(vb[2]))
         Vip = g.fn('aero/rotor/tr/Vinplane-fps', SQ(MAX(v(1e-6), D(V2, SQR(Vax)))))
@@ -810,8 +1072,13 @@ class Model:
         dw = p('rotor/tr/dw')
         lam = g.fn('aero/rotor/tr/lambda', D(muz, dw))
         vkt = Q(p('velocities/vt-fps'), v(1.68781))
-        kb = g.fn('aero/rotor/tr/k-blockage', IFTHEN(LT(vkt, v(U.VBLK_TR)), S(v(U.KBLK_TR), M(v((1 - U.KBLK_TR) / U.VBLK_TR ** 2), SQR(vkt))), v(1)),
-                  'fin blockage [GH 5.4-8]')
+        if U.TR_BLOCKAGE == 'fin':
+            cK_, sK_ = math.cos(U.CANT_TR), math.sin(U.CANT_TR)
+            s.tr_wake_on_fin(Vax, NEG(vb[0]), S(M(v(sK_), vb[1]), M(v(cK_), vb[2])), M(dw, ORv))
+            kb = g.fn('aero/rotor/tr/k-blockage', v(1), 'none on the thrust: the fin\'s own force in the wake')
+        else:
+            kb = g.fn('aero/rotor/tr/k-blockage', IFTHEN(LT(vkt, v(U.VBLK_TR)), S(v(U.KBLK_TR), M(v((1 - U.KBLK_TR) / U.VBLK_TR ** 2), SQR(vkt))), v(1)),
+                      'fin blockage [GH 5.4-8]')
         A = math.pi * U.R_TR ** 2
         rho = p('atmosphere/rho-slugs_ft3')
         ct = g.fn('aero/rotor/tr/ct', M(v(2 * (U.TIP_LOSS_TR ** 2 if getattr(U, 'TIP_LOSS_INFLOW', False) else 1.0)), dw, SQ(S(SQR(mu), SQR(lam)))))
@@ -880,6 +1147,8 @@ class Model:
         for k in range(U.NB_TR):                                       # the tail rotor's blades: azimuth and flap
             o.fn('out/tr-b%d-position' % k, wrap(S(M(v(R2D), p('rotor/tr/psi-rad')), v(90.0 * k))),
                  out='/rotors/tail/blade[%d]/position-deg' % k)
+            if U.TR_MODEL == 'blades':
+                o.fn('out/tr-b%d-flap' % k, M(v(R2D), p('rotor/tr/b%d/beta-rad' % k)), out='/rotors/tail/blade[%d]/flap-deg' % k)
         o.fn('out/tr-incidence', D(p('ctl/thetaTR-deg'), v(10)), out=['/rotors/tail/blade[0]/incidence-deg', '/rotors/tail/blade/incidence-deg'])
         Qmr = p('aero/rotor/torque-ftlb')
         o.fn('out/total-torque', Qmr, out='/rotors/gear/total-torque')
@@ -1025,15 +1294,28 @@ class Model:
         sig = g.fn('aero/emp/sigma-deg', T1('aero/fus/psi-deg', *_odd(sx, sy)))
         Pa, Qa, Ra = p('velocities/p-aero-rad_sec'), p('velocities/q-aero-rad_sec'), p('velocities/r-aero-rad_sec')
 
-        def local(tag, fs, bl, wl, kq, extra):
+        def local(tag, fs, bl, wl, kq, extra, wash=None):
             rx, ry, rz = s.arm_cg(fs, bl, wl)
-            vb = (S(M(kq, p('velocities/u-aero-fps')), D(M(Qa, rz), M(Ra, ry)), M(ekx, v0, ux), extra[0]),
-                  S(M(kq, p('velocities/v-aero-fps')), D(M(Ra, rx), M(Pa, rz)), M(ekx, v0, uy), extra[1]),
-                  S(M(kq, p('velocities/w-aero-fps')), D(M(Pa, ry), M(Qa, rx)), NEG(M(ekz, v0)), extra[2]))
+            wx, wy, wz = wash or (M(ekx, v0, ux), M(ekx, v0, uy), NEG(M(ekz, v0)))
+            vb = (S(M(kq, p('velocities/u-aero-fps')), D(M(Qa, rz), M(Ra, ry)), wx, extra[0]),
+                  S(M(kq, p('velocities/v-aero-fps')), D(M(Ra, rx), M(Pa, rz)), wy, extra[1]),
+                  S(M(kq, p('velocities/w-aero-fps')), D(M(Pa, ry), M(Qa, rx)), wz, extra[2]))
             return [g.fn('aero/emp/%s/V%s-fps' % (tag, a), e) for a, e in zip('xyz', vb)]
 
         # stabilator: x-z plane, incidence = stabilator angle (TED +)
-        Vx, Vy, Vz = local('h', E.FS_H, E.BL_H, E.WL_H, kqh, (v(0), v(0), NEG(M(ufwd, eps, kqh, v(1 / R2D)))))
+        stab_wash = None
+        if getattr(U, 'STAB_WASH', 'genhel') == 'vortex':
+            # GenHel's downwash factor holds for the wake blown aft (where it was calibrated, and where the ring-wake
+            # model [mrwake.py] agrees with it from 40 deg of skew); the ring wake adds how it changes as the wake is
+            # blown sideways or forward, off the tail
+            mw = mrwake.load('stab')
+            s.psi_flow()
+            kz = g.fn('aero/emp/h/k-mr-z', T3('aero/rotor/chi-deg', 'aero/rotor/psi-flow-deg', 'aero/rotor/a1-deg', mw['chi'], mw['psi'], mw['a1'],
+                                               [[[c[2] for c in row] for row in tab] for tab in mw['k']]))
+            kz0 = g.fn('aero/emp/h/k-mr-z0', T2('aero/rotor/chi-deg', 'aero/rotor/a1-deg', mw['chi'], mw['a1'],
+                                                 [[mw['k'][ia][ic][0][2] for ia in range(len(mw['a1']))] for ic in range(len(mw['chi']))]))
+            stab_wash = (M(ekx, v0, ux), M(ekx, v0, uy), NEG(M(S(ekz, D(kz, kz0)), v0)))
+        Vx, Vy, Vz = local('h', E.FS_H, E.BL_H, E.WL_H, kqh, (v(0), v(0), NEG(M(ufwd, eps, kqh, v(1 / R2D)))), stab_wash)
         Vn = g.fn('aero/emp/h/V-fps', MAX(SQ(S(SQR(Vx), SQR(Vz))), v(0.01)))
         ah = g.fn('aero/emp/h/alpha-raw', S(M(v(R2D), ATAN2(Vz, Vx)), p('stab/pos-deg')))
         ah = g.fn('aero/emp/h/alpha-deg', IFTHEN(GT(ah, v(180)), D(ah, v(360)), IFTHEN(LT(ah, v(-180)), S(ah, v(360)), ah)))
@@ -1048,20 +1330,58 @@ class Model:
         rx, ry, rz = s.arm_rp(E.FS_H, E.BL_H, E.WL_H)
         s.add((Fx, None, Fz), (M(ry, Fz), D(M(rz, Fx), M(rx, Fz)), NEG(M(ry, Fx))))
 
-        # fin: x-y plane, incidence 0
-        Vx, Vy, Vz = local('v', E.FS_V, E.BL_V, E.WL_V, kqv, (v(0), NEG(M(ufwd, sig, kqv, v(1 / R2D))), v(0)))
-        Vn = g.fn('aero/emp/v/V-fps', MAX(SQ(S(SQR(Vx), SQR(Vy))), v(0.01)))
-        g.fn('aero/emp/v/beta-deg', M(v(R2D), ATAN2(Vy, Vx)))
-        xs, ys = _mirror180(*FUS.merge(E.LO, E.CLV_LO, E.HI, E.CLV_HI), negate=True)
-        cl = g.fn('aero/emp/v/cl', T1('aero/emp/v/beta-deg', xs, ys))
-        xs, ys = _mirror180(*FUS.merge(E.LO, E.CDV_LO, E.HI, E.CDV_HI), negate=False)
-        cd = g.fn('aero/emp/v/cd', T1('aero/emp/v/beta-deg', xs, ys))
-        qs = g.fn('aero/emp/v/qS', M(v(0.5 * E.S_V), p('atmosphere/rho-slugs_ft3'), SQR(Vn)))
-        # lift (sb, -cb, 0): positive with flow from the right pushes the tail left
-        Fx = g.fn('aero/emp/v/Fx-lbs', M(qs, Q(D(M(cl, Vy), M(cd, Vx)), Vn)))
-        Fy = g.fn('aero/emp/v/Fy-lbs', M(qs, Q(NEG(S(M(cl, Vx), M(cd, Vy))), Vn)))
-        rx, ry, rz = s.arm_rp(E.FS_V, E.BL_V, E.WL_V)
-        s.add((Fx, Fy, None), (NEG(M(rz, Fy)), M(rz, Fx), D(M(rx, Fy), M(ry, Fx))))
+        # fin: x-y plane, incidence 0. With the blade-element tail rotor's wake on it (TR_BLOCKAGE 'fin'), in spanwise
+        # strips, each with its own sidewash from the tail rotor [trwake.py]: the hover's blockage and its remainder
+        # in forward flight come from the fin's own lift and drag, not from a factor on the thrust
+        strips = [(E.FS_V, E.WL_V, E.S_V, None, None)]
+        if U.TR_BLOCKAGE == 'fin':
+            import trwake
+            tw = trwake.load()
+            strips = [(st['fs'], st['wl'], st['area'], st['kx'], st['ky']) for st in tw['strips']]
+            # the ring wake gives the fin's drag in the hover as 13.6 % of the thrust (Sikorsky measured 20.4 %);
+            # TR_FIN_K (experiments, default 1) scales its velocity
+            vtr = M(p('aero/rotor/tr/vi-fps'), v(getattr(U, 'TR_FIN_K', 1.0)))
+        fin_wash = None
+        if getattr(U, 'FIN_WASH', 'genhel') == 'vortex':
+            # the main rotor's wake on the fin from the ring-wake model [mrwake.py] (mean over its planform): it follows
+            # where the wake is blown, where GenHel's factors put the wash along the flight path at any azimuth
+            mw = mrwake.load('fin')
+            s.psi_flow()
+            kf = [g.fn('aero/emp/v/k-mr-%s' % a, T3('aero/rotor/chi-deg', 'aero/rotor/psi-flow-deg', 'aero/rotor/a1-deg', mw['chi'], mw['psi'],
+                                                     mw['a1'], [[[c[i] for c in row] for row in tab] for tab in mw['k']]),
+                       'main rotor induced velocity over the fin, over its mean inflow') for i, a in enumerate('xy')]
+            fin_wash = (NEG(M(kf[0], v0)), NEG(M(kf[1], v0)), v(0))
+        xs_l, ys_l = _mirror180(*FUS.merge(E.LO, E.CLV_LO, E.HI, E.CLV_HI), negate=True)
+        xs_d, ys_d = _mirror180(*FUS.merge(E.LO, E.CDV_LO, E.HI, E.CDV_HI), negate=False)
+        FX, FY = [], []
+        for i, (fs, wl, area, kx, ky) in enumerate(strips):
+            tg = 'v' if len(strips) == 1 else 'v%d' % i
+            extra = (v(0), NEG(M(ufwd, sig, kqv, v(1 / R2D))), v(0))
+            if kx:
+                ex = g.fn('aero/emp/%s/k-tr-x' % tg, T2('aero/rotor/tr/chi-deg', 'aero/rotor/tr/psi-wake-deg', tw['chi'], tw['psi'], kx))
+                ey = g.fn('aero/emp/%s/k-tr-y' % tg, T2('aero/rotor/tr/chi-deg', 'aero/rotor/tr/psi-wake-deg', tw['chi'], tw['psi'], ky),
+                          'the tail rotor\'s induced air velocity over the strip, body y, over its inflow')
+                extra = (NEG(M(ex, vtr)), S(extra[1], NEG(M(ey, vtr))), v(0))
+                jet2 = S(SQR(M(ex, vtr)), SQR(M(ey, vtr)))
+            Vx, Vy, Vz = local(tg, fs, E.BL_V, wl, kqv, extra, fin_wash)
+            Vn = g.fn('aero/emp/%s/V-fps' % tg, MAX(SQ(S(SQR(Vx), SQR(Vy))), v(0.01)))
+            g.fn('aero/emp/%s/beta-deg' % tg, M(v(R2D), ATAN2(Vy, Vx)))
+            cl = g.fn('aero/emp/%s/cl' % tg, T1('aero/emp/%s/beta-deg' % tg, xs_l, ys_l))
+            cd = g.fn('aero/emp/%s/cd' % tg, T1('aero/emp/%s/beta-deg' % tg, xs_d, ys_d))
+            cdf = getattr(U, 'TR_FIN_CD', 1.0)
+            if kx and cdf != 1.0:
+                # the fin's drag where the tail rotor's jet makes its flow: scaled to Sikorsky's hover blockage, in
+                # proportion to the jet's share of the strip's dynamic pressure (the jet's velocity stays the ring wake's)
+                cd = g.fn('aero/emp/%s/cd-jet' % tg, M(cd, S(v(1), M(v(cdf - 1), MIN(v(1), Q(jet2, SQR(Vn)))))))
+            qs = g.fn('aero/emp/%s/qS' % tg, M(v(0.5 * area), p('atmosphere/rho-slugs_ft3'), SQR(Vn)))
+            # lift (sb, -cb, 0): positive with flow from the right pushes the tail left
+            Fx = g.fn('aero/emp/%s/Fx-lbs' % tg, M(qs, Q(D(M(cl, Vy), M(cd, Vx)), Vn)))
+            Fy = g.fn('aero/emp/%s/Fy-lbs' % tg, M(qs, Q(NEG(S(M(cl, Vx), M(cd, Vy))), Vn)))
+            rx, ry, rz = s.arm_rp(fs, E.BL_V, wl)
+            s.add((Fx, Fy, None), (NEG(M(rz, Fy)), M(rz, Fx), D(M(rx, Fy), M(ry, Fx))))
+            FX.append(Fx); FY.append(Fy)
+        if len(strips) > 1:
+            g.fn('aero/emp/v/Fx-lbs', S(*FX)); g.fn('aero/emp/v/Fy-lbs', S(*FY))
 
     def axes(s):
         def ax(name, terms):

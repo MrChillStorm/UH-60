@@ -87,6 +87,36 @@ TIP_LOSS_TR = 0.92
 BIAS_TR = 6.0           # deg added to the rigged pitch for the Bailey solution (linear twist equivalent)
 DA0_DT_TR = 0.001455    # deg of coning per lb of thrust (with tan delta-3: pitch-flap)
 KBLK_TR, VBLK_TR = 0.796, 30.0   # fin blockage factor below 30 kt
+# blade-element tail rotor (TR_MODEL 'blades'; 'bailey' is GenHel's closed form): four blades flapping on a hinge at
+# the centre (the bearingless crossbeam), their flap inertia from the Lock number [HB]: the coning that gives per lb of
+# thrust is GenHel's DA0_DT_TR within 15 %; a weak spring (the crossbeam's stiffness, assumed) holds them at precone
+# at rest. Pitch as GenHel rigs it: cuff + BIAS_TR + TWIST_TR r/R - tan(delta-3) x flap; SC1095 sections
+TR_MODEL = 'blades'
+R_ROOT_TR = 0.2 * R_TR      # ft, inboard end of the aerodynamic blade (assumed)
+NSEG_TR = 6
+I_B_TR = 0.0023769 * A_TR * CHORD_TR * R_TR ** 4 / GAMMA_TR     # slug ft^2, flap inertia about the hinge
+K_FLAP_TR = 0.05 * I_B_TR * OMEGA_TR ** 2                        # ft lb / rad: flap frequency 1.02 / rev
+FLAP_STOP_TR = (-15.0 * DEG, 15.0 * DEG)
+# Air at the tail: the main rotor's wake on the tail rotor, the fin and (its change with direction) the stabilator from the
+# ring-wake model [mrwake.py] ('vortex'), or GenHel's empennage wash factors in any direction ('genhel'; 'none': no wash on
+# the tail rotor). Fin blockage: the fin's own lift and drag in the tail rotor's ring wake [trwake.py] ('fin'; 13.6 % of
+# the thrust in the hover, where Sikorsky measured 20.4 %), or GenHel's factor on the thrust, 0.796 fading to 1 by
+# VBLK_TR ('genhel'). TR_FIN_K, TR_FIN_CD: experiments that scale the wake's velocity or the fin's drag in it towards
+# Sikorsky's figure (1.25, 1.65); a velocity scaled up puts the jet near its far-wake speed at the fin, and both make the
+# fin's force grow faster with the tail's sideways motion than the fin moves out of the jet (yaw anti-damping)
+TR_WASH = 'vortex'
+FIN_WASH = 'vortex'
+STAB_WASH = 'vortex'
+TR_BLOCKAGE = 'fin'
+TR_FIN_K = 1.0
+TR_FIN_CD = 1.0
+TR_WASH_BLEND = None        # (chi0, chi1) deg: GenHel's wash on the tail rotor below chi0, the ring wake above chi1
+# Dynamic stall of the blade-element tail rotor's sections: Gormont's stall delay [USAAMRDL TR 72-67, eqs. 39-45], or
+# None (the static tables). The tail rotor turns at 20 Hz: on the retreating side at high speed its sections pitch at a
+# reduced frequency near 0.2, where the lift runs well past the static stall before it breaks
+TR_DYN_STALL = None
+TC_SC1095 = 0.095                    # thickness ratio, for Gormont's stall delay functions
+DS_K1_DOWN = 0.5                     # Gormont's K1 with the angle falling: the reattachment delay, once the section has stalled
 
 # ---------------------------------------------------------------- controls [GH 5.5-20, fig. 6.3.1; HB Table 2]
 COLL_IN = 10.0                       # collective travel, in (0 = down)

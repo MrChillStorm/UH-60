@@ -8,7 +8,7 @@ TERRAIN_FT = -10000.0      # trims: terrain elevation (far below = out of ground
 
 
 def load(root=None, dt=1 / 480.0, model='uh60a', fps=False):        # the rate FlightGear runs (uh60a-set.xml)
-    root = root or os.path.join(HERE, 'root')
+    root = root or os.environ.get('UH60_ROOT') or os.path.join(HERE, 'root')      # UH60_ROOT: a variant (report/mkresults.py --tr)
     f = jsbsim.FGFDMExec(root)
     f.set_debug_level(0)
     for prop in FG_PROPS:
@@ -97,11 +97,15 @@ def residual(f, x, V_kt, alt_ft=1000.0, gamma=0.0, settle_s=1.5, revs=2, wings_l
     for _ in range(int(settle_s / f['simulation/dt'])):
         f.run()
     n = int(round(revs * 2 * math.pi / f['rotor/omega-rad_sec'] / f['simulation/dt']))
+    # Hann-weighted over whole main rotor revolutions: the main rotor's harmonics still cancel, and the tail
+    # rotor's (4.6 of its revolutions per main rotor one) no longer leave a phase-dependent remainder
+    w = np.sin(np.pi * (np.arange(n) + 0.5) / n) ** 2
+    w /= w.sum()
     acc = np.zeros(6); pw = 0.0
-    for _ in range(n):
+    for i in range(n):
         f.run()
-        acc += [f[k] for k in ACC]; pw += f['aero/rotor/power-hp']
-    return acc / n, pw / n
+        acc += w[i] * np.array([f[k] for k in ACC]); pw += w[i] * f['aero/rotor/power-hp']
+    return acc, pw
 
 
 def trim(f, V_kt, alt_ft=1000.0, gamma=0.0, x0=None, tol=None, iters=12, verbose=False, wings_level=False, beta=0.0):
@@ -125,6 +129,8 @@ def trim(f, V_kt, alt_ft=1000.0, gamma=0.0, x0=None, tol=None, iters=12, verbose
         for j in range(6):
             xp = x.copy(); xp[j] += h[j]
             J[:, j] = (residual(f, xp, V_kt, alt_ft, gamma, wings_level=wings_level, beta=beta)[0] - r0) / h[j]
+        if not (np.all(np.isfinite(J)) and np.all(np.isfinite(r0))):
+            break           # the model blew up (returned with the residual as it is)
         dx = np.linalg.lstsq(J * scale[:, None], -r0 * scale, rcond=None)[0]
         lim = np.array([0.05, 0.1, 0.1, 0.1, 3, 3])
         k = np.max(np.abs(dx) / lim)

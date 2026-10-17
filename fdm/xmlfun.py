@@ -36,6 +36,15 @@ def T2(rowvar, colvar, rows, cols, data):
             '<tableData>\n%s\n%s\n</tableData></table>') % (rowvar, colvar, head, body)
 
 
+def T3(rowvar, colvar, tabvar, rows, cols, tabs, data):
+    """data[k][i][j] at tabs[k], rows[i], cols[j]"""
+    head = '        ' + ' '.join('%.6g' % c for c in cols)
+    blocks = ''.join('<tableData breakPoint="%.6g">\n%s\n%s\n</tableData>' % (
+        t, head, '\n'.join('%.6g ' % r + ' '.join('%.6g' % d for d in data[k][i]) for i, r in enumerate(rows))) for k, t in enumerate(tabs))
+    return ('<table><independentVar lookup="row">%s</independentVar><independentVar lookup="column">%s</independentVar>'
+            '<independentVar lookup="table">%s</independentVar>%s</table>') % (rowvar, colvar, tabvar, blocks)
+
+
 class Graph:
     """a list of named functions; fn() returns the property reference"""
 
@@ -46,6 +55,9 @@ class Graph:
         d = '<description>%s</description>' % desc if desc else ''
         s.items.append('<function name="%s">%s%s</function>' % (name, d, body))
         return p(name)
+
+    def has(s, name):
+        return any(i.startswith('<function name="%s">' % name) for i in s.items)
 
     def xml(s):
         return '\n'.join(s.items)
