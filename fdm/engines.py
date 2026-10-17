@@ -24,6 +24,11 @@ GEAR_TR = 124.62 / 27.0
 J_BLADE = 1512.6 + 2 * 1.25 * 86.7 + 256.9 / G0 * 1.25 ** 2   # one blade about the shaft, slug ft^2
 J_ROTOR = 943.9 + 4 * J_BLADE        # [GH] JREST (hub, shafts, gearbox downstream of the clutches) + blades
 J_ENG = 690.6 / 2                    # [GH] JTOTE, per engine, referred to the rotor
+# the part of the rotor's inertia that spins about the shaft: the blades (the hub's share is small; the gears and
+# shafts in JREST and the power turbines spin about other axes, faster). The rotor keeps its own angular momentum:
+# when the airframe yaws, the rotor's speed relative to it changes by the yaw rate (Fletcher NASA TM 110362 eq. 13)
+J_SPIN = 4 * J_BLADE
+SHAFT_TILT = math.radians(3.0)       # forward (uh60data.SHAFT_TILT)
 ACCESSORY_FTLB = 65.8 * 550 / OMEGA0  # accessory drive torque at 100 % rpm: 65.8 hp [Sikorsky, in Yeo JAHS 2004]
 Q100 = 1414.0 * 550 / OMEGA0         # 100 % TRQ: 1414 shp per engine at 100 % rpm (2828 shp transmission)
 
@@ -195,7 +200,13 @@ def build(fcs_name='UH-60A drive'):
     q0, q1 = p('eng[0]/torque-ftlb'), p('eng[1]/torque-ftlb')
     e0, e1 = p('eng[0]/engaged'), p('eng[1]/engaged')
     J = S(v(J_ROTOR), M(v(J_ENG), S(e0, e1)))
-    wdot = f.fn('drive/omega-dot', Q(D(S(M(e0, q0), M(e1, q1)), Qload), J))
+    # rotor speed relative to the airframe: J dW/dt = Q_engines - Q_load + J_spin dr_s/dt (the rotor turns
+    # anticlockwise seen from above; the airframe's yaw acceleration about the shaft, last frame's, is the rotor's own
+    # with the opposite sign relative to the airframe), so a nose-left yaw droops the rotor and the governor's
+    # answer is felt by the airframe as the drive torque's reaction
+    rds = f.fn('drive/r-dot-shaft', S(M(v(math.cos(SHAFT_TILT)), p('accelerations/rdot-rad_sec2')), M(v(-math.sin(SHAFT_TILT)), p('accelerations/pdot-rad_sec2'))),
+               desc='airframe angular acceleration about the main rotor shaft (down +)')
+    wdot = f.fn('drive/omega-dot', Q(S(D(S(M(e0, q0), M(e1, q1)), Qload), M(v(J_SPIN), IFTHEN(GT(init, v(0.5)), v(0), rds))), J))
     w_new = f.fn('drive/omega-new', MAX(v(0), S(W, M(dt, wdot))))
     w_init = M(run0, M(v(OMEGA0 / 100), S(v(100), p('/controls/engines/engine[0]/np-trim'))))
     for n, (q, en) in enumerate(((q0, e0), (q1, e1))):

@@ -457,7 +457,9 @@ class Model:
                 # through the hinge offset, Coriolis from flapping (a blade flapping up speeds up), rotor acceleration
                 cb, sb = COS(be), SIN(be)
                 dl, dld = p(b + '/delta-rad'), p(b + '/deltadot-rad_sec')
-                Wd = IFTHEN(init_fast, v(0), p('drive/omega-dot'))
+                # the hub's own angular acceleration: the rotor speed's relative to the airframe less the airframe's yaw
+                # acceleration about the shaft (the rotor turns anticlockwise seen from above)
+                Wd = IFTHEN(init_fast, v(0), D(p('drive/omega-dot'), p('drive/r-dot-shaft')))
                 ddd = r.fn(b + '/deltaddot', S(
                     Q(S(p('aero/rotor/b%d/Mlag' % k), p(b + '/ldm-mlag')), M(v(U.I_B), SQR(cb))),
                     NEG(M(Q(v(U.E_FLAP * U.S_B / U.I_B), cb), S(M(SQR(W), SIN(dl)), M(Wd, COS(dl))))),
