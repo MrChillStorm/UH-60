@@ -25,12 +25,13 @@ How it was built, and the comparisons test by test, are in the report:
   wake (Peters–He), with ground effect from the hover chart and its fade
   in forward flight. Retreating blade stall, vortex ring state and
   translational lift come out of this, not out of special cases.
-- **Tail rotor** built like the main rotor: four blades flapping on the
-  bearingless crossbeam, six SC1095 segments each, and an inflow that
-  reverses with the thrust and carries on into the vortex ring state, where
-  a left crosswind blows the tail rotor's wake back through it. Its blades
-  can stall. It is canted 20° so that it also lifts. GenHel's closed-form
-  tail rotor can be built instead, for comparison.
+- **Tail rotor:** GenHel's closed form, canted 20° so that it also lifts,
+  in the air that the wake model below gives it. A blade-element tail
+  rotor built like the main rotor (four flapping blades on the bearingless
+  crossbeam, SC1095 sections, an inflow that carries on into the vortex
+  ring state) is in the generator and compared throughout the report; it
+  isn't the default because at full power it stalls at its pitch stop,
+  where the closed form still holds the heading.
 - **Where the main rotor's wake goes:** a ring-vortex wake model decides
   how much of it reaches the tail rotor, fin and stabilator, for any speed
   and wind direction (in fast forward flight it does, in sideward and
@@ -170,9 +171,9 @@ Sikorsky's simulation as NASA ran it.
 | Ground effect, 5–40 ft wheel height | operator's manual | within 0.009 of the torque ratio |
 | Rotor figure of merit | full-scale and model rotor tests | within 0.026 |
 | Main rotor power in cruise, 72–162 kt | USAAEFA 79-24 | within 4.6 % |
-| Pedal hovering in a wind from any direction, 10–40 kt | USAAEFA 77-17 | 0.42 in rms (0.78 with GenHel's wash at the tail) |
-| Tail rotor power in the same | USAAEFA 77-17 | 39 hp low on average |
-| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.27 deg/s (GenHel 2.77), better than GenHel in 10 of 16 cases |
+| Pedal hovering in a wind from any direction, 10–40 kt | USAAEFA 77-17 | 0.36 in rms (0.78 with GenHel's wash at the tail) |
+| Tail rotor power in the same | USAAEFA 77-17 | 43 hp low on average |
+| Control steps, SAS off: rms error of the rate | USAAEFA 79-24 | 2.13 deg/s (GenHel 2.77), better than GenHel in 10 of 16 cases |
 | Pitch rate after a 1 in aft step at 100 kt | 24.1 deg/s | 16.4 (GenHel 19.3) |
 
 ## Known gaps
@@ -191,14 +192,15 @@ Sikorsky's simulation as NASA ran it.
   and up to twice another test's in cruise (half of that gap goes if the
   aircraft flew with 5° of sideslip, which is likely but unpublished). The
   fin's blockage, from the wake model alone, is two-thirds of Sikorsky's
-  measured figure, so in a hover crosswind at altitude the pedal sits
-  0.4 in right of the test. Hover yaw damping: flight identification says
-  more than the model has; the test's own time histories don't settle it.
-- **Trim at 162 kt:** the blade-element tail rotor reaches its static stall
-  from about 158 kt and the trim stops short. The aircraft flew 162 kt
-  with 1.5–2° less tail rotor pitch, so the model lacks anti-torque
-  at the top speed. The lateral cyclic is 8 % and the pedal 11 % away
-  from the test.
+  measured figure. Hover yaw damping: flight identification says more
+  than the model has; the test's own time histories don't settle it.
+- **Engines at full collective** give up to 140 % torque each as the
+  rotor droops, more than a T700 can: a full collective pull overtorques
+  badly and needs full left pedal.
+- **Trim at 162 kt:** the aircraft flew 162 kt with about 1.5° less tail
+  rotor pitch than the model needs, so the model lacks anti-torque at the
+  top speed. The lateral cyclic is 8 % and the pedal 9 % away from the
+  test.
 - **Not modelled:** blade torsion and dynamic stall (heavy and fast, the
   retreating blade stalls early instead; a dynamic stall delay for the
   tail rotor is in the generator as an experiment), rotor damage and overstress,
