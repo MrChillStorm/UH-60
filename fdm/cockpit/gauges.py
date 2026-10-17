@@ -11,7 +11,7 @@ their faces are sharp: dials drawn at 1024 px (about 13 px/mm), supersampled; co
 - the VSI's attitude sphere (Instruments/ai/ai.png): redrawn at 4x, its case black, the slip indicator's tube on the
   ball's path; the sphere's and the slip ball's meshes, smooth (ball);
 - the pilot's and central display units' faces (prop-rpm.png 4x, combimeter.png 2x): redrawn in their old layout,
-  the labels re-typeset and the digits in a seven-segment font, the tapes' band copied pixel for pixel so that
+  the labels re-typeset and the digits drawn in seven segments, the tapes' band copied pixel for pixel so that
   their calibration holds (the originals are in src/).
 
     python3 gauges.py
@@ -24,7 +24,6 @@ import acmesh as A
 import instruments as I
 
 SS = 2                                          # supersampling of the dials
-FG_FONT_DIGITS = 'DSEG/DSEG7/Classic/DSEG7Classic-Bold.ttf'
 WHITE, BLACK = (238, 238, 238), (10, 10, 10)
 
 
@@ -101,6 +100,15 @@ class Gauge:
         if lit and name not in s.lit:
             s.lit.append(name)
 
+    def digits(s, name, n, y0, y1, z0, z1, d, cw, ch, on, off=None, face=None, lit=True):
+        """n digit cells across y0..y1, z0..z1 at depth d onto their own strip of cw x ch pixel cells
+        (instruments.digit_strip, the instrument's texture name-<name>.png); instruments.digits_xml animates them."""
+        tex = I.digit_strip(os.path.join(I.INSTR, s.name, '%s-%s.png' % (s.name, name)), cw, ch, on, off, face)
+        for o in I.digit_cells(tex, name, n, y0, y1, z0, z1, d):
+            s.objs[o.name] = o
+            if lit:
+                s.lit.append(o.name)
+
     def needle(s, name, length, width, tail, d, colour=None, hub=0.0030):
         """A needle pointing up at zero, with its hub."""
         o = s.obj(name); uv = colour or s.white
@@ -140,16 +148,6 @@ def rot(obj, prop, table=None, factor=None, centre=(0, 0, 0), axis=(-1, 0, 0)):
             '    <axis>\n      <x> %g </x>\n      <y> %g </y>\n      <z> %g </z>\n    </axis>\n  </animation>\n' % (tuple(centre) + tuple(axis)))
     return out
 
-
-def text_node(name, prop, fmt, size, y, z, d, font=FG_FONT_DIGITS, scale=None, truncate=False, width=0.03):
-    sc = '    <scale type="double">%g</scale>\n' % scale if scale else ''
-    return ('\n  <text>\n    <name>%s</name>\n    <type type="string">number-value</type>\n    <property>%s</property>\n%s'
-            '    <format type="string">%s</format>\n    <truncate type="bool">%s</truncate>\n    <font>%s</font>\n'
-            '    <character-size type="double">%g</character-size>\n    <character-aspect-ratio type="double">0.75</character-aspect-ratio>\n'
-            '    <axis-alignment>yz-plane</axis-alignment>\n    <max-height>0.03</max-height>\n    <max-width>%g</max-width>\n'
-            '    <alignment>center-center</alignment>\n    <offsets>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n'
-            '      <z-m> %.4f </z-m>\n    </offsets>\n  </text>\n' % (name, prop, sc, fmt, 'true' if truncate else 'false', font, size,
-                                                                      width, d, y, z))
 
 
 def emissive(objs, rgb, cond=None, factor=None):
@@ -258,11 +256,12 @@ def alt():
     g.glass()
     g.xml += rot('needle', 'instrumentation/altimeter/indicated-altitude-ft', factor=0.36)
     g.xml += I.select_xml(['flag10k'], '<less-than><property>instrumentation/altimeter/indicated-altitude-ft</property><value>10000</value></less-than>')
-    g.xml += text_node('thousands', 'instrumentation/altimeter/indicated-altitude-ft', '%2.0f', 0.0062, -0.0100, 0.0007, g.dd + 0.0006,
-                       font='LiberationFonts/LiberationSans-Bold.ttf', scale=0.001, truncate=True)
-    g.xml += text_node('inhg', 'instrumentation/altimeter/setting-inhg', '%4.0f', 0.0050, 0.0090, -0.0109, g.dd + 0.0006,
-                       font='LiberationFonts/LiberationSans-Bold.ttf', scale=100)
-    g.xml += I.light_xml(['thousands', 'inhg'], 'plt-flt')                  # its counters, lit with the dial
+    # its counters, lit with the dial: thousands of feet (the ten thousands' cell under the flag) and IN. HG
+    alt_ft = 'instrumentation/altimeter/indicated-altitude-ft'
+    g.digits('thousands', 2, -0.0170, -0.0035, -0.0030, 0.0045, g.dd + 0.0006, 54, 60, WHITE, face=I.font(50))
+    g.digits('inhg', 4, 0.0018, 0.0162, -0.0135, -0.0083, g.dd + 0.0006, 41, 60, WHITE, face=I.font(46))
+    g.xml += I.digits_xml('thousands', 2, alt_ft, unit=1000, rounding=False, blank=True)
+    g.xml += I.digits_xml('inhg', 4, 'instrumentation/altimeter/setting-inhg', unit=0.01)
     step = 'instrumentation/altimeter/setting-inhg'
     acts = ''
     for button, sgn in ((0, 1), (2, -1), (3, 1), (4, -1)):
@@ -358,9 +357,13 @@ def apn209():
     g.xml += I.select_xml(['hi-light'], '<property>%shi-light</property>' % RA)
     g.xml += emissive(['lo-light', 'hi-light'], (1, 1, 1), factor=I.LIGHTS + 'radalt-lamps')
     g.xml += I.lit_xml(['lo-light', 'hi-light'], I.HDR + 'radalt-lamps')
-    g.xml += text_node('digits', RA + 'digits', '%4.0f', 0.0068, 0.0010, -0.0102, g.dd + 0.0006, width=0.028)
-    g.xml += I.select_xml(['digits'], '<property>%sdigits-vis</property>' % RA)
-    g.xml += emissive(['digits'], (1.0, 0.45, 0.1), factor=I.LIGHTS + 'radalt-lamps')       # HDR: a text node, unlit
+    # the readout: four seven-segment digits, leading zeros blank, lit with the LO and HI lights
+    cells = I.cell_names('digits', 4)
+    g.digits('digits', 4, -0.0120, 0.0130, -0.0140, -0.0065, g.dd + 0.0006, 48, 58, (255, 112, 10), (34, 14, 4), lit=False)
+    g.xml += I.digits_xml('digits', 4, RA + 'digits', blank=True)
+    g.xml += I.select_xml(cells, '<property>%sdigits-vis</property>' % RA)
+    g.xml += emissive(cells, (1, 1, 1), factor=I.LIGHTS + 'radalt-lamps')
+    g.xml += I.lit_xml(cells, I.HDR + 'radalt-lamps')
     g.xml += rot('lo-knob', RA + 'lo-ft', factor=0.5, centre=(0, -0.0310, -0.0280))
     g.xml += rot('hi-knob', RA + 'hi-ft', factor=0.5, centre=(0, 0.0330, -0.0280))
     g.xml += I.pick_xml('lo-knob', [(0, 'avionics.radalt_bug(0, "lo", 1)'), (2, 'avionics.radalt_bug(0, "lo", -1)'),
@@ -533,7 +536,6 @@ def ball(nlat=64, nlon=96):
 
 # ---------------------------------------------------------------- pilot's display unit
 
-DSEG = os.path.expanduser('~/Library/Application Support/FlightGear/fgdata_2024_1/Fonts/DSEG/DSEG7/Classic/DSEG7Classic-Bold.ttf')
 # the original 512 px face's layout (its rows are the tapes' calibration, prop-rpm.xml): value, tick row, label centre row
 PDU_RPM = [(130, 103.5, 106), (120, 131.5, 132), (110, 163.5, 164), (105, 195.5, 195), (100, 227.5, 228), (95, 259.5, 260),
            (90, 291.5, 292), (70, 323.5, 324), (50, 355.5, 354), (0, 371.5, 372)]
@@ -544,9 +546,8 @@ PDU_TRQ_MINOR = [122, 152, 182, 212, 242, 272, 302]
 
 
 def pdu():
-    """The PDU's texture at 4x in its original layout: face redrawn, digits in a seven-segment font, the tapes' band
+    """The PDU's texture at 4x in its original layout: face redrawn, digits drawn in seven segments, the tapes' band
     copied pixel for pixel, the rest upscaled."""
-    from PIL import ImageFont
     src = Image.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'prop-rpm-512.png')).convert('RGB')
     K = 4
     big = src.resize((2048, 2048), Image.LANCZOS)
@@ -575,11 +576,9 @@ def pdu():
     big.paste(face.resize((256 * K, 432 * K), Image.LANCZOS), (0, 0))
     # digits: ten cells of a tenth of the width, seven-segment, on black
     cells = Image.new('RGB', (2048 * SS, 64 * K * SS), (0, 0, 0)); dc = ImageDraw.Draw(cells)
-    f = ImageFont.truetype(DSEG, int(52 * K * SS)) if os.path.exists(DSEG) else I.font(52 * K * SS)
     for k in range(10):
-        cx = (k + 0.5) * 204.8 * SS + 4 * SS
-        dc.text((cx, 32 * K * SS), '8', font=f, fill=(34, 14, 4), anchor='mm')
-        dc.text((cx, 32 * K * SS), str(k), font=f, fill=(255, 112, 10), anchor='mm')
+        cx, cy, hh = (k + 0.5) * 204.8 * SS + 4 * SS, 32 * K * SS, 23.4 * K * SS
+        I.seven_segment(dc, (cx - hh, cy - hh, cx + hh, cy + hh), k, (255, 112, 10), (34, 14, 4))
     big.paste(cells.resize((2048, 64 * K), Image.LANCZOS), (0, 448 * K))
     big.save(os.path.join(I.INSTR, 'prop-rpm', 'prop-rpm.png'), optimize=True)
     vids_lighting('prop-rpm')
@@ -635,7 +634,6 @@ CDU_SMUDGES = [(630, 644, 46, 61), (630, 644, 392, 406), (139, 147, 270, 342), (
 
 def fit_font(text, w, h):
     """The bold font (narrow if need be) whose rendering of `text` is h pixels high and no wider than about w."""
-    from PIL import ImageFont
     for narrow in (False, True):
         lo, hi = 4.0, 400.0
         for _ in range(30):
@@ -648,8 +646,7 @@ def fit_font(text, w, h):
 
 def cdu():
     """The CDU's texture at 2x in its original layout: labels re-typeset, ticks and lines kept, the tapes' band copied
-    pixel for pixel, digits in a seven-segment font."""
-    from PIL import ImageFont
+    pixel for pixel, digits drawn in seven segments."""
     src = Image.open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'combimeter-1024.png')).convert('RGB')
     K = 2
     big = src.resize((2048, 2048), Image.LANCZOS)
@@ -675,11 +672,9 @@ def cdu():
         d.text(((x0 + x1 + 1) / 2 * q, (y0 + y1 + 1) / 2 * q), t, font=f, fill=(240, 240, 240), anchor='mm')
     big.paste(face.resize((690 * K, 432 * K), Image.LANCZOS), (0, 0))
     cells = Image.new('RGB', (2048 * SS, 167 * K * SS), (0, 0, 0)); dc = ImageDraw.Draw(cells)
-    f = ImageFont.truetype(DSEG, int(104 * K * SS)) if os.path.exists(DSEG) else I.font(104 * K * SS)
     for k in range(10):
-        cx = (k + 0.5) * 204.8 * SS + 6 * SS
-        dc.text((cx, (959.5 - 857) * K * SS), '8', font=f, fill=(34, 14, 4), anchor='mm')
-        dc.text((cx, (959.5 - 857) * K * SS), str(k), font=f, fill=(255, 112, 10), anchor='mm')
+        cx, cy, hh = (k + 0.5) * 204.8 * SS + 6 * SS, (959.5 - 857) * K * SS, 46.8 * K * SS
+        I.seven_segment(dc, (cx - hh, cy - hh, cx + hh, cy + hh), k, (255, 112, 10), (34, 14, 4))
     big.paste(cells.resize((2048, 167 * K), Image.LANCZOS), (0, 857 * K))
     big.save(os.path.join(I.INSTR, 'combimeter', 'combimeter.png'), optimize=True)
     vids_lighting('combimeter')

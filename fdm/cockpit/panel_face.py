@@ -15,6 +15,7 @@ import math, os, sys
 import numpy as np
 
 import panel_layout as L
+from instruments import UNIT_PER_CD
 
 PANELS = L.PANELS
 
@@ -413,9 +414,10 @@ def light_xml(name, p, a, rgb, prop, cd, e, cut, rng):
             '      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </position>\n    <direction>\n'
             '      <lookat-x-m> %.4f </lookat-x-m>\n      <lookat-y-m> %.4f </lookat-y-m>\n      <lookat-z-m> %.4f </lookat-z-m>\n'
             '    </direction>\n    <color>\n      <r> %.2f </r>\n      <g> %.2f </g>\n      <b> %.2f </b>\n    </color>\n'
-            '    <intensity>\n      <property>%s</property>\n      <scale> %g </scale>\n    </intensity>\n'
+            '    <intensity>\n      <property>%s</property>\n      <scale>\n        <property>%s</property>\n'
+            '        <scale> %g </scale>\n      </scale>\n    </intensity>\n'
             '    <spot-exponent> %g </spot-exponent>\n    <spot-cutoff> %g </spot-cutoff>\n    <range-m> %g </range-m>\n'
-            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + tuple(rgb) + (prop, cd, e, cut, rng)))
+            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + tuple(rgb) + (prop, UNIT_PER_CD, cd, e, cut, rng)))
 
 
 def secondary_lights_xml():

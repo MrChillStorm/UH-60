@@ -15,6 +15,12 @@
     <object-name>needle</object-name>
     <object-name>knob</object-name>
     <object-name>glass</object-name>
+    <object-name>thousands0</object-name>
+    <object-name>thousands1</object-name>
+    <object-name>inhg0</object-name>
+    <object-name>inhg1</object-name>
+    <object-name>inhg2</object-name>
+    <object-name>inhg3</object-name>
   </animation>
 
   <effect>
@@ -27,6 +33,12 @@
     <object-name>dial</object-name>
     <object-name>flag10k</object-name>
     <object-name>needle</object-name>
+    <object-name>thousands0</object-name>
+    <object-name>thousands1</object-name>
+    <object-name>inhg0</object-name>
+    <object-name>inhg1</object-name>
+    <object-name>inhg2</object-name>
+    <object-name>inhg3</object-name>
     <emission>
       <factor-prop>/instrumentation/uh60/lights/plt-flt</factor-prop>
       <red>   0.10 </red>
@@ -55,7 +67,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -82,7 +97,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -109,7 +127,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -136,7 +157,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -163,7 +187,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -190,7 +217,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -217,7 +247,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -244,7 +277,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.005115 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00511461 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -276,58 +312,100 @@
     </condition>
   </animation>
 
-  <text>
-    <name>thousands</name>
-    <type type="string">number-value</type>
+  <animation>
+    <type>textranslate</type>
+    <object-name>thousands0</object-name>
     <property>instrumentation/altimeter/indicated-altitude-ft</property>
-    <scale type="double">0.001</scale>
-    <format type="string">%2.0f</format>
-    <truncate type="bool">true</truncate>
-    <font>LiberationFonts/LiberationSans-Bold.ttf</font>
-    <character-size type="double">0.0062</character-size>
-    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
-    <axis-alignment>yz-plane</axis-alignment>
-    <max-height>0.03</max-height>
-    <max-width>0.03</max-width>
-    <alignment>center-center</alignment>
-    <offsets>
-      <x-m> 0.0086 </x-m>
-      <y-m> -0.0100 </y-m>
-      <z-m> 0.0007 </z-m>
-    </offsets>
-  </text>
-
-  <text>
-    <name>inhg</name>
-    <type type="string">number-value</type>
-    <property>instrumentation/altimeter/setting-inhg</property>
-    <scale type="double">100</scale>
-    <format type="string">%4.0f</format>
-    <truncate type="bool">false</truncate>
-    <font>LiberationFonts/LiberationSans-Bold.ttf</font>
-    <character-size type="double">0.005</character-size>
-    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
-    <axis-alignment>yz-plane</axis-alignment>
-    <max-height>0.03</max-height>
-    <max-width>0.03</max-width>
-    <alignment>center-center</alignment>
-    <offsets>
-      <x-m> 0.0086 </x-m>
-      <y-m> 0.0090 </y-m>
-      <z-m> -0.0109 </z-m>
-    </offsets>
-  </text>
+    <step> 1000 </step>
+    <factor> 0.0001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
 
   <animation>
-    <type>material</type>
-    <object-name>thousands</object-name>
-    <object-name>inhg</object-name>
-    <emission>
-      <factor-prop>/instrumentation/uh60/lights/plt-flt</factor-prop>
-      <red>   0.10 </red>
-      <green> 1.00 </green>
-      <blue>  0.45 </blue>
-    </emission>
+    <type>textranslate</type>
+    <object-name>thousands1</object-name>
+    <property>instrumentation/altimeter/indicated-altitude-ft</property>
+    <step> 10000 </step>
+    <factor> 1e-05 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>thousands1</object-name>
+    <condition>
+      <greater-than-equals><property>instrumentation/altimeter/indicated-altitude-ft</property><value>10000</value></greater-than-equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>inhg0</object-name>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <bias> 0.005 </bias>
+    <step> 0.01 </step>
+    <factor> 10 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>inhg1</object-name>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <bias> 0.005 </bias>
+    <step> 0.1 </step>
+    <factor> 1 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>inhg2</object-name>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <bias> 0.005 </bias>
+    <step> 1 </step>
+    <factor> 0.1 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>inhg3</object-name>
+    <property>instrumentation/altimeter/setting-inhg</property>
+    <bias> 0.005 </bias>
+    <step> 10 </step>
+    <factor> 0.01 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
   </animation>
 
   <animation>

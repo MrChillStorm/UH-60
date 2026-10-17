@@ -216,18 +216,16 @@ Sikorsky's simulation as NASA ran it.
   go-around switch on the cyclic. The caution capsules for failures the
   simulation doesn't have stay dark, and the hydraulic ones are lit below
   half rotor speed, an estimate.
-- **HDR renderer:** the radar altimeters' digits are text, which it doesn't
-  let glow, so they show only in the instrument's light; it has no particles
-  (FlightGear says so in its log), and the original's rain-on-glass effect
-  logs a missing shader there.
+- **HDR renderer:** it has no particles (FlightGear says so in its log), and
+  the original's rain-on-glass effect logs a missing shader there.
 
 ## Rebuilding the model and the report
 
 The [`fdm`](fdm) folder holds everything that produced the flight model and
 the report. It needs Python 3 with `jsbsim` 1.3.2, `numpy` and `matplotlib`
 (`scipy` for `heyson.py` and the cockpit), and [tectonic](https://tectonic-typesetting.github.io)
-or another XeLaTeX for the PDF. The cockpit scripts need Pillow and
-poppler's `pdftoppm`.
+or another XeLaTeX for the PDF. The cockpit scripts need Pillow,
+poppler's `pdftoppm` and Arial among the system fonts.
 
 ```bash
 cd fdm
@@ -374,6 +372,17 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
     caution panel, display units and lit legends emit through
     `Models/Effects/Lit/lit.eff` and `Shaders/HDR/lit.frag`, and the
     glareshield lights and cockpit floods are in `Panels/panel.xml`;
+  - lights and self-lit parts are in physical units (cd, cd/m²), converted
+    into the pipeline's with the sun: its range from night to day is
+    compressed, a unit being about 635 cd/m² by day (from the sun) and
+    1 cd/m² at night (from its night ambient), so the conversion follows the
+    sun through twilight (`HDR_CD` in `fdm/cockpit/instruments.py`). The
+    caution, warning and display lights are as bright by day as MIL-L-27160
+    asks of a sunlight-readable legend, and the caution panel starts DIM
+    only at night;
+  - the readouts (radar altimeters, altimeters' counters, HSIs' COURSE and
+    KM) are digit cells on their own textures, since FlightGear's text
+    nodes neither update nor glow in it;
   - the instruments' glass is clear, reflecting by Fresnel's equations, and
     mirrors the sun where it reaches the glass
     (`Models/Effects/Glass/instrument-glass.eff` and

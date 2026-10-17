@@ -25,15 +25,6 @@ WHITE, AMBER, RED = (235, 235, 235), (255, 176, 0), (210, 30, 30)
 MARK = 'written by fdm/cockpit/avionics.py'
 
 
-def text_node(name, prop, fmt, size, y, z, d, width=0.03):
-    return ('\n  <text>\n    <name>%s</name>\n    <type type="string">number-value</type>\n    <property>%s</property>\n'
-            '    <format type="string">%s</format>\n    <truncate type="bool">false</truncate>\n'
-            '    <font>Helvetica-Bold.txf</font>\n    <character-size type="double">%g</character-size>\n'
-            '    <character-aspect-ratio type="double">0.8</character-aspect-ratio>\n    <axis-alignment>yz-plane</axis-alignment>\n'
-            '    <max-height>0.02</max-height>\n    <max-width>%g</max-width>\n    <alignment>center-center</alignment>\n'
-            '    <offsets>\n      <x-m> %.4f </x-m>\n      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </offsets>\n  </text>\n'
-            % (name, prop, fmt, size, width, d, y, z))
-
 
 def select(objs, cond):
     return ('\n  <animation>\n    <type>select</type>\n%s    <condition>\n      %s\n    </condition>\n  </animation>\n'
@@ -171,8 +162,13 @@ def hsi():
         o = A.Obj(name, 'hsi60.png'); A.cylinder(o, 0.0080, y, -0.0373, 0.018, 0.028, grey, black, n=24)
         A.box(o, y - 0.0008, y + 0.0008, -0.0373 + 0.002, -0.0373 + 0.0075, 0.028, 0.0283, white, white)
         knobs[name] = (o, y)
+    # the COURSE and KM counters: digit cells onto one strip (behind the KM shutter)
+    os.makedirs(HSI_DIR, exist_ok=True)
+    tex = I.digit_strip(os.path.join(HSI_DIR, 'hsi60-digits.png'), 46, 56, WHITE, face=I.font(44))
+    course = I.digit_cells(tex, 'course-digits', 3, 0.0445, 0.0615, bz + 0.0295, bz + 0.0365, 0.0184)
+    km = I.digit_cells(tex, 'km-digits', 4, -0.0595, -0.0365, bz + 0.0315, bz + 0.0385, 0.0184)
     glass = A.Obj('glass', None, A.GLASS); A.flat(glass, A.circle(0.0465, n=48), 0.0170, A.const(0, 0))
-    objs = [body, card, fixed, bug, b1, b2, crs, to, fr, bar, navf, hdgf, shutter] + [o for o, y in knobs.values()] + [glass]
+    objs = [body, card, fixed, bug, b1, b2, crs, to, fr, bar, navf, hdgf, shutter] + [o for o, y in knobs.values()] + course + km + [glass]
     os.makedirs(HSI_DIR, exist_ok=True)
     A.write(os.path.join(HSI_DIR, 'hsi60.ac'), objs)
     t.save(os.path.join(HSI_DIR, 'hsi60.png'))
@@ -196,12 +192,12 @@ def hsi():
         a += select(['km-shutter'], '<not><property>%skm-vis</property></not>' % H)
         a += rotate(['hdg-knob'], bugp, 5, (0, -0.054, -0.0373)) + rotate(['crs-knob'], H + 'course-deg', 5, (0, 0.050, -0.0373))
         a += knob_pick('hdg-knob', bugp, 'Heading select') + knob_pick('crs-knob', H + 'course-deg', 'Course')
-        a += text_node('course-digits', H + 'course-deg', '%03.0f', 0.0075, 0.053, bz + 0.033, 0.0187)
-        a += text_node('km-digits', H + 'km', '%04.0f', 0.0075, -0.048, bz + 0.035, 0.0184, 0.026)
-        a += I.light_xml(['course-digits', 'km-digits'], ('plt-flt', 'cplt-flt')[n])
+        a += I.digits_xml('course-digits', 3, H + 'course-deg') + I.digits_xml('km-digits', 4, H + 'km')
+        cells = I.cell_names('course-digits', 3) + I.cell_names('km-digits', 4)
+        a += I.light_xml(cells, ('plt-flt', 'cplt-flt')[n])
         a += I.window_lamp_xml(('plt-flt', 'cplt-flt')[n], (0.0187, 0.053, bz + 0.033), (0.011, 0.0044), 'course-lamp')
         a += I.window_lamp_xml(('plt-flt', 'cplt-flt')[n], (0.0187, -0.048, bz + 0.035), (0.013, 0.0044), 'km-lamp')
-        a += select(['course-digits', 'km-digits'], '<property>controls/electric/battery-switch</property>')
+        a += select(cells, '<property>controls/electric/battery-switch</property>')
         x = x.replace('\n</PropertyList>', a + '\n</PropertyList>')
         open(os.path.join(HSI_DIR, fname), 'w').write(x)
 

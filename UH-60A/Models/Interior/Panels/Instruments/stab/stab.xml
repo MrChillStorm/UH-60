@@ -52,7 +52,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -79,7 +82,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -106,7 +112,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -133,7 +142,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -160,7 +172,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -187,7 +202,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -214,7 +232,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -241,7 +262,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -268,7 +292,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -295,7 +322,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>
@@ -322,7 +352,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/non-flt</property>
-      <scale> 0.001547 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00154718 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 89.0 </spot-cutoff>

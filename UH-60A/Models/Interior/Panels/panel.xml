@@ -56,7 +56,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -83,7 +86,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -110,7 +116,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -137,7 +146,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -164,7 +176,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -191,7 +206,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/glareshield</property>
-      <scale> 0.12 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.12 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 2 </spot-exponent>
     <spot-cutoff> 55 </spot-cutoff>
@@ -218,7 +236,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/flood-blue</property>
-      <scale> 2.5 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 2.5 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 1 </spot-exponent>
     <spot-cutoff> 60 </spot-cutoff>
@@ -245,7 +266,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/flood-blue</property>
-      <scale> 2.5 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 2.5 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 1 </spot-exponent>
     <spot-cutoff> 60 </spot-cutoff>
@@ -272,7 +296,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/flood-white</property>
-      <scale> 5 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 5 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 1 </spot-exponent>
     <spot-cutoff> 60 </spot-cutoff>
@@ -299,7 +326,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/flood-white</property>
-      <scale> 5 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 5 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 1 </spot-exponent>
     <spot-cutoff> 60 </spot-cutoff>

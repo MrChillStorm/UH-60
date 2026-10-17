@@ -63,7 +63,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -90,7 +93,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -117,7 +123,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -144,7 +153,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -171,7 +183,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -198,7 +213,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -225,7 +243,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -252,7 +273,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale> 0.011513 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.011513 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -358,6 +382,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>ga-on</object-name>
   </effect>
@@ -387,6 +412,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>dh-on</object-name>
   </effect>
@@ -416,6 +442,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>mb-on</object-name>
   </effect>

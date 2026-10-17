@@ -24,6 +24,13 @@
     <object-name>km-shutter</object-name>
     <object-name>hdg-knob</object-name>
     <object-name>crs-knob</object-name>
+    <object-name>course-digits0</object-name>
+    <object-name>course-digits1</object-name>
+    <object-name>course-digits2</object-name>
+    <object-name>km-digits0</object-name>
+    <object-name>km-digits1</object-name>
+    <object-name>km-digits2</object-name>
+    <object-name>km-digits3</object-name>
     <object-name>glass</object-name>
   </animation>
 
@@ -71,7 +78,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -98,7 +108,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -125,7 +138,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -152,7 +168,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -179,7 +198,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -206,7 +228,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -233,7 +258,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -260,7 +288,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.008299 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00829895 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 59.6 </spot-cutoff>
@@ -684,50 +715,120 @@
     </hovered>
   </animation>
 
-  <text>
-    <name>course-digits</name>
-    <type type="string">number-value</type>
+  <animation>
+    <type>textranslate</type>
+    <object-name>course-digits0</object-name>
     <property>/instrumentation/uh60/hsi[0]/course-deg</property>
-    <format type="string">%03.0f</format>
-    <truncate type="bool">false</truncate>
-    <font>Helvetica-Bold.txf</font>
-    <character-size type="double">0.0075</character-size>
-    <character-aspect-ratio type="double">0.8</character-aspect-ratio>
-    <axis-alignment>yz-plane</axis-alignment>
-    <max-height>0.02</max-height>
-    <max-width>0.03</max-width>
-    <alignment>center-center</alignment>
-    <offsets>
-      <x-m> 0.0187 </x-m>
-      <y-m> 0.0530 </y-m>
-      <z-m> 0.0407 </z-m>
-    </offsets>
-  </text>
+    <bias> 0.5 </bias>
+    <step> 1 </step>
+    <factor> 0.1 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
 
-  <text>
-    <name>km-digits</name>
-    <type type="string">number-value</type>
+  <animation>
+    <type>textranslate</type>
+    <object-name>course-digits1</object-name>
+    <property>/instrumentation/uh60/hsi[0]/course-deg</property>
+    <bias> 0.5 </bias>
+    <step> 10 </step>
+    <factor> 0.01 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>course-digits2</object-name>
+    <property>/instrumentation/uh60/hsi[0]/course-deg</property>
+    <bias> 0.5 </bias>
+    <step> 100 </step>
+    <factor> 0.001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>km-digits0</object-name>
     <property>/instrumentation/uh60/hsi[0]/km</property>
-    <format type="string">%04.0f</format>
-    <truncate type="bool">false</truncate>
-    <font>Helvetica-Bold.txf</font>
-    <character-size type="double">0.0075</character-size>
-    <character-aspect-ratio type="double">0.8</character-aspect-ratio>
-    <axis-alignment>yz-plane</axis-alignment>
-    <max-height>0.02</max-height>
-    <max-width>0.026</max-width>
-    <alignment>center-center</alignment>
-    <offsets>
-      <x-m> 0.0184 </x-m>
-      <y-m> -0.0480 </y-m>
-      <z-m> 0.0427 </z-m>
-    </offsets>
-  </text>
+    <bias> 0.5 </bias>
+    <step> 1 </step>
+    <factor> 0.1 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>km-digits1</object-name>
+    <property>/instrumentation/uh60/hsi[0]/km</property>
+    <bias> 0.5 </bias>
+    <step> 10 </step>
+    <factor> 0.01 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>km-digits2</object-name>
+    <property>/instrumentation/uh60/hsi[0]/km</property>
+    <bias> 0.5 </bias>
+    <step> 100 </step>
+    <factor> 0.001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>km-digits3</object-name>
+    <property>/instrumentation/uh60/hsi[0]/km</property>
+    <bias> 0.5 </bias>
+    <step> 1000 </step>
+    <factor> 0.0001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
 
   <animation>
     <type>material</type>
-    <object-name>course-digits</object-name>
-    <object-name>km-digits</object-name>
+    <object-name>course-digits0</object-name>
+    <object-name>course-digits1</object-name>
+    <object-name>course-digits2</object-name>
+    <object-name>km-digits0</object-name>
+    <object-name>km-digits1</object-name>
+    <object-name>km-digits2</object-name>
+    <object-name>km-digits3</object-name>
     <emission>
       <factor-prop>/instrumentation/uh60/lights/plt-flt</factor-prop>
       <red>   0.10 </red>
@@ -756,7 +857,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.001275 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00127485 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 0 </spot-exponent>
     <spot-cutoff> 69.9 </spot-cutoff>
@@ -783,7 +887,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/plt-flt</property>
-      <scale> 0.001433 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00143251 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 0 </spot-exponent>
     <spot-cutoff> 73.0 </spot-cutoff>
@@ -792,8 +899,13 @@
 
   <animation>
     <type>select</type>
-    <object-name>course-digits</object-name>
-    <object-name>km-digits</object-name>
+    <object-name>course-digits0</object-name>
+    <object-name>course-digits1</object-name>
+    <object-name>course-digits2</object-name>
+    <object-name>km-digits0</object-name>
+    <object-name>km-digits1</object-name>
+    <object-name>km-digits2</object-name>
+    <object-name>km-digits3</object-name>
     <condition>
       <property>controls/electric/battery-switch</property>
     </condition>

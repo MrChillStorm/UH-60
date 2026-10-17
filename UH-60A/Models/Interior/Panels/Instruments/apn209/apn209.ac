@@ -2,7 +2,7 @@ AC3Db
 MATERIAL "DefaultWhite" rgb 1 1 1  amb 1 1 1  emis 0 0 0  spec 0.5 0.5 0.5  shi 64  trans 0
 MATERIAL "glass" rgb 0.9 0.9 0.9  amb 0 0 0  emis 0 0 0  spec 0.64 0.64 0.64  shi 50  trans 0.85
 OBJECT world
-kids 18
+kids 22
 OBJECT poly
 name "case"
 loc 0 0 0
@@ -2774,4 +2774,84 @@ refs 64
 61 0.00000 0.00000
 62 0.00000 0.00000
 63 0.00000 0.00000
+kids 0
+OBJECT poly
+name "digits0"
+loc 0 0 0
+texture "apn209-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.008600 -0.014000 -0.006750
+0.008600 -0.014000 -0.013000
+0.008600 -0.006500 -0.013000
+0.008600 -0.006500 -0.006750
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "digits1"
+loc 0 0 0
+texture "apn209-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.008600 -0.014000 -0.000500
+0.008600 -0.014000 -0.006750
+0.008600 -0.006500 -0.006750
+0.008600 -0.006500 -0.000500
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "digits2"
+loc 0 0 0
+texture "apn209-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.008600 -0.014000 0.005750
+0.008600 -0.014000 -0.000500
+0.008600 -0.006500 -0.000500
+0.008600 -0.006500 0.005750
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "digits3"
+loc 0 0 0
+texture "apn209-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.008600 -0.014000 0.012000
+0.008600 -0.014000 0.005750
+0.008600 -0.006500 0.005750
+0.008600 -0.006500 0.012000
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
 kids 0

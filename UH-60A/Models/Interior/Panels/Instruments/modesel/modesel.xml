@@ -57,6 +57,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-dplr</object-name>
   </effect>
@@ -106,6 +107,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-vor-ils</object-name>
   </effect>
@@ -155,6 +157,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-back-crs</object-name>
   </effect>
@@ -204,6 +207,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-fm-home</object-name>
   </effect>
@@ -253,6 +257,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-turn-altr-a</object-name>
   </effect>
@@ -282,6 +287,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-turn-altr-b</object-name>
   </effect>
@@ -331,6 +337,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-crs-hdg-a</object-name>
   </effect>
@@ -360,6 +367,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-crs-hdg-b</object-name>
   </effect>
@@ -409,6 +417,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-vgyro-altr-a</object-name>
   </effect>
@@ -438,6 +447,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-vgyro-altr-b</object-name>
   </effect>
@@ -487,6 +497,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-brg2-vor-a</object-name>
   </effect>
@@ -516,6 +527,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/switches</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lit-brg2-vor-b</object-name>
   </effect>

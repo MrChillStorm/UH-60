@@ -27,6 +27,10 @@
     <object-name>lo-knob</object-name>
     <object-name>hi-knob</object-name>
     <object-name>glass</object-name>
+    <object-name>digits0</object-name>
+    <object-name>digits1</object-name>
+    <object-name>digits2</object-name>
+    <object-name>digits3</object-name>
   </animation>
 
   <effect>
@@ -73,7 +77,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -100,7 +107,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -127,7 +137,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -154,7 +167,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -181,7 +197,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -208,7 +227,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -235,7 +257,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -262,7 +287,10 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/radalt[1]</property>
-      <scale> 0.003603 </scale>
+      <scale>
+        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
+        <scale> 0.00360322 </scale>
+      </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 58.6 </spot-cutoff>
@@ -385,34 +413,102 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/radalt-lamps</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lo-light</object-name>
     <object-name>hi-light</object-name>
   </effect>
 
-  <text>
-    <name>digits</name>
-    <type type="string">number-value</type>
+  <animation>
+    <type>textranslate</type>
+    <object-name>digits0</object-name>
     <property>/instrumentation/uh60/radalt[1]/digits</property>
-    <format type="string">%4.0f</format>
-    <truncate type="bool">false</truncate>
-    <font>DSEG/DSEG7/Classic/DSEG7Classic-Bold.ttf</font>
-    <character-size type="double">0.0068</character-size>
-    <character-aspect-ratio type="double">0.75</character-aspect-ratio>
-    <axis-alignment>yz-plane</axis-alignment>
-    <max-height>0.03</max-height>
-    <max-width>0.028</max-width>
-    <alignment>center-center</alignment>
-    <offsets>
-      <x-m> 0.0086 </x-m>
-      <y-m> 0.0010 </y-m>
-      <z-m> -0.0102 </z-m>
-    </offsets>
-  </text>
+    <bias> 0.5 </bias>
+    <step> 1 </step>
+    <factor> 0.1 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>digits1</object-name>
+    <property>/instrumentation/uh60/radalt[1]/digits</property>
+    <bias> 0.5 </bias>
+    <step> 10 </step>
+    <factor> 0.01 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
 
   <animation>
     <type>select</type>
-    <object-name>digits</object-name>
+    <object-name>digits1</object-name>
+    <condition>
+      <greater-than-equals><property>/instrumentation/uh60/radalt[1]/digits</property><value>9.5</value></greater-than-equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>digits2</object-name>
+    <property>/instrumentation/uh60/radalt[1]/digits</property>
+    <bias> 0.5 </bias>
+    <step> 100 </step>
+    <factor> 0.001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>digits2</object-name>
+    <condition>
+      <greater-than-equals><property>/instrumentation/uh60/radalt[1]/digits</property><value>99.5</value></greater-than-equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>textranslate</type>
+    <object-name>digits3</object-name>
+    <property>/instrumentation/uh60/radalt[1]/digits</property>
+    <bias> 0.5 </bias>
+    <step> 1000 </step>
+    <factor> 0.0001 </factor>
+    <min> 0 </min>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>digits3</object-name>
+    <condition>
+      <greater-than-equals><property>/instrumentation/uh60/radalt[1]/digits</property><value>999.5</value></greater-than-equals>
+    </condition>
+  </animation>
+
+  <animation>
+    <type>select</type>
+    <object-name>digits0</object-name>
+    <object-name>digits1</object-name>
+    <object-name>digits2</object-name>
+    <object-name>digits3</object-name>
     <condition>
       <property>/instrumentation/uh60/radalt[1]/digits-vis</property>
     </condition>
@@ -420,14 +516,31 @@
 
   <animation>
     <type>material</type>
-    <object-name>digits</object-name>
+    <object-name>digits0</object-name>
+    <object-name>digits1</object-name>
+    <object-name>digits2</object-name>
+    <object-name>digits3</object-name>
     <emission>
       <factor-prop>/instrumentation/uh60/lights/radalt-lamps</factor-prop>
       <red> 1 </red>
-      <green> 0.45 </green>
-      <blue> 0.1 </blue>
+      <green> 1 </green>
+      <blue> 1 </blue>
     </emission>
   </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/radalt-lamps</use></lit-level>
+      <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
+    </parameters>
+    <object-name>digits0</object-name>
+    <object-name>digits1</object-name>
+    <object-name>digits2</object-name>
+    <object-name>digits3</object-name>
+  </effect>
 
   <animation>
     <type>rotate</type>

@@ -359,18 +359,24 @@ var step_systems = func {
 # caution/advisory panel; the lighted switches (mode selectors) with the LIGHTED SWITCHES control. The radar altimeters'
 # LO/HI lights and digits here likewise, with RAD ALT DIMMING. The material animations take the 0-1 levels; the HDR
 # pipeline (Effects/Lit) takes cd/m2, in lights/hdr: bright LAMP_BRT, dim DIM_LO to DIM_HI over the control's travel,
-# the display units' lamps from VIDS_NIGHT to VIDS_DAY with the light outside (their photocells, TM 2.10.3).
+# the display units' lamps from VIDS_NIGHT to VIDS_DAY with the light outside (their photocells, TM 2.10.3). Bright is
+# sunlight readable after MIL-L-27160: in 10,000 fc (107,600 lux) a lit legend is 0.6 brighter than unlit, which
+# behind a dead front of 5 % (1,710 cd/m2 there) takes 1,030 cd/m2 (300 fL) of its own.
 #
 # TM 2.70.2, secondary lighting (HDR only: spot lights in Panels/panel.xml): the glareshield lights, GLARESHIELD
 # LIGHTS (/controls/lighting/glareshield, OFF-BRT), No. 1 ac primary bus; the cockpit floodlights, BLUE/OFF/WHITE
 # (/controls/lighting/cockpit-flood: 1, 0, -1), dc essential bus.
 #
 # The flight starts with every dimmer of the Cockpit lights dialog at its first notch (0.05), the floods off and the
-# caution panel DIM.
+# caution panel DIM, if the sun is down (by day BRT: DIM, at most 2 cd/m2, is for the night).
 var LT = U ~ "lights/";
-var LAMP_BRT = 600;
+var LAMP_BRT = 1030;
 var DIM_LO = 0.05; var DIM_HI = 2;            # dim, at most as bright as the instruments' markings at BRT
-var VIDS_NIGHT = 3; var VIDS_DAY = 400;
+var VIDS_NIGHT = 3; var VIDS_DAY = LAMP_BRT;
+# The HDR pipeline's range from night to day is compressed: a unit of its radiance is about 1 cd/m2 at night and
+# HDR_CD by day (fdm/cockpit/instruments.py). The lights' cd and the lit parts' cd/m2 are converted with the sun,
+# through twilight (sun 6 deg below to 6 above) as the display units' photocells follow it.
+var HDR_CD = 635;
 var CAP_DIM = "/sim/model/uh60/cap-dim";
 var FIRST_NOTCH = 0.05;
 var dc_was = 0;
@@ -404,6 +410,8 @@ var lights = func {
     }
     var day = clamp((90 - val("/sim/time/sun-angle-rad") * R2D + 6) / 12, 0, 1);     # sun 6 deg below to above
     setprop(LT ~ "hdr/vids", VIDS_NIGHT * math.pow(VIDS_DAY / VIDS_NIGHT, day));
+    var cd = math.pow(HDR_CD, day);
+    setprop(LT ~ "hdr/cd-per-unit", cd); setprop(LT ~ "hdr/unit-per-cd", 1 / cd);
     setprop(LT ~ "glareshield", ac ? clamp(val("/controls/lighting/glareshield"), 0, 1) : 0);
     var flood = b("/controls/electric/battery-switch") ? val("/controls/lighting/cockpit-flood") : 0;
     setprop(LT ~ "flood-blue", flood > 0.5);
@@ -433,7 +441,8 @@ var init = func {
     foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches", "glareshield"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, FIRST_NOTCH);
     if (getprop("/controls/lighting/cockpit-flood") == nil) setprop("/controls/lighting/cockpit-flood", 0);
-    if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, 1);
+    # DIM with the sun down: decided once the start's time of day has taken (it isn't yet when this runs)
+    settimer(func { if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, val("/sim/time/sun-angle-rad") * R2D > 90); }, 5);
 };
 
 var update = func {

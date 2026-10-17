@@ -29,15 +29,98 @@ SYSTEMS = os.path.join(L.PANELS, '..', '..', '..', 'Systems')
 NASAL = os.path.join(L.PANELS, '..', '..', '..', 'Nasal')
 PT = L.S                                    # m per figure pt
 MM = 0.001
-FONTS = '/System/Library/Fonts/Supplemental/'
 GROUND, LETTER = 38, 215                    # the panels' paint and lettering
 
 
 def font(size, narrow=False):
-    try:
-        return ImageFont.truetype(FONTS + ('Arial Narrow Bold.ttf' if narrow else 'Arial Bold.ttf'), int(size))
-    except OSError:
-        return ImageFont.load_default()
+    """Arial Bold (or Arial Narrow Bold), found by its file name among the system's fonts, which Pillow searches on
+    each OS (the names differ on Windows)."""
+    for name in (('Arial Narrow Bold.ttf', 'ARIALNB.TTF') if narrow else ('Arial Bold.ttf', 'arialbd.ttf')):
+        try:
+            return ImageFont.truetype(name, int(size))
+        except OSError:
+            pass
+    sys.exit('Arial%s Bold is not among the system fonts' % (' Narrow' if narrow else ''))
+
+
+# ---------------------------------------------------------------- digits
+# FlightGear's text nodes neither update nor glow in the HDR pipeline (2024.2), so readouts are digit cells: each a
+# quad onto a strip of the digits 0-9 that spans its own texture, which repeats; a textranslate animation steps the
+# cell's texture along by a tenth per unit of its digit (the property stepped to the digit's place), and the
+# repeat leaves the digit.
+
+SEG7 = {0: 'abcdef', 1: 'bc', 2: 'abdeg', 3: 'abcdg', 4: 'bcfg', 5: 'acdfg', 6: 'acdefg', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg'}
+
+
+def seven_segment(d, box, digit, on, off=None, slant=0.08):
+    """A seven-segment digit filling 80 % of the box's height, half as wide as high, leaning forward by `slant`:
+    its segments in `on`, the unlit ones in `off` (None: left out)."""
+    x0, y0, x1, y1 = box
+    h = 0.80 * (y1 - y0); w = 0.50 * h; t = 0.15 * h; g = 0.012 * h            # height, width, stroke, gap
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    L, R, T, B = cx - w / 2, cx + w / 2, cy - h / 2, cy + h / 2
+    def P(pts):
+        return [(x + slant * (cy - y), y) for x, y in pts]
+    def hseg(y):                                                                 # a horizontal segment centred on y
+        return P([(L + g, y), (L + g + t / 2, y - t / 2), (R - g - t / 2, y - t / 2), (R - g, y), (R - g - t / 2, y + t / 2),
+                  (L + g + t / 2, y + t / 2)])
+    def vseg(x, ya, yb):                                                         # a vertical one on x from ya to yb
+        return P([(x, ya + g), (x + t / 2, ya + g + t / 2), (x + t / 2, yb - g - t / 2), (x, yb - g), (x - t / 2, yb - g - t / 2),
+                  (x - t / 2, ya + g + t / 2)])
+    L1, R1, T1, B1, M = L + t / 2, R - t / 2, T + t / 2, B - t / 2, cy
+    segs = {'a': hseg(T1), 'g': hseg(M), 'd': hseg(B1), 'b': vseg(R1, T1, M), 'c': vseg(R1, M, B1), 'e': vseg(L1, M, B1),
+            'f': vseg(L1, T1, M)}
+    for k, poly in segs.items():
+        lit = k in SEG7[digit]
+        if lit or off is not None:
+            d.polygon(poly, fill=on if lit else off)
+
+
+def digit_strip(path, cw, ch, on, off=None, face=None):
+    """Writes the texture `path`: the digits 0-9 in cells of cw x ch pixels side by side across it, on black,
+    seven-segment (lit `on`, unlit `off`) or drawn in the font `face` (a counter's drum). Returns its file name."""
+    q = 4 if face is None else 1                                   # the segments drawn at 4x, for their edges
+    im = Image.new('RGB', (10 * cw * q, ch * q), (0, 0, 0)); d = ImageDraw.Draw(im)
+    for k in range(10):
+        box = (k * cw * q, 0, (k + 1) * cw * q, ch * q)
+        if face is None:
+            seven_segment(d, box, k, on, off)
+        else:
+            d.text(((box[0] + box[2]) / 2, (box[1] + box[3]) / 2), str(k), font=face, fill=on, anchor='mm')
+    im.resize((10 * cw, ch), Image.LANCZOS).save(path, optimize=True)
+    return os.path.basename(path)
+
+
+def digit_cells(texture, name, n, y0, y1, z0, z1, d):
+    """n cells side by side across y0..y1, z0..z1 at depth d, objects name0 (the units, at the right) to name<n-1>,
+    each mapped onto the strip's 0 (the first tenth of the texture)."""
+    w = (y1 - y0) / n; objs = []
+    for k in range(n):
+        ya = y1 - (k + 1) * w
+        o = A.Obj('%s%d' % (name, k), texture)
+        A.flat(o, [(ya, z0), (ya + w, z0), (ya + w, z1), (ya, z1)], d, A.planar(ya, ya + w, z0, z1, 0.0, 0.1, 0.0, 1.0))
+        objs.append(o)
+    return objs
+
+
+def digits_xml(name, n, prop, unit=1.0, rounding=True, blank=False):
+    """The cells' animations: cell k shows the digit k (0 the units) of prop / unit, rounded (or truncated); below zero
+    it shows 0. Leading zeros blank if `blank`."""
+    out = ''
+    for k in range(n):
+        place = unit * 10 ** k
+        out += ('\n  <animation>\n    <type>textranslate</type>\n    <object-name>%s%d</object-name>\n'
+                '    <property>%s</property>\n%s    <step> %.9g </step>\n    <factor> %.9g </factor>\n    <min> 0 </min>\n'
+                '    <axis>\n      <x> 1 </x>\n      <y> 0 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n'
+                % (name, k, prop, '    <bias> %.9g </bias>\n' % (0.5 * unit) if rounding else '', place, 0.1 / place))
+        if blank and k > 0:
+            out += select_xml(['%s%d' % (name, k)], '<greater-than-equals><property>%s</property><value>%.9g</value>'
+                              '</greater-than-equals>' % (prop, place - (0.5 * unit if rounding else 0)))
+    return out
+
+
+def cell_names(name, n):
+    return ['%s%d' % (name, k) for k in range(n)]
 
 
 class Tex:
@@ -82,6 +165,19 @@ LIGHTS = '/instrumentation/uh60/lights/'
 HDR = LIGHTS + 'hdr/'
 NVG_GREEN = (0.10, 1.00, 0.45)         # NVIS Green A (MIL-L-85762A: u' 0.088, v' 0.543), sRGB about (0, 255, 110)
 LIGHT_LUX = 6.0                        # HDR: the mean illuminance of an instrument's face at full BRT, lux
+# The HDR pipeline has no photometric units, and its range from night to day is compressed. By day its light is the
+# sun's spectral irradiance (W m-2 nm-1) put through the matrix of fgdata's Shaders/HDR/atmos_spectral.glsl, which
+# gives a flat spectrum of 1 W/(m2 sr nm), 73,000 cd/m2, a luminance of 115: a unit of radiance is 635 cd/m2 (from
+# the sun, 610-640). At night its ambient in the cockpit is about 0.09 units (measured: lamps giving a dial 6 lux by
+# the day's scale need ten times that to show), a moonlit night's 0.09 lux if a unit is 1 cd/m2 there. So the lights
+# and self-lit parts keep their physical cd and cd/m2, and are converted by the property UNIT_PER_CD (units per cd),
+# which Nasal/avionics.nas takes from 1 with the sun down to 1 / HDR_CD by day, through twilight as the display
+# units' photocells do; Shaders/HDR/lit.frag divides by its inverse, CD_PER_UNIT.
+HDR_CD = 635.0
+UNIT_PER_CD = '/instrumentation/uh60/lights/hdr/unit-per-cd'
+# A lamp's legend or a display's segments sit behind a dead front (smoked or filtered), which is all they show of the
+# daylight, lit or not; integrally lit markings are paint (reflectance 1 here: their texture's own).
+DEAD_FRONT = 0.05
 
 
 def objects_xml(objs):
@@ -95,18 +191,19 @@ def light_xml(objs, light):
             '  </animation>\n' % (objects_xml(objs), LIGHTS, light, *NVG_GREEN))
 
 
-def lit_xml(objs, level, rgb=(1, 1, 1), gain=1.0):
-    """HDR pipeline: `objs` emit their texture x rgb x the property `level` x gain (cd/m2), through Effects/Lit."""
+def lit_xml(objs, level, rgb=(1, 1, 1), gain=1.0, reflect=DEAD_FRONT):
+    """HDR pipeline: `objs` emit their texture x rgb x the property `level` x gain (cd/m2), through Effects/Lit, and
+    reflect the light on them as their texture x `reflect` (a lamp's dead front by default)."""
     return ('\n  <effect>\n    <inherits-from>../../../../Effects/Lit/lit</inherits-from>\n    <parameters>\n'
             '      <lit-color type="vec3d"> %.2f %.2f %.2f </lit-color>\n      <lit-level type="float"><use>%s</use></lit-level>\n'
-            '      <lit-gain type="float"> %.4g </lit-gain>\n    </parameters>\n%s  </effect>\n'
-            % (tuple(rgb) + (level, gain, objects_xml(objs))))
+            '      <lit-gain type="float"> %.4g </lit-gain>\n      <lit-reflectance type="float"> %.4g </lit-reflectance>\n'
+            '    </parameters>\n%s  </effect>\n' % (tuple(rgb) + (level, gain, reflect, objects_xml(objs))))
 
 
 def integral_xml(objs, light):
     """An integrally lit panel's NVG lighting (its markings light themselves): the material animation, and in the HDR
     pipeline the emission that matches a face lit by LIGHT_LUX."""
-    return light_xml(objs, light) + lit_xml(objs, LIGHTS + light, NVG_GREEN, LIGHT_LUX / math.pi)
+    return light_xml(objs, light) + lit_xml(objs, LIGHTS + light, NVG_GREEN, LIGHT_LUX / math.pi, reflect=1.0)
 
 
 def bezel_lamps(face, half, round=False, glass=None, out=None):
@@ -171,9 +268,10 @@ def lamp_xml(name, p, a, light, cd, e, cut, rng):
             '      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </position>\n    <direction>\n'
             '      <lookat-x-m> %.4f </lookat-x-m>\n      <lookat-y-m> %.4f </lookat-y-m>\n      <lookat-z-m> %.4f </lookat-z-m>\n'
             '    </direction>\n    <color>\n      <r> %.2f </r>\n      <g> %.2f </g>\n      <b> %.2f </b>\n    </color>\n'
-            '    <intensity>\n      <property>%s%s</property>\n      <scale> %.6f </scale>\n    </intensity>\n'
+            '    <intensity>\n      <property>%s%s</property>\n      <scale>\n        <property>%s</property>\n'
+            '        <scale> %.6g </scale>\n      </scale>\n    </intensity>\n'
             '    <spot-exponent> %g </spot-exponent>\n    <spot-cutoff> %.1f </spot-cutoff>\n    <range-m> %.3f </range-m>\n'
-            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + NVG_GREEN + (LIGHTS, light, cd, e, cut, rng)))
+            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + NVG_GREEN + (LIGHTS, light, UNIT_PER_CD, cd, e, cut, rng)))
 
 
 def bezel_light_xml(light, face, half, round=False, glass=None, out=None, name='bezel-lamp'):

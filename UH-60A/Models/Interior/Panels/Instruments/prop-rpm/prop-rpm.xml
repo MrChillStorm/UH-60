@@ -242,6 +242,7 @@
       <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
       <lit-gain type="float"> 1.91 </lit-gain>
+      <lit-reflectance type="float"> 1 </lit-reflectance>
     </parameters>
     <object-name>fond</object-name>
   </effect>
@@ -252,6 +253,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/vids</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>rpm1</object-name>
     <object-name>rpm2</object-name>

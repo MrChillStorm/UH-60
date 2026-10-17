@@ -2,7 +2,7 @@ AC3Db
 MATERIAL "DefaultWhite" rgb 1 1 1  amb 1 1 1  emis 0 0 0  spec 0.5 0.5 0.5  shi 64  trans 0
 MATERIAL "glass" rgb 0.9 0.9 0.9  amb 0 0 0  emis 0 0 0  spec 0.64 0.64 0.64  shi 50  trans 0.85
 OBJECT world
-kids 16
+kids 23
 OBJECT poly
 name "case"
 loc 0 0 0
@@ -2219,6 +2219,146 @@ refs 4
 52 0.97656 0.00781
 48 0.97656 0.00781
 51 0.97656 0.00781
+kids 0
+OBJECT poly
+name "course-digits0"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.037200 -0.055833
+0.018400 0.037200 -0.061500
+0.018400 0.044200 -0.061500
+0.018400 0.044200 -0.055833
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "course-digits1"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.037200 -0.050167
+0.018400 0.037200 -0.055833
+0.018400 0.044200 -0.055833
+0.018400 0.044200 -0.050167
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "course-digits2"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.037200 -0.044500
+0.018400 0.037200 -0.050167
+0.018400 0.044200 -0.050167
+0.018400 0.044200 -0.044500
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "km-digits0"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.039200 0.042250
+0.018400 0.039200 0.036500
+0.018400 0.046200 0.036500
+0.018400 0.046200 0.042250
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "km-digits1"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.039200 0.048000
+0.018400 0.039200 0.042250
+0.018400 0.046200 0.042250
+0.018400 0.046200 0.048000
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "km-digits2"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.039200 0.053750
+0.018400 0.039200 0.048000
+0.018400 0.046200 0.048000
+0.018400 0.046200 0.053750
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
+kids 0
+OBJECT poly
+name "km-digits3"
+loc 0 0 0
+texture "hsi60-digits.png"
+texrep 1 1
+crease 40
+numvert 4
+0.018400 0.039200 0.059500
+0.018400 0.039200 0.053750
+0.018400 0.046200 0.053750
+0.018400 0.046200 0.059500
+numsurf 1
+SURF 0x10
+mat 0
+refs 4
+0 0.00000 0.00000
+1 0.10000 0.00000
+2 0.10000 1.00000
+3 0.00000 1.00000
 kids 0
 OBJECT poly
 name "glass"

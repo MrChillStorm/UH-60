@@ -148,6 +148,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lamp-test-on</object-name>
   </effect>
@@ -278,6 +279,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lamp-pwr-main-on</object-name>
   </effect>
@@ -333,6 +335,7 @@
       <lit-color type="vec3d"> 1.00 1.00 1.00 </lit-color>
       <lit-level type="float"><use>/instrumentation/uh60/lights/hdr/caut-advsy</use></lit-level>
       <lit-gain type="float"> 1 </lit-gain>
+      <lit-reflectance type="float"> 0.05 </lit-reflectance>
     </parameters>
     <object-name>lamp-pwr-tail-on</object-name>
   </effect>
