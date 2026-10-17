@@ -367,16 +367,13 @@ var step_systems = func {
 # LIGHTS (/controls/lighting/glareshield, OFF-BRT), No. 1 ac primary bus; the cockpit floodlights, BLUE/OFF/WHITE
 # (/controls/lighting/cockpit-flood: 1, 0, -1), dc essential bus.
 #
-# The flight starts with every dimmer of the Cockpit lights dialog at its first notch (0.05), the floods off and the
-# caution panel DIM, if the sun is down (by day BRT: DIM, at most 2 cd/m2, is for the night).
+# The flight starts with the floods off and, if the sun is down, every dimmer of the Cockpit lights dialog at its first
+# notch (0.05) and the caution panel DIM; by day with the dimmers off and the caution panel BRT (DIM, at most 2 cd/m2,
+# is for the night).
 var LT = U ~ "lights/";
 var LAMP_BRT = 1030;
 var DIM_LO = 0.05; var DIM_HI = 2;            # dim, at most as bright as the instruments' markings at BRT
 var VIDS_NIGHT = 3; var VIDS_DAY = LAMP_BRT;
-# The HDR pipeline's range from night to day is compressed: a unit of its radiance is about 1 cd/m2 at night and
-# HDR_CD by day (fdm/cockpit/instruments.py). The lights' cd and the lit parts' cd/m2 are converted with the sun,
-# through twilight (sun 6 deg below to 6 above) as the display units' photocells follow it.
-var HDR_CD = 635;
 var CAP_DIM = "/sim/model/uh60/cap-dim";
 var FIRST_NOTCH = 0.05;
 var dc_was = 0;
@@ -410,8 +407,6 @@ var lights = func {
     }
     var day = clamp((90 - val("/sim/time/sun-angle-rad") * R2D + 6) / 12, 0, 1);     # sun 6 deg below to above
     setprop(LT ~ "hdr/vids", VIDS_NIGHT * math.pow(VIDS_DAY / VIDS_NIGHT, day));
-    var cd = math.pow(HDR_CD, day);
-    setprop(LT ~ "hdr/cd-per-unit", cd); setprop(LT ~ "hdr/unit-per-cd", 1 / cd);
     setprop(LT ~ "glareshield", ac ? clamp(val("/controls/lighting/glareshield"), 0, 1) : 0);
     var flood = b("/controls/electric/battery-switch") ? val("/controls/lighting/cockpit-flood") : 0;
     setprop(LT ~ "flood-blue", flood > 0.5);
@@ -438,11 +433,15 @@ var init = func {
     }
     foreach (var k; ["ma-wrn-norm", "caut-advsy-norm", "radalt-norm"])
         if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, 1);
-    foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches", "glareshield"])
-        if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, FIRST_NOTCH);
     if (getprop("/controls/lighting/cockpit-flood") == nil) setprop("/controls/lighting/cockpit-flood", 0);
-    # DIM with the sun down: decided once the start's time of day has taken (it isn't yet when this runs)
-    settimer(func { if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, val("/sim/time/sun-angle-rad") * R2D > 90); }, 5);
+    # with the sun down every dimmer at its first notch and the caution panel DIM, by day the dimmers off and BRT:
+    # decided once the start's time of day has taken (it isn't yet when this runs)
+    settimer(func {
+        var night = val("/sim/time/sun-angle-rad") * R2D > 90;
+        foreach (var k; ["instr-plt-flt", "instr-cplt-flt", "instr-non-flt", "lighted-switches", "glareshield"])
+            if (getprop("/controls/lighting/" ~ k) == nil) setprop("/controls/lighting/" ~ k, night ? FIRST_NOTCH : 0);
+        if (getprop(CAP_DIM) == nil) setprop(CAP_DIM, night);
+    }, 5);
 };
 
 var update = func {

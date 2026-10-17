@@ -147,8 +147,9 @@ pointing at it), and pick **Sikorsky UH-60A Black Hawk**.
     dimmer) and the blue-green and white cockpit floodlights under the
     upper console (BLUE/OFF/WHITE).
 
-  The flight starts with every dimmer of the dialog at its first notch, the
-  floods off and the caution panel on DIM.
+  The flight starts with the floods off and, at night, every dimmer of the
+  dialog at its first notch and the caution panel on DIM; by day with the
+  dimmers off and the caution panel on BRT.
 - **Engine ignition switch** below the caution/advisory panel: click to turn
   it; the engines only light off with it ON.
 - **Feel.** The rotor's wake is turbulent near the ground, through
@@ -372,14 +373,13 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
     caution panel, display units and lit legends emit through
     `Models/Effects/Lit/lit.eff` and `Shaders/HDR/lit.frag`, and the
     glareshield lights and cockpit floods are in `Panels/panel.xml`;
-  - lights and self-lit parts are in physical units (cd, cd/m²), converted
-    into the pipeline's with the sun: its range from night to day is
-    compressed, a unit being about 635 cd/m² by day (from the sun) and
-    1 cd/m² at night (from its night ambient), so the conversion follows the
-    sun through twilight (`HDR_CD` in `fdm/cockpit/instruments.py`). The
-    caution, warning and display lights are as bright by day as MIL-L-27160
-    asks of a sunlight-readable legend, and the caution panel starts DIM
-    only at night;
+  - lights and self-lit parts are in physical units: the pipeline's unit
+    of radiance is about 635 cd/m² (`HDR_CD` in `fdm/cockpit/instruments.py`),
+    the caution, warning and display lights are as bright by day as
+    MIL-L-27160 asks of a sunlight-readable legend, and the caution panel
+    starts DIM only at night;
+  - the original's ALS exterior lights stay out of it: they are white point
+    lights there, which lit the cockpit through the airframe;
   - the readouts (radar altimeters, altimeters' counters, HSIs' COURSE and
     KM) are digit cells on their own textures, since FlightGear's text
     nodes neither update nor glow in it;

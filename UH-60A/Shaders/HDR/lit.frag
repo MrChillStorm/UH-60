@@ -1,8 +1,7 @@
 $FG_GLSL_VERSION
 
 // Shaders/HDR/model_default.frag with emission: the texture times lit_color (sRGB), lit_level and lit_gain (cd/m2), for
-// Models/Effects/Lit/lit.eff, converted into the pipeline's units by lit_cd_per_unit (1 at night, 635 by day:
-// fdm/cockpit/instruments.py, HDR_CD). The
+// Models/Effects/Lit/lit.eff. The pipeline's unit of radiance is 635 cd/m2 (fdm/cockpit/instruments.py, HDR_CD). The
 // light on it is reflected as the texture times lit_reflectance (a lamp's dead front; 1 for integrally lit markings).
 
 in VS_OUT {
@@ -21,7 +20,8 @@ uniform vec3 lit_color;
 uniform float lit_level;
 uniform float lit_gain;
 uniform float lit_reflectance;
-uniform float lit_cd_per_unit;
+
+const float HDR_CD = 635.0;
 
 // gbuffer_pack.glsl
 void gbuffer_pack_pbr_opaque(vec3 normal,
@@ -51,7 +51,7 @@ void main()
     for (int i = -1; i <= 1; ++i)
         for (int j = -1; j <= 1; ++j)
             lit = max(lit, eotf_inverse_sRGB(textureGrad(color_tex, fs_in.texcoord + float(i) * du + float(j) * dv, du, dv).rgb));
-    vec3 emissive = lit * eotf_inverse_sRGB(lit_color) * max(lit_level * lit_gain, 0.0) / max(lit_cd_per_unit, 1.0);
+    vec3 emissive = lit * eotf_inverse_sRGB(lit_color) * max(lit_level * lit_gain, 0.0) / HDR_CD;
     vec3 N = normalize(fs_in.vertex_normal);
     gbuffer_pack_pbr_opaque(N, color, pbr_metallic, pbr_roughness, 1.0, emissive);
     gl_FragDepth = logdepth_encode(fs_in.flogz);

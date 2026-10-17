@@ -165,16 +165,11 @@ LIGHTS = '/instrumentation/uh60/lights/'
 HDR = LIGHTS + 'hdr/'
 NVG_GREEN = (0.10, 1.00, 0.45)         # NVIS Green A (MIL-L-85762A: u' 0.088, v' 0.543), sRGB about (0, 255, 110)
 LIGHT_LUX = 6.0                        # HDR: the mean illuminance of an instrument's face at full BRT, lux
-# The HDR pipeline has no photometric units, and its range from night to day is compressed. By day its light is the
-# sun's spectral irradiance (W m-2 nm-1) put through the matrix of fgdata's Shaders/HDR/atmos_spectral.glsl, which
-# gives a flat spectrum of 1 W/(m2 sr nm), 73,000 cd/m2, a luminance of 115: a unit of radiance is 635 cd/m2 (from
-# the sun, 610-640). At night its ambient in the cockpit is about 0.09 units (measured: lamps giving a dial 6 lux by
-# the day's scale need ten times that to show), a moonlit night's 0.09 lux if a unit is 1 cd/m2 there. So the lights
-# and self-lit parts keep their physical cd and cd/m2, and are converted by the property UNIT_PER_CD (units per cd),
-# which Nasal/avionics.nas takes from 1 with the sun down to 1 / HDR_CD by day, through twilight as the display
-# units' photocells do; Shaders/HDR/lit.frag divides by its inverse, CD_PER_UNIT.
+# The HDR pipeline has no photometric units: its light is the sun's spectral irradiance (W m-2 nm-1) put through the
+# matrix of fgdata's Shaders/HDR/atmos_spectral.glsl, which gives a flat spectrum of 1 W/(m2 sr nm), 73,000 cd/m2, a
+# luminance of 115. Its unit of radiance is so 635 cd/m2 (from the sun, 610-640), and its unit of a light's intensity
+# 635 cd: the lights here are written as cd / HDR_CD, and Shaders/HDR/lit.frag takes cd/m2 the same way.
 HDR_CD = 635.0
-UNIT_PER_CD = '/instrumentation/uh60/lights/hdr/unit-per-cd'
 # A lamp's legend or a display's segments sit behind a dead front (smoked or filtered), which is all they show of the
 # daylight, lit or not; integrally lit markings are paint (reflectance 1 here: their texture's own).
 DEAD_FRONT = 0.05
@@ -268,10 +263,9 @@ def lamp_xml(name, p, a, light, cd, e, cut, rng):
             '      <y-m> %.4f </y-m>\n      <z-m> %.4f </z-m>\n    </position>\n    <direction>\n'
             '      <lookat-x-m> %.4f </lookat-x-m>\n      <lookat-y-m> %.4f </lookat-y-m>\n      <lookat-z-m> %.4f </lookat-z-m>\n'
             '    </direction>\n    <color>\n      <r> %.2f </r>\n      <g> %.2f </g>\n      <b> %.2f </b>\n    </color>\n'
-            '    <intensity>\n      <property>%s%s</property>\n      <scale>\n        <property>%s</property>\n'
-            '        <scale> %.6g </scale>\n      </scale>\n    </intensity>\n'
+            '    <intensity>\n      <property>%s%s</property>\n      <scale> %.6g </scale>\n    </intensity>\n'
             '    <spot-exponent> %g </spot-exponent>\n    <spot-cutoff> %.1f </spot-cutoff>\n    <range-m> %.3f </range-m>\n'
-            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + NVG_GREEN + (LIGHTS, light, UNIT_PER_CD, cd, e, cut, rng)))
+            '  </light>\n' % ((name,) + tuple(p) + tuple(a) + NVG_GREEN + (LIGHTS, light, cd / HDR_CD, e, cut, rng)))
 
 
 def bezel_light_xml(light, face, half, round=False, glass=None, out=None, name='bezel-lamp'):

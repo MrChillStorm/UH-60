@@ -63,10 +63,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -93,10 +90,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -123,10 +117,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -153,10 +144,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -183,10 +171,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -213,10 +198,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -243,10 +225,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>
@@ -273,10 +252,7 @@
     </color>
     <intensity>
       <property>/instrumentation/uh60/lights/cplt-flt</property>
-      <scale>
-        <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-        <scale> 0.011513 </scale>
-      </scale>
+      <scale> 1.81307e-05 </scale>
     </intensity>
     <spot-exponent> 3 </spot-exponent>
     <spot-cutoff> 69.3 </spot-cutoff>

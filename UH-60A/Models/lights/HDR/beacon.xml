@@ -5,7 +5,7 @@
   <light>
     <name>beaconlight</name>
     <!-- HDR: a spot aimed out through its lens, so that it lights the night around it and not its own skin;
-         intensity in candela, converted with the sun (fdm/cockpit/instruments.py, HDR_CD). An anticollision light
+         intensity in candela / 635 (the HDR unit: fdm/cockpit/instruments.py, HDR_CD). An anticollision light
          shines mostly sideways: the exponent of -1 makes the cone brighter toward its edge (50 cd along its axis,
          the ground straight below the lower one; 290 cd at 80 deg) -->
     <type>spot</type>
@@ -19,10 +19,7 @@
       <g> 0.06 </g>
       <b> 0.03 </b>
     </color>
-    <intensity>
-      <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-      <scale> 50 </scale>                     <!-- cd -->
-    </intensity>
+    <intensity> 0.07874 </intensity>      <!-- 50 cd -->
     <spot-exponent> -1 </spot-exponent>
     <spot-cutoff> 80 </spot-cutoff>
     <range-m> 30 </range-m>

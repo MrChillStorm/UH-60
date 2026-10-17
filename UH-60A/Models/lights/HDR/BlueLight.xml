@@ -5,7 +5,7 @@
   <light>
     <name>navlightblue</name>
     <!-- HDR: a spot aimed out through its lens, so that it lights the night around it and not its own skin;
-         intensity in candela, converted with the sun (fdm/cockpit/instruments.py, HDR_CD) -->
+         intensity in candela / 635 (the HDR unit: fdm/cockpit/instruments.py, HDR_CD) -->
     <type>spot</type>
     <direction>
       <lookat-x-m> 0 </lookat-x-m>
@@ -17,10 +17,7 @@
       <g> 0.4 </g>
       <b> 1 </b>
     </color>
-    <intensity>
-      <property>/instrumentation/uh60/lights/hdr/unit-per-cd</property>
-      <scale> 20 </scale>                     <!-- cd -->
-    </intensity>
+    <intensity> 0.0315 </intensity>      <!-- 20 cd -->
     <spot-exponent> 1 </spot-exponent>
     <spot-cutoff> 70 </spot-cutoff>
     <range-m> 15 </range-m>

@@ -28,7 +28,12 @@
     <type>select</type>
     <object-name>whitelightALS</object-name>
     <condition>
-      <property>/sim/rendering/shaders/skydome</property>
+      <!-- not in HDR: its legacy light is a white point light there (no intensity given: 1),
+           which lit the cockpit through the airframe -->
+      <and>
+        <property>/sim/rendering/shaders/skydome</property>
+        <not><property>/sim/rendering/hdr/hdr-enabled</property></not>
+      </and>
     </condition>
   </animation>
 
