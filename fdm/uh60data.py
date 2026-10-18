@@ -57,6 +57,11 @@ GE_ZR_MIN = 0.3
 # stroke speed [GH 5.1-30, 5.1-49, fig. 1.1.4, table 1.5.4]
 LAG_DOF = True
 LAG_STOP = (-20.0 * DEG, 12.0 * DEG)      # lag / lead stops (assumed)
+# the elastomeric bearing's own lag stiffness, about the unloaded blade (GenHel has none: its rotor always turns). It
+# holds a stopped rotor's blades in place against the wind (8 kt puts up to ~50 ft lb on a blade: 1 deg); assumed,
+# small beside the centrifugal stiffness E_FLAP S_B OMEGA^2 (79,000 ft lb/rad at 100 %) so that the lag frequency
+# stays the UH-60A's 0.27/rev (0.268 without it)
+LAG_K = 3000.0                             # ft lb/rad
 LDM_A, LDM_B, LDM_C, LDM_D, LDM_R = 0.227, 3.242, 12.040, 10.0102, 6.898   # in
 LDM_THETA_GEO = 17.481 * DEG
 LDM_DELTA0 = 7.0 * DEG

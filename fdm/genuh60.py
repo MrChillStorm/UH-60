@@ -453,15 +453,16 @@ class Model:
                                           MAX(v(lo), MIN(v(hi), S(p(b + '/beta-rad'), M(p(b + '/betadot-rad_sec'), p('simulation/dt')))))),
                  out=b + '/beta-rad')
             if U.LAG_DOF:
-                # lead-lag [GH 5.1-31, derived in these axes]: aerodynamic and damper moments, centrifugal stiffness
-                # through the hinge offset, Coriolis from flapping (a blade flapping up speeds up), rotor acceleration
+                # lead-lag [GH 5.1-31, derived in these axes]: aerodynamic, damper and bearing (LAG_K) moments,
+                # centrifugal stiffness through the hinge offset, Coriolis from flapping (a blade flapping up speeds
+                # up), rotor acceleration
                 cb, sb = COS(be), SIN(be)
                 dl, dld = p(b + '/delta-rad'), p(b + '/deltadot-rad_sec')
                 # the hub's own angular acceleration: the rotor speed's relative to the airframe less the airframe's yaw
                 # acceleration about the shaft (the rotor turns anticlockwise seen from above)
                 Wd = IFTHEN(init_fast, v(0), D(p('drive/omega-dot'), p('drive/r-dot-shaft')))
                 ddd = r.fn(b + '/deltaddot', S(
-                    Q(S(p('aero/rotor/b%d/Mlag' % k), p(b + '/ldm-mlag')), M(v(U.I_B), SQR(cb))),
+                    Q(S(p('aero/rotor/b%d/Mlag' % k), p(b + '/ldm-mlag'), M(v(-U.LAG_K), dl)), M(v(U.I_B), SQR(cb))),
                     NEG(M(Q(v(U.E_FLAP * U.S_B / U.I_B), cb), S(M(SQR(W), SIN(dl)), M(Wd, COS(dl))))),
                     M(v(2), Q(sb, cb), p(b + '/betadot-rad_sec'), S(W, dld)),
                     NEG(Wd)), desc='lag acceleration (lead +)')
