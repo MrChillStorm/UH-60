@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- A fictional FinnHEMS medical helicopter, FH 60 (written by fdm/finnhems.py over N7601C's paint) -->
+
+<PropertyList>
+
+  <sim>
+    <model>
+      <livery>
+        <name    type="string">FinnHEMS FH 60 (fictional)</name>
+        <texture type="string">Liveries/2048x2048/FinnHEMS.png</texture>
+        <roughness type="float"> 0.35 </roughness>   <!-- HDR: the paint, 0 gloss .. 1 matte -->
+        <specular>
+          <red   type="float"> 0.03 </red>
+          <green type="float"> 0.03 </green>
+          <blue  type="float"> 0.03 </blue>
+        </specular>
+        <blades>                                    <!-- Externals/MainRotor and TailRotor -->
+          <main type="string">mainrotor-plain.png</main>
+          <tail type="string">tailblade-plain.png</tail>
+          <blur type="string">blur-plain.png</blur>
+        </blades>
+      </livery>
+    </model>
+  </sim>
+
+</PropertyList>

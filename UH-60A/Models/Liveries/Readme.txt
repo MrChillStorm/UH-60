@@ -30,3 +30,7 @@ USNRescue
 These liveries were made by : Gary BROWN 2016
 
 Thanks to him.
+
+FinnHEMS
+
+A fictional FinnHEMS livery, painted by fdm/finnhems.py over Gary BROWN's N7601C.
