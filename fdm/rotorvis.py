@@ -18,13 +18,17 @@ and swapped them for blurred-blade textures above 60 rpm and a disc of transluce
   with the rpm as they close up. Opaque below SOLID_RPM (it casts its shadow), the blade then fades out to nothing at
   FADE_RPM as the fan fades in, both with the rpm and casting partial shadows (Effects/RotorBlur: the HDR pipeline;
   elsewhere they switch, without shadows);
-- the original's blur and disc objects are hidden.
+- the original's blur and disc objects are hidden;
+- the livery picks the blades' paint: sim/model/livery/blades/main, tail and blur name the textures (the striped
+  mainrotor.png, tailblade.png and blur.png, or their -plain copies without the tip stripes), set in every livery file
+  since the livery selector only adds properties.
 
 In FlightGear's model frame (x aft, y right, z up) the blade lies along +x with its leading edge toward +y; a rotate
 animation turns by the right-hand rule, and the first animation of an object is the outermost (the hub's side).
 
     python3 rotorvis.py         writes UH-60A/Models/Externals/MainRotor/blade.xml, blade-rotor.ac, blur.png, mainrotor.xml
-                                and TailRotor/blade.xml, blade-rotor.ac, blur.png, tailrotor.xml
+                                and TailRotor/blade.xml, blade-rotor.ac, blur.png, tailrotor.xml, tailblade.png,
+                                and the stripeless mainrotor-plain.png, tailblade-plain.png, blur-plain.png
 """
 import os, re
 
@@ -76,6 +80,7 @@ def fan_ac(folder, segments, span, chord, nb, gain, colour, retex=None):
     from PIL import Image
     d = math.radians(360.0 / nb / (STRIPS - 1))             # their spacing at flight rpm; each 2 d wide
     tex = Image.new('RGBA', (256, 256), (0, 0, 0, 0)); cells = []
+    plain = tex.copy()                                      # blur-plain.png: the tip as the rest of the blade
     g = [math.exp(-k / SMEAR) for k in range(STRIPS)]
     seen = {}
     def swatch(rgb, a):
@@ -85,6 +90,7 @@ def fan_ac(folder, segments, span, chord, nb, gain, colour, retex=None):
         n = len(cells); x, y = 8 * (n % 32), 8 * (n // 32)
         assert n < 1024, 'blur.png is full'
         tex.paste(tuple(int(round(255 * c)) for c in rgb) + (int(round(255 * a)),), (x, y, x + 8, y + 8))
+        plain.paste(tuple(int(round(255 * c)) for c in (DARK if rgb == TIP else rgb)) + (int(round(255 * a)),), (x, y, x + 8, y + 8))
         cells.append(((x + 4) / 256.0, 1 - (y + 4) / 256.0)); seen[key] = cells[-1]
         return cells[-1]
     text = open(os.path.join(folder, 'blade.ac'), encoding='latin-1').read()
@@ -129,7 +135,7 @@ def fan_ac(folder, segments, span, chord, nb, gain, colour, retex=None):
         m = re.search(r'^name "([^"]+)"', b, re.M)
         if m and m.group(1) in segments:
             objs.append(re.sub(r'(?m)^name "[^"]+"', 'name "t%s"' % m.group(1), b).rstrip('\n'))
-    tex.save(os.path.join(folder, 'blur.png'))
+    tex.save(os.path.join(folder, 'blur.png')); plain.save(os.path.join(folder, 'blur-plain.png'))
     out = ['AC3Db'] + mats + ['OBJECT world', 'kids %d' % len(objs)] + objs
     open(os.path.join(folder, 'blade-rotor.ac'), 'w', encoding='latin-1').write('\n'.join(out) + '\n')
 
@@ -166,6 +172,30 @@ def fade(objs, f, t, rough, shadow, comment, rpm=None):
             '    </parameters>\n' % (comment, use, f, t, rough, shadow) + objects(objs) + '  </effect>\n')
 
 
+def livery_textures(objs, prop, default, comment):
+    """objs' texture from the livery, sim/model/livery/blades/prop (else default): the pbr animation for the HDR pipeline,
+    the material one for the others; the pbr one has to come first."""
+    return ('\n  <!-- %s -->\n  <animation>\n    <type>pbr</type>\n' % comment + objects(objs) +
+            '    <property-base>sim/model/livery/blades</property-base>\n'
+            '    <base-color-texture-prop>%s</base-color-texture-prop>\n  </animation>\n' % prop +
+            '  <animation>\n    <type>material</type>\n' + objects(objs) +
+            '    <property-base>sim/model/livery/blades</property-base>\n    <texture-prop>%s</texture-prop>\n'
+            '    <texture>%s</texture>\n  </animation>\n' % (prop, default))
+
+
+def plain_main():
+    """mainrotor-plain.png: mainrotor.png with its tip stripes (the red and white block the blades' tip segment maps
+    onto) in the blades' black."""
+    from PIL import Image
+    im = Image.open(os.path.join(DIR, 'mainrotor.png')).convert('RGB'); px = im.load()
+    for y in range(im.size[1]):
+        for x in range(im.size[0]):
+            r, g, b = px[x, y]
+            if r > 200 and (g < 60 or g > 240) and abs(g - b) < 40:   # red or white
+                px[x, y] = (0, 0, 0)
+    im.save(os.path.join(DIR, 'mainrotor-plain.png'))
+
+
 def scale_xml(objs, prop, nominal, comment):
     return ('\n  <!-- %s -->\n  <animation>\n    <type>scale</type>\n' % comment + objects(objs) +
             '    <property>%s</property>\n    <x-factor> 0 </x-factor>\n    <x-offset> 1 </x-offset>\n'
@@ -179,6 +209,8 @@ def blade_xml():
          '     instance its blade\'s properties in params -->\n\n<PropertyList>\n\n  <path>blade-rotor.ac</path>\n\n'
          '  <params>\n    <lag>rotors/main/blade[0]/lag-deg</lag>\n    <flap>rotors/main/blade[0]/flap-deg</flap>\n'
          '    <pitch>rotors/main/blade[0]/pitch-deg</pitch>\n  </params>\n')
+    x += livery_textures(SEGMENTS + TBLADE, 'main', 'mainrotor.png', 'the livery\'s paint: the blade, with or without tip stripes')
+    x += livery_textures(strips, 'blur', 'blur.png', 'and its blur')
     x += fade(strips, SOLID_RPM, FADE_RPM, 1.0, 2.0, 'the fan fades in with the rpm; its shadow x 2: two wedges over each point')
     x += fade(TBLADE, FADE_RPM, SOLID_RPM, 0.5, 1.0, 'the blade fades out')
     x += select(OLD_BLUR, '      <property>sim/model/uh60/never</property>\n', 'the original\'s blur and disc: not shown')
@@ -245,10 +277,13 @@ TR_CHORD_Y = (-0.156, 0.155)            # m: the blade's chord across y (its bla
 
 def tail_paint():
     """tailblade.png: the tail blades' paint, the main blades' (mainrotor.png): black, the tip striped red and white; the
-    original mapped them onto plain grey (its UVs scrambled, which uniform noise hid). Returns the blades' planar uv."""
+    original mapped them onto plain grey (its UVs scrambled, which uniform noise hid); tailblade-plain.png: all black.
+    Returns the blades' planar uv."""
     from PIL import Image, ImageDraw
     W, H = 64, 512
-    im = Image.new('RGB', (W, H), (12, 12, 12)); d = ImageDraw.Draw(im)
+    im = Image.new('RGB', (W, H), (12, 12, 12))
+    im.save(os.path.join(TR_DIR, 'tailblade-plain.png'))
+    d = ImageDraw.Draw(im)
     band = (TR_TIP - TR_STRIPE) / 4
     for k, rgb in enumerate([(236, 0, 0), (255, 255, 255), (236, 0, 0), (255, 255, 255)]):   # from the tip in
         r1 = TR_TIP - k * band; r0 = r1 - band
@@ -265,6 +300,8 @@ def tail_xml():
     x = ('<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<!-- One tail rotor blade, written by fdm/rotorvis.py (see there); tailrotor.xml gives each\n'
          '     instance its blade\'s flap in params -->\n\n<PropertyList>\n\n  <path>blade-rotor.ac</path>\n\n'
          '  <params>\n    <flap>rotors/tail/blade[0]/flap-deg</flap>\n  </params>\n')
+    x += livery_textures(['blade', 'tblade'], 'tail', 'tailblade.png', 'the livery\'s paint: the blade, with or without tip stripes')
+    x += livery_textures(strips, 'blur', 'blur.png', 'and its blur')
     x += fade(strips, TR_SOLID, TR_FADE, 1.0, 2.0, 'the fan fades in with the rpm; its shadow x 2: two wedges over each point',
               rpm='/rotors/tail/rpm')
     x += fade(['tblade'], TR_FADE, TR_SOLID, 0.5, 1.0, 'the blade fades out', rpm='/rotors/tail/rpm')
@@ -297,7 +334,7 @@ def tail_xml():
 
 
 if __name__ == '__main__':
-    rotor_ac(); blade_xml(); mainrotor_xml()
+    rotor_ac(); blade_xml(); mainrotor_xml(); plain_main()
     fan_ac(TR_DIR, ['blade'], TR_SPAN, TR_CHORD, 4, TR_GAIN, lambda n: TIP if n == len(TR_SPAN) - 1 else DARK,
            retex=('tailblade.png', tail_paint())); tail_xml()
     print('rotor models written: %d wedges per blade over 90 deg at 100 %% rpm' % STRIPS)

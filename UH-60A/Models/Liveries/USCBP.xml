@@ -13,6 +13,11 @@
           <green type="float"> 0.03 </green>
           <blue  type="float"> 0.03 </blue>
         </specular>
+        <blades>                                    <!-- Externals/MainRotor and TailRotor -->
+          <main type="string">mainrotor.png</main>
+          <tail type="string">tailblade.png</tail>
+          <blur type="string">blur.png</blur>
+        </blades>
       </livery>
     </model>
   </sim>

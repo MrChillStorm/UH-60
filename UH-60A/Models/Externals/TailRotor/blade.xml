@@ -11,6 +11,84 @@
     <flap>rotors/tail/blade[0]/flap-deg</flap>
   </params>
 
+  <!-- the livery's paint: the blade, with or without tip stripes -->
+  <animation>
+    <type>pbr</type>
+    <object-name>blade</object-name>
+    <object-name>tblade</object-name>
+    <property-base>sim/model/livery/blades</property-base>
+    <base-color-texture-prop>tail</base-color-texture-prop>
+  </animation>
+  <animation>
+    <type>material</type>
+    <object-name>blade</object-name>
+    <object-name>tblade</object-name>
+    <property-base>sim/model/livery/blades</property-base>
+    <texture-prop>tail</texture-prop>
+    <texture>tailblade.png</texture>
+  </animation>
+
+  <!-- and its blur -->
+  <animation>
+    <type>pbr</type>
+    <object-name>blur0</object-name>
+    <object-name>blur1</object-name>
+    <object-name>blur2</object-name>
+    <object-name>blur3</object-name>
+    <object-name>blur4</object-name>
+    <object-name>blur5</object-name>
+    <object-name>blur6</object-name>
+    <object-name>blur7</object-name>
+    <object-name>blur8</object-name>
+    <object-name>blur9</object-name>
+    <object-name>blur10</object-name>
+    <object-name>blur11</object-name>
+    <object-name>blur12</object-name>
+    <object-name>blur13</object-name>
+    <object-name>blur14</object-name>
+    <object-name>blur15</object-name>
+    <object-name>blur16</object-name>
+    <object-name>blur17</object-name>
+    <object-name>blur18</object-name>
+    <object-name>blur19</object-name>
+    <object-name>blur20</object-name>
+    <object-name>blur21</object-name>
+    <object-name>blur22</object-name>
+    <object-name>blur23</object-name>
+    <property-base>sim/model/livery/blades</property-base>
+    <base-color-texture-prop>blur</base-color-texture-prop>
+  </animation>
+  <animation>
+    <type>material</type>
+    <object-name>blur0</object-name>
+    <object-name>blur1</object-name>
+    <object-name>blur2</object-name>
+    <object-name>blur3</object-name>
+    <object-name>blur4</object-name>
+    <object-name>blur5</object-name>
+    <object-name>blur6</object-name>
+    <object-name>blur7</object-name>
+    <object-name>blur8</object-name>
+    <object-name>blur9</object-name>
+    <object-name>blur10</object-name>
+    <object-name>blur11</object-name>
+    <object-name>blur12</object-name>
+    <object-name>blur13</object-name>
+    <object-name>blur14</object-name>
+    <object-name>blur15</object-name>
+    <object-name>blur16</object-name>
+    <object-name>blur17</object-name>
+    <object-name>blur18</object-name>
+    <object-name>blur19</object-name>
+    <object-name>blur20</object-name>
+    <object-name>blur21</object-name>
+    <object-name>blur22</object-name>
+    <object-name>blur23</object-name>
+    <property-base>sim/model/livery/blades</property-base>
+    <texture-prop>blur</texture-prop>
+    <texture>blur.png</texture>
+  </animation>
+
   <!-- the fan fades in with the rpm; its shadow x 2: two wedges over each point -->
   <effect>
     <inherits-from>../../Effects/RotorBlur/rotor-blur</inherits-from>
