@@ -1,5 +1,7 @@
 # UH-60A Black Hawk for FlightGear, with a JSBSim model built from the GenHel data
 
+![Night vision instrument panel](Panel-NVIS-A.png)
+
 The Sikorsky UH-60A Black Hawk from FlightGear's aircraft collection, with a
 new JSBSim flight model in place of its YASim one. The model follows the
 engineering simulation Sikorsky wrote for the Black Hawk (GenHel, documented
