@@ -7,16 +7,19 @@ places.
   (table 2-3 of the TM gives each capsule's condition). The failures the simulation doesn't have stay dark. Its
   BRT/DIM-TEST switch tests the capsules and the master warning panel; MASTER CAUTION lights when an amber capsule
   goes on and stays on until pressed (Nasal/caution.nas).
-- The panels with nothing to drive yet (mode selectors, auxiliary fuel management panel, radar warning indicator,
-  ice rate meter, blade deice and IRCM panels, dimming controls): the TM's face art on a raised panel, with 3-D
-  knobs, switches, lamps and buttons. The engine ignition switch works (/controls/engines/ignition).
+- The mode selectors (VSI/HSI and CIS, TM 3.25.4), integrally lighted panels of lighted push buttons: their markings
+  the TM figure's, lettered in bold and lit on the nonflight instrument lights; square caps in raised frames, their
+  legends readable by day and lit by Nasal/avionics.nas's switch logic, pressing in while clicked (PushPanel).
+- The panels with nothing to drive yet (auxiliary fuel management panel, radar warning indicator, ice rate meter,
+  blade deice and IRCM panels, dimming controls): the TM's face art on a raised panel, with 3-D knobs, switches,
+  lamps and buttons. The engine ignition switch works (/controls/engines/ignition).
 
 Sizes and places are the TM figure's (panel_layout.py); everything is in metres in the instrument's own frame
 (acmesh.py), its origin on the TM bezel's centre and its back on the face plate.
 
     python3 instruments.py TM.pdf
 """
-import math, os, re, sys
+import math, os, re, subprocess, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
@@ -511,6 +514,7 @@ class Panel:
         s.t = Tex(W, H, (GROUND,) * 3)
         im = tmart.light(art.vector(s.x0, s.x1, s.y0, s.y1, s.sheet, pw, ph), GROUND, LETTER)
         s.t.im.paste(im.convert('RGB'), (0, 0))
+        s.pw, s.ph = pw, ph
         s.face_uv = s.t.area(0, 0, pw, ph, s.bx - s.w / 2, s.bx + s.w / 2, s.bz - s.h / 2, s.bz + s.h / 2)
         s.free = [0, ph + 4, 0]                                  # next free x, y and row height in the texture
         s.paint = s.t.swatch((30, 30, 30)); s.knob_side = s.t.swatch((20, 20, 20)); s.knob_top = s.t.swatch((48, 48, 48))
@@ -577,7 +581,9 @@ class Panel:
         pw = int(160 * (y1 - y0) / 0.008); ph = max(24, int(pw * (z1 - z0) / (y1 - y0)))
         x0, py0, x1, py1 = s.alloc(pw, ph)
         dr = s.t.d; dr.rectangle([x0, py0, x1, py1], fill=(0, 0, 0))           # black: in HDR the whole texture emits
-        f = font(ph * (0.42 if len(lines) > 1 else 0.55))
+        size = ph * (0.42 if len(lines) > 1 else 0.55)
+        widest = max(dr.textlength(line, font=font(size)) for line in lines)
+        f = font(size * min(1.0, 0.86 * (x1 - x0) / widest))                    # within the cell
         for k, line in enumerate(lines):
             yy = py0 + ph * ((k + 1) / (len(lines) + 1) if len(lines) > 1 else 0.5)
             dr.text(((x0 + x1) / 2, yy), line, font=f, fill=rgb, anchor='mm')
@@ -595,9 +601,10 @@ class Panel:
         """variants: [(xml name, {text: replacement})] for instances that differ only in their properties."""
         objs = [s.body] + list(s.parts.values())
         glass = ['glass'] if 'glass' in s.parts else []
-        lit = s.lit if LIGHT_PANELS else []
-        xml = common_xml([o.name for o in objs], lit=lit, glass=glass, extra=s.xml + extra, light=light,
-                         bezel=((s.depth, s.bx, s.bz), (s.w / 2, s.h / 2)) if lit else None)
+        integral = getattr(s, 'integral', False)
+        lit = s.lit if LIGHT_PANELS or integral else []
+        xml = common_xml([o.name for o in objs], lit=lit, glass=glass, extra=s.xml + extra, light=light, integral=integral,
+                         bezel=((s.depth, s.bx, s.bz), (s.w / 2, s.h / 2)) if lit and not integral else None)
         xml = xml.replace('<PropertyList>', '<!-- %s -->\n<PropertyList>' % comment, 1)
         write_instrument(s.name, objs, xml)
         for fname, subs in variants or ():
@@ -606,6 +613,128 @@ class Panel:
                 x = x.replace(a, b)
             open(os.path.join(INSTR, s.name, fname), 'w').write(x)
         s.t.save(os.path.join(INSTR, s.name, s.name + '.png'))
+
+
+def tm_words(pdf, sheet, x0, x1, y0, y1):
+    """The figure's words in a box (sheet pt): [(text, x0, x1, y0, y1)], from the PDF's text layer."""
+    out = subprocess.run(['pdftotext', '-q', '-f', str(tmart.PAGES[sheet - 1]), '-l', str(tmart.PAGES[sheet - 1]),
+                          '-bbox', pdf, '-'], check=True, capture_output=True, text=True).stdout
+    words = []
+    for m in re.finditer(r'<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="([\d.]+)" yMax="([\d.]+)">([^<]*)</word>', out):
+        a, b, c, d = map(float, m.groups()[:4])
+        if x0 <= (a + c) / 2 <= x1 and y0 <= (b + d) / 2 <= y1:
+            words.append((m.group(5), a, c, b, d))
+    return words
+
+
+CAP_GROUND, CAP_LEGEND = (14, 14, 15), (175, 175, 175)     # a push button's cap, and its legend unlit, by day
+
+
+class PushPanel(Panel):
+    """An integrally lighted panel of lighted push-button switches (TM 3.25.4): its markings are the TM figure's
+    linework, with the words set again in bold and lighted (on the nonflight instrument lights), and the buttons are
+    3-D: square caps in raised frames, their legends readable by day under the dead front and lighted by the switch
+    logic (lit legends on the LIGHTED SWITCHES dimmer), pressing in while clicked. Positions in figure pt from the
+    item's centre, y right and z down as on the figure."""
+    FRAME_H, CAP_H, TRAVEL = 0.0025, 0.0018, 0.0012    # m: frames' and caps' height over the face, a press's travel
+    GAP = 0.15                                          # pt: a cap's clearance in its frame
+
+    def __init__(s, name, art, num, side, depth, border, frames, lines=(), room=400):
+        """border: (y0, y1, z0, z1) inside the panel's edge, the figure's outline outside it erased; frames:
+        [(y0, y1, z0, z1)] the raised frames (the figure's art under them erased); lines: [((y0, z0), (y1, z1))]
+        markings drawn again across the frames."""
+        Panel.__init__(s, name, art, num, side, depth, room=room)
+        s.integral = True
+        s.frames, s.holes = frames, []
+        pw, ph = s.pw, s.ph
+        x0, x1, y0, y1 = s.x0, s.x1, s.y0, s.y1
+        k = pw / (x1 - x0)                                   # px per pt
+        px = lambda y, z: ((y + s.cx - x0) * k, (z + s.cy - y0) * k)
+        im = art.vector(x0, x1, y0, y1, s.sheet, pw, ph).convert('L')
+        d = ImageDraw.Draw(im)
+        words = tm_words(art.pdf, s.sheet, x0, x1, y0, y1)
+        for w, a, b, c, e in words:                          # the figure's words, set again below
+            m = max(3, 0.2 * k)                               # px: the glyphs reach a little past their boxes
+            d.rectangle([(a - x0) * k - m, (c - y0) * k - m, (b - x0) * k + m, (e - y0) * k + m], fill=255)
+        by0, by1, bz0, bz1 = border
+        q0, q1 = px(by0, bz0), px(by1, bz1)
+        mask = Image.new('L', im.size, 255); ImageDraw.Draw(mask).rectangle([q0[0], q0[1], q1[0], q1[1]], fill=0)
+        im.paste(255, (0, 0), mask)                          # the outline: the panel's own edge shows it
+        for fy0, fy1, fz0, fz1 in frames:
+            a, b = px(fy0 - 0.3, fz0 - 0.3), px(fy1 + 0.3, fz1 + 0.3)
+            d.rectangle([a[0], a[1], b[0], b[1]], fill=255)
+        for (ly0, lz0), (ly1, lz1) in lines:
+            d.line([px(ly0, lz0), px(ly1, lz1)], fill=0, width=max(1, int(round(0.28 * k))))
+        face = tmart.light(im, GROUND, LETTER).convert('RGB')
+        df = ImageDraw.Draw(face)
+        inside = lambda wy, wz: any(fy0 <= wy <= fy1 and fz0 <= wz <= fz1 for fy0, fy1, fz0, fz1 in frames)
+        for w, a, b, c, e in words:
+            wy, wz = (a + b) / 2 - s.cx, (c + e) / 2 - s.cy
+            if inside(wy, wz):
+                continue                                      # a cap's legend: on the cap
+            size = (e - c) * k * 0.92
+            f = font(size)
+            l, t, r, bot = df.textbbox((0, 0), w, font=f, anchor='mm')
+            if r - l > 1.10 * (b - a) * k:
+                f = font(size * 1.10 * (b - a) * k / (r - l))
+            df.text((((a + b) / 2 - x0) * k, ((c + e) / 2 - y0) * k), w, font=f, fill=(LETTER,) * 3, anchor='mm')
+        s.t.im.paste(face, (0, 0))
+        s.lit = ['panel', 'frames']
+        s.obj('frames')                                      # the frames (write: round the caps), the face's markings on top
+
+    def frame_box(s, o, fy0, fy1, fz0, fz1, holes=None):
+        """A raised frame (pt), or its parts between holes."""
+        (a0, b0), (a1, b1) = s.at(fy0, fz0), s.at(fy1, fz1)
+        holes = sorted(h for h in s.holes if fy0 <= (h[0] + h[1]) / 2 <= fy1 and fz0 <= (h[2] + h[3]) / 2 <= fz1) \
+            if holes is None else holes
+        if not holes:
+            return
+        y0, y1, z0, z1 = min(a0, a1), max(a0, a1), min(b0, b1), max(b0, b1)
+        hs = [(min(s.at(h[0], 0)[0], s.at(h[1], 0)[0]), max(s.at(h[0], 0)[0], s.at(h[1], 0)[0]),
+               min(s.at(0, h[2])[1], s.at(0, h[3])[1]), max(s.at(0, h[2])[1], s.at(0, h[3])[1])) for h in holes]
+        hz0, hz1 = min(h[2] for h in hs), max(h[3] for h in hs)
+        top = s.depth + s.FRAME_H
+        A.box(o, y0, y1, hz1, z1, s.depth, top, s.face_uv, s.paint)          # above the holes
+        A.box(o, y0, y1, z0, hz0, s.depth, top, s.face_uv, s.paint)          # below
+        edges = [y0] + [c for h in hs for c in (h[0], h[1])] + [y1]
+        for a, b in zip(edges[0::2], edges[1::2]):                            # between them
+            if b > a:
+                A.box(o, a, b, hz0, hz1, s.depth, top, s.face_uv, s.paint)
+
+    def write(s, *args, **kw):
+        for f in s.frames:
+            s.frame_box(s.parts['frames'], *f)
+        Panel.write(s, *args, **kw)
+
+    def cap(s, key, y, z, w, h, lines, split=False):
+        """A square cap (pt) at (y, z) with its legend as it reads unlit: one or two lines, or with `split` a line
+        each over and under a rule. Returns its centre and half sizes (m)."""
+        cy, cz = s.at(y, z); hw, hh = w * PT / 2, h * PT / 2
+        pw = 160; ph = int(pw * h / w)
+        x0, py0, x1, py1 = s.alloc(pw, ph)
+        dr = s.t.d
+        dr.rectangle([x0, py0, x1, py1], fill=CAP_GROUND)
+        if split:
+            dr.line([x0 + 8, (py0 + py1) / 2, x1 - 8, (py0 + py1) / 2], fill=(90, 90, 90), width=3)
+            f = font(ph * 0.26)
+            dr.text(((x0 + x1) / 2, py0 + ph * 0.27), lines[0], font=f, fill=CAP_LEGEND, anchor='mm')
+            dr.text(((x0 + x1) / 2, py0 + ph * 0.74), lines[1], font=f, fill=CAP_LEGEND, anchor='mm')
+        else:
+            f = font(ph * (0.26 if len(lines) > 1 else 0.30))
+            for k, line in enumerate(lines):
+                yy = py0 + ph * ((k + 1) / (len(lines) + 1) if len(lines) > 1 else 0.5)
+                dr.text(((x0 + x1) / 2, yy), line, font=f, fill=CAP_LEGEND, anchor='mm')
+        s.holes.append((y - w / 2 - s.GAP, y + w / 2 + s.GAP, z - h / 2 - s.GAP, z + h / 2 + s.GAP))
+        o = s.obj('btn-' + key)
+        A.box(o, cy - hw, cy + hw, cz - hh, cz + hh, s.depth, s.depth + s.CAP_H,
+              s.t.area(x0, py0, x1, py1, cy - hw, cy + hw, cz - hh, cz + hh), s.knob_side)
+        return cy, cz, hw, hh
+
+    def press_xml(s, objs, prop):
+        """The cap (and its lit legends) in by TRAVEL while `prop` is 1."""
+        return ('\n  <animation>\n    <type>translate</type>\n%s    <property>%s</property>\n    <factor> %g </factor>\n'
+                '    <axis>\n      <x> 1 </x>\n      <y> 0 </y>\n      <z> 0 </z>\n    </axis>\n  </animation>\n'
+                % (objects_xml(objs), prop, -s.TRAVEL))
 
 
 def select_xml(objs, cond):
@@ -649,40 +778,52 @@ LEGEND = (200, 255, 200)                                       # NVG-green panel
 
 def panels(art):
     UH = '/instrumentation/uh60/'
-    # VSI/HSI mode selector (TM 3.25.4): top row the navigation source, bottom row split legends
-    p = Panel('modesel', art, 11, 'pilot', 0.005, room=400)
+    # VSI/HSI mode selector (TM 3.25.4, figure 2-9): two rows of four lighted push buttons, each row in its frame,
+    # three dividers running through them; the top row the navigation source, the bottom row split legends
+    p = PushPanel('modesel', art, 11, 'pilot', 0.005, border=(-25.6, 25.6, -26.4, 26.4),
+                  frames=[(-24.07, 24.10, -11.98, -0.23), (-24.07, 24.10, 0.67, 12.43)],
+                  lines=[((y, -12.1), (y, 12.6)) for y in (-12.50, -0.57, 11.52)], room=600)
     p.lamps = 'switches'                            # TM 2.70.4: the LIGHTED SWITCHES dimmer
-    bw, bh = 8.4, 8.2
+    cw = 8.3
     top = (('dplr', ['DPLR']), ('vor-ils', ['VOR', 'ILS']), ('back-crs', ['BACK', 'CRS']), ('fm-home', ['FM', 'HOME']))
     bottom = (('turn-altr', 'NORM', 'ALTR'), ('crs-hdg', 'PLT', 'CPLT'), ('vgyro-altr', 'NORM', 'ALTR'), ('brg2-vor', 'ADF', 'VOR'))
+    lift = p.depth + p.CAP_H + 0.0002
     for x, (key, lines) in zip((-17.9, -6.4, 5.8, 17.6), top):
-        cy, cz = p.button(x, -5.9, bw, bh, name='btn-' + key)
-        w2, h2 = bw * PT * 0.42, bh * PT * 0.42
-        p.legend('lit-' + key, cy - w2, cy + w2, cz - h2, cz + h2, p.depth + 0.0032, lines, LEGEND,
+        cy, cz, hw, hh = p.cap(key, x, -5.9, cw, cw, lines)
+        p.legend('lit-' + key, cy - 0.84 * hw, cy + 0.84 * hw, cz - 0.84 * hh, cz + 0.84 * hh, lift, lines, LEGEND,
                  '%s<property>%smodesel[0]/%s</property>' % (PWR, UH, key))
-        p.xml += pick_xml('btn-' + key, [(0, 'avionics.modesel(0, "%s")' % key)], 'Mode select: ' + ' '.join(lines))
+        press = '%smodesel[0]/press-%s' % (UH, key)
+        p.xml += p.press_xml(['btn-' + key, 'lit-' + key], press)
+        p.xml += pick_xml('btn-' + key, [(0, 'setprop("%s", 1); avionics.modesel(0, "%s")' % (press, key))],
+                          'Mode select: ' + ' '.join(lines), release='setprop("%s", 0)' % press)
     for x, (key, a, b) in zip((-17.9, -6.4, 5.8, 17.6), bottom):
-        cy, cz = p.button(x, 6.8, bw, bh, name='btn-' + key)
-        w2, h2 = bw * PT * 0.42, bh * PT * 0.21
+        cy, cz, hw, hh = p.cap(key, x, 6.8, cw, cw, [a, b], split=True)
         state = '%scrs-hdg-cplt' % UH if key == 'crs-hdg' else '%smodesel[0]/%s' % (UH, key)
-        p.legend('lit-%s-a' % key, cy - w2, cy + w2, cz, cz + 2 * h2, p.depth + 0.0032, [a], LEGEND,
+        p.legend('lit-%s-a' % key, cy - 0.84 * hw, cy + 0.84 * hw, cz + 0.08 * hh, cz + 0.88 * hh, lift, [a], LEGEND,
                  '%s<not><property>%s</property></not>' % (PWR, state))
-        p.legend('lit-%s-b' % key, cy - w2, cy + w2, cz - 2 * h2, cz, p.depth + 0.0032, [b], LEGEND,
+        p.legend('lit-%s-b' % key, cy - 0.84 * hw, cy + 0.84 * hw, cz - 0.88 * hh, cz - 0.08 * hh, lift, [b], LEGEND,
                  '%s<property>%s</property>' % (PWR, state))
-        p.xml += pick_xml('btn-' + key, [(0, 'avionics.modesel(0, "%s")' % key)], 'Mode select: %s / %s' % (a, b))
+        press = '%smodesel[0]/press-%s' % (UH, key)
+        p.xml += p.press_xml(['btn-' + key, 'lit-%s-a' % key, 'lit-%s-b' % key], press)
+        p.xml += pick_xml('btn-' + key, [(0, 'setprop("%s", 1); avionics.modesel(0, "%s")' % (press, key))],
+                          'Mode select: %s / %s' % (a, b), release='setprop("%s", 0)' % press)
     p.write('VSI/HSI mode selector, pilot\'s (Nasal/avionics.nas)', variants=[('modesel-copilot.xml', {
         'modesel[0]': 'modesel[1]', 'avionics.modesel(0,': 'avionics.modesel(1,',
         'VSI/HSI mode selector, pilot\'s': 'VSI/HSI mode selector, copilot\'s'})])
 
-    # CIS mode selector: HDG, NAV, ALT, each with its ON legend
-    p = Panel('cismode', art, 10, 'pilot', 0.005, room=200)
+    # CIS mode selector: HDG, NAV, ALT, each cap split over its ON legend, in its own frame
+    p = PushPanel('cismode', art, 10, 'pilot', 0.005, border=(-27.0, 27.0, -12.2, 12.2),
+                  frames=[(-20.53, -8.70, -6.80, 5.65), (-6.20, 5.45, -6.80, 5.65), (8.30, 20.30, -6.80, 5.75)], room=500)
     p.lamps = 'switches'
-    for x, key in zip((-14.4, -0.2, 14.1), ('hdg', 'nav', 'alt')):
-        cy, cz = p.button(x, -0.5, 8.9, 8.7, name='btn-' + key)
-        w2, h2 = 8.9 * PT * 0.42, 8.7 * PT * 0.21
-        p.legend('lit-' + key, cy - w2, cy + w2, cz - 2 * h2, cz, p.depth + 0.0032, ['ON'], LEGEND,
+    lift = p.depth + p.CAP_H + 0.0002
+    for x, key in zip((-14.43, -0.18, 14.15), ('hdg', 'nav', 'alt')):
+        cy, cz, hw, hh = p.cap(key, x, -0.53, 8.8, 8.7, [key.upper(), 'ON'], split=True)
+        p.legend('lit-' + key, cy - 0.84 * hw, cy + 0.84 * hw, cz - 0.88 * hh, cz - 0.08 * hh, lift, ['ON'], LEGEND,
                  '%s<property>%scis/%s-on</property>' % (PWR, UH, key))
-        p.xml += pick_xml('btn-' + key, [(0, 'avionics.press("%s")' % key)], 'CIS mode: ' + key.upper())
+        press = '%scis/press-%s' % (UH, key)
+        p.xml += p.press_xml(['btn-' + key, 'lit-' + key], press)
+        p.xml += pick_xml('btn-' + key, [(0, 'setprop("%s", 1); avionics.press("%s")' % (press, key))],
+                          'CIS mode: ' + key.upper(), release='setprop("%s", 0)' % press)
     p.write('CIS mode selector (Nasal/avionics.nas)')
 
     # auxiliary fuel management panel: no external tanks are fitted, its displays stay blank; the switches move

@@ -10,6 +10,7 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
+    <object-name>frames</object-name>
     <object-name>btn-hdg</object-name>
     <object-name>lit-hdg</object-name>
     <object-name>btn-nav</object-name>
@@ -17,6 +18,30 @@
     <object-name>btn-alt</object-name>
     <object-name>lit-alt</object-name>
   </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>panel</object-name>
+    <object-name>frames</object-name>
+    <emission>
+      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
+    </emission>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
+      <lit-gain type="float"> 1.91 </lit-gain>
+      <lit-reflectance type="float"> 1 </lit-reflectance>
+    </parameters>
+    <object-name>panel</object-name>
+    <object-name>frames</object-name>
+  </effect>
 
   <animation>
     <type>select</type>
@@ -49,6 +74,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-hdg</object-name>
+    <object-name>lit-hdg</object-name>
+    <property>/instrumentation/uh60/cis/press-hdg</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-hdg</object-name>
     <action>
@@ -56,8 +94,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.press("hdg")</script>
+        <script>setprop("/instrumentation/uh60/cis/press-hdg", 1); avionics.press("hdg")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/cis/press-hdg", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -99,6 +143,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-nav</object-name>
+    <object-name>lit-nav</object-name>
+    <property>/instrumentation/uh60/cis/press-nav</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-nav</object-name>
     <action>
@@ -106,8 +163,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.press("nav")</script>
+        <script>setprop("/instrumentation/uh60/cis/press-nav", 1); avionics.press("nav")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/cis/press-nav", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -149,6 +212,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-alt</object-name>
+    <object-name>lit-alt</object-name>
+    <property>/instrumentation/uh60/cis/press-alt</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-alt</object-name>
     <action>
@@ -156,8 +232,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.press("alt")</script>
+        <script>setprop("/instrumentation/uh60/cis/press-alt", 1); avionics.press("alt")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/cis/press-alt", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>

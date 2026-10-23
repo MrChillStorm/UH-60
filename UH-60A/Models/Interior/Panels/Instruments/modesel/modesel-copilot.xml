@@ -10,6 +10,7 @@
   <animation>
     <type>noshadow</type>
     <object-name>panel</object-name>
+    <object-name>frames</object-name>
     <object-name>btn-dplr</object-name>
     <object-name>lit-dplr</object-name>
     <object-name>btn-vor-ils</object-name>
@@ -31,6 +32,30 @@
     <object-name>lit-brg2-vor-a</object-name>
     <object-name>lit-brg2-vor-b</object-name>
   </animation>
+
+  <animation>
+    <type>material</type>
+    <object-name>panel</object-name>
+    <object-name>frames</object-name>
+    <emission>
+      <factor-prop>/instrumentation/uh60/lights/non-flt</factor-prop>
+      <red>   0.10 </red>
+      <green> 1.00 </green>
+      <blue>  0.45 </blue>
+    </emission>
+  </animation>
+
+  <effect>
+    <inherits-from>../../../../Effects/Lit/lit</inherits-from>
+    <parameters>
+      <lit-color type="vec3d"> 0.10 1.00 0.45 </lit-color>
+      <lit-level type="float"><use>/instrumentation/uh60/lights/non-flt</use></lit-level>
+      <lit-gain type="float"> 1.91 </lit-gain>
+      <lit-reflectance type="float"> 1 </lit-reflectance>
+    </parameters>
+    <object-name>panel</object-name>
+    <object-name>frames</object-name>
+  </effect>
 
   <animation>
     <type>select</type>
@@ -63,6 +88,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-dplr</object-name>
+    <object-name>lit-dplr</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-dplr</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-dplr</object-name>
     <action>
@@ -70,8 +108,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "dplr")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-dplr", 1); avionics.modesel(1, "dplr")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-dplr", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -113,6 +157,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-vor-ils</object-name>
+    <object-name>lit-vor-ils</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-vor-ils</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-vor-ils</object-name>
     <action>
@@ -120,8 +177,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "vor-ils")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-vor-ils", 1); avionics.modesel(1, "vor-ils")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-vor-ils", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -163,6 +226,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-back-crs</object-name>
+    <object-name>lit-back-crs</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-back-crs</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-back-crs</object-name>
     <action>
@@ -170,8 +246,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "back-crs")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-back-crs", 1); avionics.modesel(1, "back-crs")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-back-crs", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -213,6 +295,19 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-fm-home</object-name>
+    <object-name>lit-fm-home</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-fm-home</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-fm-home</object-name>
     <action>
@@ -220,8 +315,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "fm-home")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-fm-home", 1); avionics.modesel(1, "fm-home")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-fm-home", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -293,6 +394,20 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-turn-altr</object-name>
+    <object-name>lit-turn-altr-a</object-name>
+    <object-name>lit-turn-altr-b</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-turn-altr</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-turn-altr</object-name>
     <action>
@@ -300,8 +415,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "turn-altr")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-turn-altr", 1); avionics.modesel(1, "turn-altr")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-turn-altr", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -373,6 +494,20 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-crs-hdg</object-name>
+    <object-name>lit-crs-hdg-a</object-name>
+    <object-name>lit-crs-hdg-b</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-crs-hdg</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-crs-hdg</object-name>
     <action>
@@ -380,8 +515,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "crs-hdg")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-crs-hdg", 1); avionics.modesel(1, "crs-hdg")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-crs-hdg", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -453,6 +594,20 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-vgyro-altr</object-name>
+    <object-name>lit-vgyro-altr-a</object-name>
+    <object-name>lit-vgyro-altr-b</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-vgyro-altr</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-vgyro-altr</object-name>
     <action>
@@ -460,8 +615,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "vgyro-altr")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-vgyro-altr", 1); avionics.modesel(1, "vgyro-altr")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-vgyro-altr", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>
@@ -533,6 +694,20 @@
   </effect>
 
   <animation>
+    <type>translate</type>
+    <object-name>btn-brg2-vor</object-name>
+    <object-name>lit-brg2-vor-a</object-name>
+    <object-name>lit-brg2-vor-b</object-name>
+    <property>/instrumentation/uh60/modesel[1]/press-brg2-vor</property>
+    <factor> -0.0012 </factor>
+    <axis>
+      <x> 1 </x>
+      <y> 0 </y>
+      <z> 0 </z>
+    </axis>
+  </animation>
+
+  <animation>
     <type>pick</type>
     <object-name>btn-brg2-vor</object-name>
     <action>
@@ -540,8 +715,14 @@
       <repeatable>false</repeatable>
       <binding>
         <command>nasal</command>
-        <script>avionics.modesel(1, "brg2-vor")</script>
+        <script>setprop("/instrumentation/uh60/modesel[1]/press-brg2-vor", 1); avionics.modesel(1, "brg2-vor")</script>
       </binding>
+      <mod-up>
+        <binding>
+          <command>nasal</command>
+          <script>setprop("/instrumentation/uh60/modesel[1]/press-brg2-vor", 0)</script>
+        </binding>
+      </mod-up>
     </action>
     <hovered>
       <binding>

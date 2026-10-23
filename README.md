@@ -303,10 +303,11 @@ Based on the UH-60 for FlightGear by its original author (aircraft version
   AN/APN-209 radar altimeters (`apn209`, in place of the old set,
   `RadarAlt`); clocks (`clock`), stabilator position indicators (`stab`), the caution/advisory
   panel (`cap`, with `Systems/uh60a-cap.xml` and `Nasal/caution.nas`), the
-  engine ignition switch (`ignition`), and the mode selectors, auxiliary
-  fuel management panel, radar warning indicator, deice and IRCM panels and
-  dimming controls (`modesel`, `cismode`, `afms`, `rwr`, `deice`, `nvgdim`,
-  `radaltdim`), their faces from the manual's figure; the HSIs, rebuilt
+  engine ignition switch (`ignition`), the mode selectors (`modesel`,
+  `cismode`: integrally lighted panels of lighted push buttons, their caps
+  pressing in), and the auxiliary fuel management panel, radar warning
+  indicator, deice and IRCM panels and dimming controls (`afms`, `rwr`,
+  `deice`, `nvgdim`, `radaltdim`), their faces from the manual's figure; the HSIs, rebuilt
   (`hsi60`), the VSIs' command bars, deviation pointers, flags and lights
   (`ai`, `ai/cis`) and the master warning panel (`caution`).
   `fdm/cockpit/instruments.py`, `cap.py`, `avionics.py` and `gauges.py`
